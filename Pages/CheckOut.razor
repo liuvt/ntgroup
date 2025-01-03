@@ -1,6 +1,14 @@
 @page "/checker/{numberCar}"
 @inherits CheckOutBase
+<style>
+    .custom-header {
+        background-color: #16a31b; /* Replace with your desired color */
+    }
+    .mud-table-root .mud-table-head .mud-table-cell {
+        color: white;/* Optional: Set text color for better contrast */
 
+    }
+</style>
 <PageTitle>Taxi Nam Thắng Manager</PageTitle>
 
 <MudMainContent Class="pa-5 augReFont">
@@ -21,8 +29,8 @@
             </MudItem>
 
             <!-- Bill Items Section -->
-            <MudItem xs="12" Class="d-xs-none">
-                <MudTable T="BillContract" Items="@servicedataContracts" Dense="true" Bordered="true" Striped="true" Hover="true">
+            <MudItem xs="12">
+                <MudTable HeaderClass="custom-header" T="BillContract" Items="@servicedataContracts" Dense="true" Bordered="true" Striped="true" Hover="true">
                     <ToolBarContent>
                         <MudText Color="Color.Primary" Typo="Typo.h6">HỢP ĐỒNG</MudText>
                     </ToolBarContent>
@@ -52,28 +60,8 @@
                 </MudTable>
             </MudItem>
 
-            <MudItem Class="d-xs-flex d-sm-none">
-                    <MudCard>
-                        <MudCardHeader>
-                            <CardHeaderContent>
-                                <MudText Typo="Typo.h6">The Story Book</MudText>
-                            </CardHeaderContent>
-                            <CardHeaderActions>
-                                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
-                            </CardHeaderActions>
-                        </MudCardHeader>
-                        <MudCardContent>
-                            <MudText>This day everything happened.</MudText>
-                            <MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>
-                        </MudCardContent>
-                        <MudCardActions>
-                            <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
-                        </MudCardActions>
-                    </MudCard>
-            </MudItem>
-
             <MudItem xs="12">
-                <MudTable T="BillTimepiece" Items="@servicedataTimepieces" Dense="true" Bordered="true" Striped="true" Hover="true">
+                <MudTable HeaderClass="custom-header" T="BillTimepiece" Items="@servicedataTimepieces" Dense="true" Bordered="true" Striped="true" Hover="true">
                     <ToolBarContent>
                         <MudText Color="Color.Primary" Typo="Typo.h6">CUỐC XE KHÁCH LẺ</MudText>
                     </ToolBarContent>
