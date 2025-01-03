@@ -1,0 +1,128 @@
+@page "/checker/{numberCar}"
+@inherits CheckOutBase
+
+<PageTitle>Taxi Nam Thắng Manager</PageTitle>
+
+<MudMainContent Class="pa-5 augReFont">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+        <MudGrid>
+            <!-- Header Section -->
+            <MudItem xs="12">
+                <MudItem>
+                    <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">PHIẾU CHECKER</MudText>
+                    <MudText Class="d-flex justify-center" Typo="Typo.subtitle2"><i>Ngày:
+                        @DateTime.Now.ToShortDateString()</i></MudText>
+                </MudItem>
+                <MudItem>
+                    <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">Mã: @(dataShiftworks.NumberCar)</MudText>
+                    <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">Tên: @(dataShiftworks.NumberDriver.ToUpper())</MudText>
+                    <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">Doanh thu tổng: @(dataShiftworks.RevenueTotal)</MudText>
+                </MudItem>
+            </MudItem>
+
+            <!-- Bill Items Section -->
+            <MudItem xs="12" Class="d-xs-none pa-2">
+                <MudTable T="DemoDataContract" Items="@dataContracts" Dense="true" Bordered="true" Striped="true" Hover="true">
+                    <ToolBarContent>
+                        <MudText Color="Color.Primary" Typo="Typo.h6">HỢP ĐỒNG</MudText>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>STT</MudTh>
+                        <MudTh>Hợp đồng</MudTh>
+                        <MudTh>Giá hợp đồng</MudTh>
+                        <MudTh>KM/Giờ quy định</MudTh>
+                        <MudTh>KM/Giờ vượt</MudTh>
+                        <MudTh>Truy thu</MudTh>
+                        <MudTh>Khuyến mãi</MudTh>
+                        <MudTh>Thực thu</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@(dataContracts.IndexOf(@context) + 1)</MudTd>
+                        <MudTd>@context.Key</MudTd>
+                        <MudTd>@context.Price</MudTd>
+                        <MudTd>@context.DefaultDistance</MudTd>
+                        <MudTd>@context.OverDistance</MudTd>
+                        <MudTd>@context.Surcharge</MudTd>
+                        <MudTd>@context.Promotion</MudTd>
+                        <MudTd>@context.TotalPrice</MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.subtitle1">TỔNG TIỀN HỢP ĐỒNG: @totalPriceContract</MudText>
+                    </PagerContent>
+                </MudTable>
+            </MudItem>
+            <MudItem Class="d-xs-flex d-sm-none">
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">The Story Book</MudText>
+                            </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudText>This day everything happened.</MudText>
+                            <MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+            </MudItem>
+
+            
+
+            <MudItem xs="12">
+                <MudTable T="DemoDataTimepiece" Items="@dataTimepieces" Dense="true" Bordered="true" Striped="true" Hover="true">
+                    <ToolBarContent>
+                        <MudText Color="Color.Primary" Typo="Typo.h6">CUỐC XE KHÁCH LẺ</MudText>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>STT</MudTh>
+                        <MudTh>Giờ đón</MudTh>
+                        <MudTh>Giờ trả</MudTh>
+                        <MudTh>Số KM</MudTh>
+                        <MudTh>Số tiền</MudTh>
+                        <MudTh>Điểm đón</MudTh>
+                        <MudTh>Điểm trả</MudTh>
+                        <MudTh>Ghi chú</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@(dataTimepieces.IndexOf(@context) + 1)</MudTd>
+                        <MudTd>@context.StartTime</MudTd>
+                        <MudTd>@context.EndTime</MudTd>
+                        <MudTd>@context.Distance</MudTd>
+                        <MudTd>@context.Amount</MudTd>
+                        <MudTd>@context.PickUp</MudTd>
+                        <MudTd>@context.DropOut</MudTd>
+                        <MudTd>@context.Note</MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.subtitle1">TỔNG TIỀN CUỐC LẺ: @totalPriceTimepiece</MudText>
+                    </PagerContent>
+                </MudTable>
+            </MudItem>
+
+            <!-- Footer Section -->
+            <MudItem xs="12">
+                <MudDivider />
+                <MudItem Class="d-flex flex-wrap justify-center gap-4 mt-4">
+                    <MudItem>
+                        <MudText Typo="Typo.subtitle1">Tổng tiền (hợp đồng + cuốc lẻ): @totalAmount</MudText>
+                        <MudText Typo="Typo.subtitle1">Khuyến mãi GSM: -0</MudText>
+                        <MudText Typo="Typo.subtitle1">Ví GSM: @(totalWallet)</MudText>
+                        <MudText Color="Color.Error" Typo="Typo.h6" Class="mt-2">TỔNG NỢP: @(dataShiftworks.TotalPrice)</MudText>
+                        <MudDivider />
+    using DocumentFormat.OpenXml.Drawing.Diagrams;
+                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1" Class="mt-2">Doanh thu ngày: @(dataShiftworks.RevenueByDate)</MudText>
+                    </MudItem>
+                    <MudSpacer  />
+                    <MudItem>
+                        <MudImage Width="200" Height="200" Src="@(dataShiftworks.QRUrl)" />
+                    </MudItem>
+                </MudItem>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+</MudMainContent>

@@ -1,0 +1,76 @@
+﻿@page "/timepiece"
+@inherits TimepieceBase
+
+<PageTitle>Đồng hồ Taxi- Taxi Nam Thắng</PageTitle>
+
+<MudMainContent Class="pa-5 augReFont">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+        <MudText Class="pa-3 justify-align-center" Color="Color.Primary" Typo="Typo.h4">
+            ĐỒNG HỒ TAXI
+        </MudText>
+        <MudGrid Class="pt-5 pl-9">
+            <MudFileUpload T="IBrowserFile" Accept=".xlsx">
+                <ActivatorContent>
+                    <MudFab Size="Size.Small" DropShadow="false" Color="Color.Tertiary"
+                        StartIcon="@Icons.Material.Filled.CloudUpload" Label="Tải tệp tin" />
+                </ActivatorContent>
+                <SelectedTemplate>
+                    @if (context != null)
+                    {
+                        @context.Name
+                        <code class="pa-2">@context.Size bytes</code>
+                        <MudButton Class="pa-2" OnClick="(() => loadFileExcels(context))" Variant="Variant.Text"
+                            StartIcon="@Icons.Material.Filled.Search" Color="Color.Primary" Size="Size.Small" >
+                            Xem nội dung
+                        </MudButton>
+                    }
+                    else
+                    {
+                        <MudText Class="pa-2">Không có tệp tin</MudText>
+                    }
+                </SelectedTemplate>
+            </MudFileUpload>
+        </MudGrid>
+
+        <!--Xữ lý load data-->
+        @if(Elements == null && isLoadGird == true)
+        {
+            <MudProgressCircular Color="Color.Success" Indeterminate="true" />
+        }
+        else if(Elements != null && isLoadGird == true)
+        {
+            <MudDataGrid T="TimepieceDTO" Items="@Elements" Hover="true" 
+                    SortMode="@SortMode.Multiple" MultiSelection="true" QuickFilter="@_quickFilter">
+                <ToolBarContent>
+                    <MudButton Class="pa-2"  Variant="Variant.Text"
+                            StartIcon="@Icons.Material.Filled.Add" Color="Color.Success" Size="Size.Small">
+                            Lưu dữ liệu
+                    </MudButton>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="_searchString" Placeholder="Tìm kiếm..." Immediate="true"
+                        Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" 
+                        IconSize="Size.Medium" Class="mt-0" />
+                </ToolBarContent>
+                <Columns>
+                    <PropertyColumn Property="x => x.taxi_NumberId" Title="Số tài" />
+                    <PropertyColumn Property="x => x.taxi_NumberPlate" Title="Biển số xe" />
+                    <PropertyColumn Property="x => x.tp_TimeStart" Title="Bắt đầu" />
+                    <PropertyColumn Property="x => x.tp_TimeEnd" Title="Kết thúc"/>
+                    <PropertyColumn Property="x => x.tp_Kilometer" Title="KM có khách"/>
+                    <PropertyColumn Property="x => x.tp_KilometerEmpty" Title="KM rỗng"/>
+                    <PropertyColumn Property="x => x.tp_KilometerTotal" Title="KM Tổng"/>
+                    <PropertyColumn Property="x => x.tp_Amount" Title="Thành tiền"/>
+                    <PropertyColumn Property="x => x.tp_StartPoint" Title="Điểm đi" />
+                    <PropertyColumn Property="x => x.tp_EndPoint" Title="Điểm đến" />
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="TimepieceDTO" />
+                </PagerContent>
+            </MudDataGrid>
+        }
+    </MudContainer>
+</MudMainContent>
+@if(isLoadGird != true)
+{
+    <div style="height: 450px;"></div>
+}

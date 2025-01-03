@@ -1,0 +1,16 @@
+<!--Hiển thị nội dung trạng thái lỗi-->
+<MudContainer MaxWidth="MaxWidth.Large" Class="augMessageError mt-5">
+    <MudItem>
+        <MudText Typo="Typo.h3">@Title</MudText>
+        <MudLink Href="@Link">@TitleLink</MudLink>
+    </MudItem>
+</MudContainer>
+
+@code{
+    [Parameter]
+    public string? Title { get; set; }
+    [Parameter]
+    public string? Link { get; set; }
+    [Parameter]
+    public string? TitleLink { get; set; }
+}

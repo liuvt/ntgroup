@@ -1,0 +1,51 @@
+@page "/"
+@inherits IndexBase
+@using MudBlazor
+
+<PageTitle>Taxi Nam Thắng Manager</PageTitle>
+
+<MudMainContent Class="pa-5 augReFont">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+        <MudGrid>
+            <!-- Header Section -->
+            <MudItem xs="12">
+                <MudItem>
+                    <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">DANH SÁCH XE CHẠY NGÀY</MudText>
+                    <MudText Class="d-flex justify-center" Typo="Typo.subtitle2"><i>Ngày:
+                        @DateTime.Now.AddDays(-1).ToShortDateString()</i></MudText>
+                </MudItem>
+            </MudItem>
+
+            <!-- Bill Items Section -->
+            <MudItem xs="12">
+                <MudTable T="DemoDataSkySoftMain" Items="@dataSkySoft" Dense="true" Bordered="false" Striped="true"  Filter="new Func<DemoDataSkySoftMain,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6" Color="Color.Primary">SKY SOFT</MudText>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>STT</MudTh>
+                        <MudTh>Số xe</MudTh>
+                        <MudTh>Biễn số</MudTh>
+                        <MudTh>Tổng tiền</MudTh> 
+                        <MudTh>Trạng thái</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@(dataSkySoft.IndexOf(@context) + 1)</MudTd>   
+                        <MudTd>
+                            <MudLink Href="@($"/checker/{context.NumberCar}")">@context.NumberCar</MudLink>
+                        </MudTd>
+                        <MudTd>@context.NumberPlate</MudTd>
+                        <MudTd>@context.Price</MudTd>
+                        <MudTd>@context.Static</MudTd>
+                    </RowTemplate>
+                        <PagerContent>
+                            <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.subtitle1">TỔNG TIỀN: @totalSkySoft</MudText>
+                            <MudTablePager />
+                        </PagerContent>
+                </MudTable>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+</MudMainContent>

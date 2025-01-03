@@ -1,0 +1,17 @@
+@inherits TemplatingDialogBase
+<!--Nột dialog thông báo trước khi: Thêm, Sữa, Xóa dữ liệu-->
+<MudDialog>
+    <TitleContent>
+        <MudItem Class="d-flex">
+            <MudIcon Color="@ColorButton" Icon="@IconTittle" Class="mr-2 mt-1" />
+            <MudText Color="@ColorButton" Typo="Typo.h6">@TextTitle</MudText>
+        </MudItem>
+    </TitleContent>
+    <DialogContent>
+        <MudText>@TextContent</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="@ColorButton" Variant="Variant.Filled" ButtonType="ButtonType.Submit" OnClick="Submit">@TextButton</MudButton>
+    </DialogActions>
+</MudDialog>

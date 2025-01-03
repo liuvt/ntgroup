@@ -1,0 +1,54 @@
+@inherits AppMainLayoutBase
+
+<MudThemeProvider Theme="@_theme" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar>
+        <!--For mobile and tablet Navigation Button show-->
+        <MudIconButton Class="d-xs-flex d-md-none" Icon="@Icons.Material.Filled.Menu" 
+            Edge="Edge.Start" OnClick="@((e) => DrawerToggle(Anchor.Start))" />
+        <!--Logo company-->
+        <MudImage Class="d-none d-md-flex pa-2" Src="imgs/logo-namthang.png" Height="56" Alt="Nam Thắng Logo" />
+        <!-- Show size >=sm 
+            <MudText Color="Color.Primary" Class="d-none d-sm-flex pa-2 augNameCompany">August Center</MudText>-->
+        <!-- Show size <sm -->
+        <MudText Color="Color.Primary" Class="d-xs-flex d-sm-none augNameCompany">Taxi NT. Manager</MudText>
+        <!-- BreakPoint -->
+        <MudSpacer />
+        <!-- For desktop
+                d-none: ẩn toàn bộ size
+                d-md-flex: hiển thị từ size md
+                gap-8: khoản cách giữ các link
+                mr-15: item thục vào 15
+            -->
+        <MudItem Class="d-none d-sm-flex gap-4 justify-end mr-5">
+            <MudLink Href="/" Underline="Underline.None">
+                <MudText Typo="Typo.body1">Trang chủ</MudText>
+            </MudLink>
+            <MudLink Href="/faq" Underline="Underline.None">
+                <MudText Typo="Typo.body1">FAQ</MudText>
+            </MudLink>
+        </MudItem>
+    </MudAppBar>
+    <!-- For navigation menu-->
+    <MudDrawer @bind-Open="@_drawerOpen" Width="@width" Height="@height"
+        Style="@($"color:{Colors.Shades.Black}; background:{Colors.Shades.White};")" Anchor="@anchor" Elevation="1"
+        Variant="@DrawerVariant.Temporary">
+        <AppNavMenu />
+    </MudDrawer>
+    <!--Mobile trược trên mọi điểm ở Body để show navigation menu-->
+    <MudSwipeArea OnSwipeEnd="@OnSwipeEnd" Style="width: 100%;">
+        <!--Body-->
+        <MudMainContent>
+            @Body
+        </MudMainContent>
+        <!--Footer-->
+        <AppFooterLayout />
+        <MudScrollToTop>
+            <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.KeyboardArrowUp" />
+        </MudScrollToTop>
+    </MudSwipeArea>
+</MudLayout>

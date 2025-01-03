@@ -1,0 +1,89 @@
+﻿@page "/customers"
+@inherits CustomerBase
+
+<PageTitle>Khách hàng- Taxi Nam Thắng</PageTitle>
+
+<MudMainContent Class="pa-5 augReFont">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+        <MudText Class="pa-3 justify-align-center" Color="Color.Primary" Typo="Typo.h4">
+            QUẢN LÝ KHÁCH HÀNG
+        </MudText>
+        <MudGrid Class="pt-5 pl-9">
+            <MudFileUpload T="IBrowserFile" Accept=".xlsx">
+                <ActivatorContent>
+                    <MudFab Size="Size.Small" DropShadow="false" Color="Color.Tertiary"
+                        StartIcon="@Icons.Material.Filled.CloudUpload" Label="Tải tệp tin" />
+                </ActivatorContent>
+                <SelectedTemplate>
+                    @if (context != null)
+                    {
+                        @context.Name
+                        <code class="pa-2">@context.Size bytes</code>
+                        @if(context.Name == app_name)
+                        {
+                            <MudButton Class="pa-2" OnClick="(() => loadExcelFileAppCustomer(context))" Variant="Variant.Text"
+                                StartIcon="@Icons.Material.Filled.Search" Color="Color.Primary" Size="Size.Small">
+                                Xem thông app khách hàng
+                            </MudButton>
+                        }
+                        else if(context.Name == gsm_name)
+                        {
+                            <MudButton Class="pa-2" OnClick="(() => loadExcelFileAppGSM(context))" Variant="Variant.Text"
+                                StartIcon="@Icons.Material.Filled.Search" Color="Color.Primary" Size="Size.Small">
+                                Xem thông app gsm
+                            </MudButton>
+                        }
+                        else
+                        {
+                            <MudButton Class="pa-2" OnClick="(() => loadExcelFile(context))" Variant="Variant.Text"
+                                StartIcon="@Icons.Material.Filled.Search" Color="Color.Primary" Size="Size.Small">
+                                Xem nội dung
+                            </MudButton>
+                        }
+                    }
+                    else
+                    {
+                        <MudText Class="pa-2">Không có tệp tin</MudText>
+                    }
+                </SelectedTemplate>
+            </MudFileUpload>
+        </MudGrid>
+        <!--Xữ lý load data-->
+        @if(Elements == null && isLoadGird == true)
+        {
+            <MudProgressCircular Color="Color.Success" Indeterminate="true" />
+        }
+        else if(Elements != null && isLoadGird == true)
+        {
+            <MudDataGrid T="Customer" Items="@Elements" Hover="true" SortMode="@SortMode.Multiple" MultiSelection="true"
+                QuickFilter="@_quickFilter">
+                <ToolBarContent>
+                    <MudButton Class="pa-2"  Variant="Variant.Text"
+                            StartIcon="@Icons.Material.Filled.Add" Color="Color.Success" Size="Size.Small">
+                            Lưu dữ liệu
+                    </MudButton>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="_searchString" Placeholder="Tìm kiếm..." Adornment="Adornment.Start"
+                        Immediate="true" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+                    </MudTextField>
+                </ToolBarContent>
+                <Columns>
+                    <PropertyColumn Property="x => x.customer_Type" Title="Loại" />
+                    <PropertyColumn Property="x => x.customer_Id" Title="ID" Sortable="false" Filterable="false" />
+                    <PropertyColumn Property="x => x.customer_IdTaxi" Title="Số Tài" />
+                    <PropertyColumn Property="x => x.customer_DateTime" Title="Thời gian" />
+                    <PropertyColumn Property="x => x.customer_Kilometer" Title="Số km" />
+                    <PropertyColumn Property="x => x.customer_Price" Title="Tiền cước" />
+                    <PropertyColumn Property="x => x.customer_Point" Title="Địa điểm" />
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="Customer" />
+                </PagerContent>
+            </MudDataGrid>
+        }
+    </MudContainer>
+</MudMainContent>
+@if(isLoadGird != true)
+{
+    <div style="height: 450px;"></div>
+}
