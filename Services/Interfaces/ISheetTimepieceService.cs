@@ -6,4 +6,5 @@ namespace ntgroup.Services.Interfaces;
 public interface ISheetTimepieceService
 {
     Task<List<BillTimepiece>> Gets(string numberCar);
+    Task<string> TotalWalletGSMByNumberCar(string numberCar);
 } 

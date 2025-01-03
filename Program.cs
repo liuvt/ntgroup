@@ -141,6 +141,7 @@ builder.Services.AddScoped<ITimepieceService, TimepieceService>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<ISheetContractService, SheetContractService>();
 builder.Services.AddScoped<ISheetTimepieceService, SheetTimepieceService>();
+builder.Services.AddScoped<ISheetShiftworkService, SheetShiftworkService>();
 
 var app = builder.Build();
 
