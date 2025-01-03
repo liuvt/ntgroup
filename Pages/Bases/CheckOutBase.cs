@@ -1,22 +1,21 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using ntgroup.Data.Models;
 using ntgroup.Services.Interfaces;
 using MudBlazor;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
-using DocumentFormat.OpenXml.Office2013.Excel;
-using System.Globalization;
 using ntgroup.Extensions;
-using System.Runtime.InteropServices;
 
 namespace ntgroup.Pages.Bases;
 public class CheckOutBase : ComponentBase
 {
     [Parameter]
     public string numberCar { get; set; }
+    [Inject]
+    protected ISheetContractService sheetContractService {get; set;}
 
+    protected List<BillContract> servicedataContracts = new List<BillContract>();
     protected List<DemoDataContract> dataContracts = new List<DemoDataContract>();
     protected DemoDataShiftwork dataShiftworks = new DemoDataShiftwork();
     protected List<DemoDataTimepiece> dataTimepieces = new List<DemoDataTimepiece>();
@@ -54,10 +53,11 @@ public class CheckOutBase : ComponentBase
 
         dataShiftworks = await ReadDataDANHSACHLENCA(numberCar);
         dataContracts = await ReadDataDATAHOPDONG(numberCar);
+        servicedataContracts = await sheetContractService.Gets(numberCar);
         dataTimepieces = await ReadDataDATALE(numberCar);
         totalWallet = "-" + await ReadDataWALLETGSM(numberCar);
 
-        totalAmount = FormatCurrency.formatCurrency((decimal.Parse(totalPriceContract) + decimal.Parse(totalPriceTimepiece)).ToString(), "vi-VN");
+        totalAmount = FormatCurrency.formatCurrency((decimal.Parse(totalPriceContract) + decimal.Parse(totalPriceTimepiece)).ToString());
     }
 
     private async Task<List<DemoDataTimepiece>> ReadDataDATALE(string numberCar)
@@ -211,11 +211,11 @@ public class CheckOutBase : ComponentBase
                 {
                     NumberCar = item[0].ToString() ?? string.Empty,
                     NumberDriver = item[1].ToString() ?? string.Empty,
-                    RevenueTotal = FormatCurrency.formatCurrency(item[2].ToString(), "vi-VN"),
-                    RevenueByDate = FormatCurrency.formatCurrency(item[3].ToString(), "vi-VN"),
+                    RevenueTotal = FormatCurrency.formatCurrency(item[2].ToString()),
+                    RevenueByDate = FormatCurrency.formatCurrency(item[3].ToString()),
                     QRContext = item[4].ToString() ?? string.Empty,
                     QRUrl = item[5].ToString() ?? string.Empty,
-                    TotalPrice = FormatCurrency.formatCurrency(item[6].ToString(), "vi-VN")
+                    TotalPrice = FormatCurrency.formatCurrency(item[6].ToString())
                 });
             }
         }

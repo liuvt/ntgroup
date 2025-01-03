@@ -11,13 +11,44 @@
                 <MudItem>
                     <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">PHIẾU CHECKER</MudText>
                     <MudText Class="d-flex justify-center" Typo="Typo.subtitle2"><i>Ngày:
-                        @DateTime.Now.ToShortDateString()</i></MudText>
+                        @DateTime.Now.AddDays(-1).ToShortDateString()</i></MudText>
                 </MudItem>
                 <MudItem>
                     <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">Mã: @(dataShiftworks.NumberCar)</MudText>
                     <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">Tên: @(dataShiftworks.NumberDriver.ToUpper())</MudText>
                     <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">Doanh thu tổng: @(dataShiftworks.RevenueTotal)</MudText>
                 </MudItem>
+            </MudItem>
+            <!-- Bill Items Section -->
+            <MudItem xs="12" Class="d-xs-none pa-2">
+                <MudTable T="BillContract" Items="@servicedataContracts" Dense="true" Bordered="true" Striped="true" Hover="true">
+                    <ToolBarContent>
+                        <MudText Color="Color.Primary" Typo="Typo.h6">HỢP ĐỒNG</MudText>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>STT</MudTh>
+                        <MudTh>Hợp đồng</MudTh>
+                        <MudTh>Giá hợp đồng</MudTh>
+                        <MudTh>KM/Giờ quy định</MudTh>
+                        <MudTh>KM/Giờ vượt</MudTh>
+                        <MudTh>Truy thu</MudTh>
+                        <MudTh>Khuyến mãi</MudTh>
+                        <MudTh>Thực thu</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@(servicedataContracts.IndexOf(@context) + 1)</MudTd>
+                        <MudTd>@context.Key</MudTd>
+                        <MudTd>@context.Price</MudTd>
+                        <MudTd>@context.DefaultDistance</MudTd>
+                        <MudTd>@context.OverDistance</MudTd>
+                        <MudTd>@context.Surcharge</MudTd>
+                        <MudTd>@context.Promotion</MudTd>
+                        <MudTd>@context.TotalPrice</MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.subtitle1">TỔNG TIỀN HỢP ĐỒNG: @totalPriceContract</MudText>
+                    </PagerContent>
+                </MudTable>
             </MudItem>
 
             <!-- Bill Items Section -->
@@ -70,8 +101,6 @@
                         </MudCardActions>
                     </MudCard>
             </MudItem>
-
-            
 
             <MudItem xs="12">
                 <MudTable T="DemoDataTimepiece" Items="@dataTimepieces" Dense="true" Bordered="true" Striped="true" Hover="true">
