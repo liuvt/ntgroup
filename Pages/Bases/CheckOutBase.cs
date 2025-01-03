@@ -14,19 +14,18 @@ public class CheckOutBase : ComponentBase
     public string numberCar { get; set; }
     [Inject]
     protected ISheetContractService sheetContractService {get; set;}
+    [Inject]
+    protected ISheetTimepieceService sheetTimepieceService {get; set;}
 
     protected List<BillContract> servicedataContracts = new List<BillContract>();
-    protected List<DemoDataContract> dataContracts = new List<DemoDataContract>();
+    protected List<BillTimepiece> servicedataTimepieces = new List<BillTimepiece>();
     protected DemoDataShiftwork dataShiftworks = new DemoDataShiftwork();
-    protected List<DemoDataTimepiece> dataTimepieces = new List<DemoDataTimepiece>();
 
     //For Google Sheet
     private readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
     private readonly string ApplicationName = "ntgroupforchecker";
     private readonly string Spreadsheets = "1WW022rLTmzI499efQxYXEl4oHBMRLBNuGpdtSOyP8vk";
-    private readonly string sheetDATALE = "DATALE";
     private readonly string sheetDANHSACHLENCA = "DANHSACHLENCA";
-    private readonly string sheetDATAHOPDONG = "DATAHOPDONG";
     private readonly string sheetWALLETGSM = "VỀ VÍ GSM";
     public string totalPriceContract;
     public string totalPriceTimepiece;
@@ -52,143 +51,14 @@ public class CheckOutBase : ComponentBase
         });
 
         dataShiftworks = await ReadDataDANHSACHLENCA(numberCar);
-        dataContracts = await ReadDataDATAHOPDONG(numberCar);
         servicedataContracts = await sheetContractService.Gets(numberCar);
-        dataTimepieces = await ReadDataDATALE(numberCar);
+        servicedataTimepieces = await sheetTimepieceService.Gets(numberCar);
         totalWallet = "-" + await ReadDataWALLETGSM(numberCar);
+        
+        totalPriceContract = SumTotalListString.SumTotalPrices(servicedataContracts.Cast<object>().ToList(), "TotalPrice");
+        totalPriceTimepiece = SumTotalListString.SumTotalPrices(servicedataTimepieces.Cast<object>().ToList(), "Amount");
 
         totalAmount = FormatCurrency.formatCurrency((decimal.Parse(totalPriceContract) + decimal.Parse(totalPriceTimepiece)).ToString());
-    }
-
-    private async Task<List<DemoDataTimepiece>> ReadDataDATALE(string numberCar)
-    {
-        var tps = new List<DemoDataTimepiece>();
-        var range = $"{sheetDATALE}!A2:H";
-        var request = sheetsService.Spreadsheets.Values.Get(Spreadsheets, range);
-        var response = await request.ExecuteAsync();
-        var values = response.Values;
-        if (values != null && values.Count > 0)
-        {
-            foreach (var item in values)
-            {
-                tps.Add(new DemoDataTimepiece
-                {
-                    NumberCar = item[0].ToString() ?? string.Empty,
-                    StartTime = item[1].ToString() ?? string.Empty,
-                    EndTime = item[2].ToString() ?? string.Empty,
-                    Distance = item[3].ToString() ?? string.Empty,
-                    Amount = FormatCurrency.formatCurrency(item[4].ToString()),
-                    PickUp = item[5].ToString() ?? string.Empty,
-                    DropOut = item[6].ToString() ?? string.Empty,
-                    Note = (item.Count < 8) ? string.Empty : item[7].ToString()
-                });
-            }
-        }
-        else
-        {
-            Console.WriteLine("No data found.");
-        }
-        
-        var getObject = tps.Select(e=> e).Where(e => e.NumberCar == numberCar.ToUpper()).ToList();
-        if(getObject.Count <= 0)
-        {
-            getObject.Add(new DemoDataTimepiece(){
-                NumberCar = numberCar.ToUpper(),
-                StartTime = "//",
-                EndTime =  "//",
-                Distance =  "//",
-                Amount =  "//",
-                PickUp =  "//",
-                DropOut =  "//",
-                Note =  "//"
-            });
-        }
-
-        // Lấy tổng giá trị của tất cả các cuốc lẻ
-        var totalList = getObject.Sum(e => {
-                // Chuyển đổi Price từ string sang decimal
-                if (decimal.TryParse(e.Amount, out decimal price))
-                {
-                    return price;
-                }
-                else
-                {
-                    return 0; // Nếu không chuyển đổi được, coi như giá là 0
-                }
-            });
-        totalPriceTimepiece = FormatCurrency.formatCurrency(totalList.ToString());
-
-        return getObject;
-    }
-
-    private async Task<List<DemoDataContract>> ReadDataDATAHOPDONG(string numberCar)
-    {
-        var cts = new List<DemoDataContract>();
-        var range = $"{sheetDATAHOPDONG}!B2:I";
-        var request = sheetsService.Spreadsheets.Values.Get(Spreadsheets, range);
-        var response = await request.ExecuteAsync();
-        var values = response.Values;
-        if (values != null && values.Count > 0)
-        {
-            foreach (var item in values)
-            {   
-                // Nếu không có dữ liệu thì thoát
-                if(item[0].ToString() == string.Empty)
-                {
-                    break;
-                }
-
-                cts.Add(new DemoDataContract
-                {
-                    NumberCar = item[0].ToString() ?? string.Empty,
-                    Key = item[1].ToString() ?? string.Empty,
-                    Price = FormatCurrency.formatCurrency(item[2].ToString()),
-                    DefaultDistance = item[3].ToString() ?? string.Empty,
-                    OverDistance = item[4].ToString() ?? string.Empty,
-                    Surcharge = FormatCurrency.formatCurrency(item[5].ToString()),
-                    Promotion = FormatCurrency.formatCurrency(item[6].ToString()),
-                    TotalPrice = FormatCurrency.formatCurrency(item[7].ToString())
-                });
-            }
-        }
-        else
-        {
-            Console.WriteLine("No data found.");
-        }
-
-        var getObject = cts.Select(e=> e).Where(e => e.NumberCar == numberCar.ToUpper()).ToList();
-        // Nếu không có trả về 1 giá trị mặc định
-        if(getObject.Count <= 0)
-        {
-            getObject.Add(new DemoDataContract(){
-                NumberCar = numberCar.ToUpper(),
-                Key = "//",
-                Price =  "//",
-                DefaultDistance =  "//",
-                OverDistance =  "//",
-                Surcharge =  "//",
-                Promotion =  "//",
-                TotalPrice =  "//"
-            });
-        }
-
-        // Lấy tổng giá trị của tất cả các hợp đồng
-        var totalList = getObject.Sum(e => {
-                // Chuyển đổi Price từ string sang decimal
-                if (decimal.TryParse(e.TotalPrice, out decimal price))
-                {
-                    return price;
-                }
-                else
-                {
-                    return 0; // Nếu không chuyển đổi được, coi như giá là 0
-                }
-            });
-
-        totalPriceContract = FormatCurrency.formatCurrency(totalList.ToString());
-
-        // Trả về danh sách hợp đồng
-        return getObject;
     }
 
     protected async Task<DemoDataShiftwork> ReadDataDANHSACHLENCA(string numberCar)

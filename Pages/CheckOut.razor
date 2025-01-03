@@ -19,6 +19,7 @@
                     <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">Doanh thu tổng: @(dataShiftworks.RevenueTotal)</MudText>
                 </MudItem>
             </MudItem>
+
             <!-- Bill Items Section -->
             <MudItem xs="12" Class="d-xs-none pa-2">
                 <MudTable T="BillContract" Items="@servicedataContracts" Dense="true" Bordered="true" Striped="true" Hover="true">
@@ -51,37 +52,6 @@
                 </MudTable>
             </MudItem>
 
-            <!-- Bill Items Section -->
-            <MudItem xs="12" Class="d-xs-none pa-2">
-                <MudTable T="DemoDataContract" Items="@dataContracts" Dense="true" Bordered="true" Striped="true" Hover="true">
-                    <ToolBarContent>
-                        <MudText Color="Color.Primary" Typo="Typo.h6">HỢP ĐỒNG</MudText>
-                    </ToolBarContent>
-                    <HeaderContent>
-                        <MudTh>STT</MudTh>
-                        <MudTh>Hợp đồng</MudTh>
-                        <MudTh>Giá hợp đồng</MudTh>
-                        <MudTh>KM/Giờ quy định</MudTh>
-                        <MudTh>KM/Giờ vượt</MudTh>
-                        <MudTh>Truy thu</MudTh>
-                        <MudTh>Khuyến mãi</MudTh>
-                        <MudTh>Thực thu</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd>@(dataContracts.IndexOf(@context) + 1)</MudTd>
-                        <MudTd>@context.Key</MudTd>
-                        <MudTd>@context.Price</MudTd>
-                        <MudTd>@context.DefaultDistance</MudTd>
-                        <MudTd>@context.OverDistance</MudTd>
-                        <MudTd>@context.Surcharge</MudTd>
-                        <MudTd>@context.Promotion</MudTd>
-                        <MudTd>@context.TotalPrice</MudTd>
-                    </RowTemplate>
-                    <PagerContent>
-                        <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.subtitle1">TỔNG TIỀN HỢP ĐỒNG: @totalPriceContract</MudText>
-                    </PagerContent>
-                </MudTable>
-            </MudItem>
             <MudItem Class="d-xs-flex d-sm-none">
                     <MudCard>
                         <MudCardHeader>
@@ -103,7 +73,7 @@
             </MudItem>
 
             <MudItem xs="12">
-                <MudTable T="DemoDataTimepiece" Items="@dataTimepieces" Dense="true" Bordered="true" Striped="true" Hover="true">
+                <MudTable T="BillTimepiece" Items="@servicedataTimepieces" Dense="true" Bordered="true" Striped="true" Hover="true">
                     <ToolBarContent>
                         <MudText Color="Color.Primary" Typo="Typo.h6">CUỐC XE KHÁCH LẺ</MudText>
                     </ToolBarContent>
@@ -118,7 +88,7 @@
                         <MudTh>Ghi chú</MudTh>
                     </HeaderContent>
                     <RowTemplate>
-                        <MudTd>@(dataTimepieces.IndexOf(@context) + 1)</MudTd>
+                        <MudTd>@(servicedataTimepieces.IndexOf(@context) + 1)</MudTd>
                         <MudTd>@context.StartTime</MudTd>
                         <MudTd>@context.EndTime</MudTd>
                         <MudTd>@context.Distance</MudTd>
@@ -143,7 +113,6 @@
                         <MudText Typo="Typo.subtitle1">Ví GSM: @(totalWallet)</MudText>
                         <MudText Color="Color.Error" Typo="Typo.h6" Class="mt-2">TỔNG NỢP: @(dataShiftworks.TotalPrice)</MudText>
                         <MudDivider />
-    using DocumentFormat.OpenXml.Drawing.Diagrams;
                         <MudText Color="Color.Secondary" Typo="Typo.subtitle1" Class="mt-2">Doanh thu ngày: @(dataShiftworks.RevenueByDate)</MudText>
                     </MudItem>
                     <MudSpacer  />

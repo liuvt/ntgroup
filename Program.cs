@@ -140,6 +140,7 @@ builder.Services.AddScoped<ITimepieceService, TimepieceService>();
 // UI: Register Repositories
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<ISheetContractService, SheetContractService>();
+builder.Services.AddScoped<ISheetTimepieceService, SheetTimepieceService>();
 
 var app = builder.Build();
 

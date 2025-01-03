@@ -14,7 +14,6 @@ public class SheetContractService : ISheetContractService
     private readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
     private readonly string sheetDATAHOPDONG = "DATAHOPDONG";
     private SheetsService sheetsService;
-    public string totalPriceContract;
 
     public SheetContractService(IConfiguration _configuration)
     {
@@ -81,18 +80,15 @@ public class SheetContractService : ISheetContractService
             getObject.Add(new BillContract()
             {
                 NumberCar = numberCar.ToUpper(),
-                Key = "//",
-                Price = "//",
-                DefaultDistance = "//",
-                OverDistance = "//",
-                Surcharge = "//",
-                Promotion = "//",
-                TotalPrice = "//"
+                Key = "-",
+                Price = "0",
+                DefaultDistance = "0",
+                OverDistance = "0",
+                Surcharge = "0",
+                Promotion = "0",
+                TotalPrice = "0"
             });
         }
-
-        // Convert List<BillContract> to List<Object>
-        totalPriceContract = SumTotalListString.SumTotalPrices(getObject.Cast<object>().ToList(), "TotalPrice");
 
         // Trả về danh sách hợp đồng
         return getObject;
