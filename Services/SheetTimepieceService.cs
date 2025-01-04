@@ -69,16 +69,7 @@ public class SheetTimepieceService : ISheetTimepieceService
         var timepieceByNumberCar = tps.Select(e=> e).Where(e => e.NumberCar == numberCar.ToUpper()).ToList();
         if(timepieceByNumberCar.Count <= 0)
         {
-            timepieceByNumberCar.Add(new BillTimepiece(){
-                NumberCar = numberCar.ToUpper(),
-                StartTime = "-",
-                EndTime =  "-",
-                Distance =  "0",
-                Amount =  "0",
-                PickUp =  "-",
-                DropOut =  "-",
-                Note =  "-"
-            });
+            timepieceByNumberCar.Add(new BillTimepiece());
         }
 
         return timepieceByNumberCar;

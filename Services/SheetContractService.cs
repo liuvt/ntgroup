@@ -77,17 +77,7 @@ public class SheetContractService : ISheetContractService
         // Nếu không có trả về 1 giá trị mặc định
         if (getObject.Count <= 0)
         {
-            getObject.Add(new BillContract()
-            {
-                NumberCar = numberCar.ToUpper(),
-                Key = "-",
-                Price = "0",
-                DefaultDistance = "0",
-                OverDistance = "0",
-                Surcharge = "0",
-                Promotion = "0",
-                TotalPrice = "0"
-            });
+            getObject.Add(new BillContract());
         }
 
         // Trả về danh sách hợp đồng
