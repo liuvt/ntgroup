@@ -88,13 +88,15 @@
                                 </CardHeaderActions>
                             </MudCardHeader>
                             <MudCardContent>
-                                <MudText>STT: @(index + 1)</MudText>
-                                <MudText>Hợp đồng: @item.Key</MudText>
-                                <MudText>Giá hợp đồng: @item.Price</MudText>
-                                <MudText>KM/Giờ quy định: @item.DefaultDistance</MudText>
+                                <MudText><b>HĐ</b>: @(index + 1)</MudText>
+                                <MudText><b>Di chuyển</b>: @item.Key</MudText>
+                                <MudText><b>Giá HĐ</b>: @item.Price</MudText>
+                                <MudText><b>KM/Giờ quy định</b>: @item.DefaultDistance</MudText>
+                                <MudDivider />
+                                <MudText Class="d-flex justify-center">SAI LỆCH HỢP ĐỒNG</MudText>
                                 <MudText Color="Color.Primary">KM/Giờ vượt: @item.OverDistance</MudText>
                                 <MudText Color="Color.Primary">Truy thu: @item.Surcharge</MudText>
-                                <MudText Color="Color.Primary">Khuyến mãi: @item.Promotion</MudText>
+                                <MudText Color="Color.Primary">Khuyến mãi (-): @item.Promotion</MudText>
                             </MudCardContent>
                             <MudCardActions>
                                 <MudSpacer />
@@ -151,16 +153,21 @@
                                     <MudText Color="Color.Primary" Typo="Typo.h6">CUỐC LẺ</MudText>
                                 </CardHeaderContent>
                                 <CardHeaderActions>
-                                    <MudIconButton Icon="@Icons.Material.Filled.PriceChange" Color="Color.Warning" />
+                                    @if(item.Note == string.Empty)
+                                    {
+                                        <MudIconButton Icon="@Icons.Material.Filled.PriceChange" Color="Color.Warning" />
+                                    }
+                                    else
+                                    {
+                                        <MudImage Width="70" Src="../imgs/logo-gsm.png"></MudImage>
+                                    }
                                 </CardHeaderActions>
                             </MudCardHeader>
                             <MudCardContent>
-                                <MudText>STT: @(index + 1)</MudText>
-                                <MudText>Giờ đón: @item.StartTime</MudText>
-                                <MudText>Giờ trả: @item.EndTime</MudText>
-                                <MudText>Số KM: @item.Distance</MudText>
-                                <MudText>Điểm đón: @item.PickUp</MudText>
-                                <MudText>Điểm trả: @item.DropOut</MudText>
+                                <MudText><b>Cuốc xe</b>: @(index + 1)</MudText>
+                                <MudText><b>Khách lên xe</b>: @item.StartTime</MudText>
+                                <MudText><b>Khoản cách</b>: @item.Distance km</MudText>
+                                <MudText><b>Điểm đi</b>: <i><u>@item.PickUp</u></i></MudText>
                                 <MudText Color="Color.Primary">Ghi chú: @(item.Note != string.Empty ? item.Note : "Thu theo đồng hồ")</MudText>
                             </MudCardContent>
                             <MudCardActions>
