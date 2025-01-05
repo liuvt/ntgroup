@@ -21,7 +21,7 @@
             <MudItem xs="12">
                 <MudItem>
                     <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">
-                        <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.PlaylistAddCheckCircle" Color="Color.Primary" Size="Size.Large"/> PHIẾU CHECKER
+                        <MudIcon Class="mr-1" Icon="@Icons.Material.Filled.PlaylistAddCheckCircle" Color="Color.Primary" Size="Size.Large"/>PHIẾU CHECKER
                     </MudText>
                     <MudText Class="d-flex justify-center" Typo="Typo.subtitle2"><i>Ngày:
                             @DateTime.Now.AddDays(-1).ToString("dd/MM/yyyy")</i></MudText>
@@ -68,8 +68,9 @@
                             <MudTd>@context.TotalPrice</MudTd>
                         </RowTemplate>
                         <PagerContent>
-                            <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.subtitle1">TỔNG TIỀN HỢP
-                                ĐỒNG: @totalPriceContract</MudText>
+                            <MudText Class="d-flex justify-center" Color="Color.Error" Typo="Typo.h5">TỔNG TIỀN HỢP ĐỒNG: @totalPriceContract</MudText>
+                            <MudSpacer />
+                            <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100 }" />
                         </PagerContent>
                     </MudTable>
 
@@ -109,7 +110,7 @@
             {
                 <MudItem xs="12">
                     <!-- Bảng hiển thị trên màn hình nhỏ và lớn hơn : Class="d-none d-sm-block"-->
-                    <MudTable Class="d-none d-sm-block" HeaderClass="custom-header" T="BillTimepiece"
+                    <MudTable Class="d-none d-sm-block" HeaderClass="custom-header" T="BillTimepiece" 
                         Items="@servicedataTimepieces" Dense="true" Bordered="true" Striped="true" Hover="true">
                         <ToolBarContent>
                             <MudText Color="Color.Primary" Typo="Typo.h6">CUỐC XE KHÁCH LẺ</MudText>
@@ -135,11 +136,11 @@
                             <MudTd>@context.Note</MudTd>
                         </RowTemplate>
                         <PagerContent>
-                            <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.subtitle1">TỔNG TIỀN
-                                CUỐC LẺ: @totalPriceTimepiece</MudText>
+                            <MudText Class="d-flex justify-center" Color="Color.Error" Typo="Typo.h5">TỔNG TIỀN CUỐC LẺ: @totalPriceTimepiece</MudText>
+                            <MudSpacer />
+                            <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100 }" />
                         </PagerContent>
                     </MudTable>
-
 
                     @foreach (var (item, index) in servicedataTimepieces.Select((value, i) => (value, i)))
                     {
