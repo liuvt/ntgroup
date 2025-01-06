@@ -364,4 +364,4 @@ public partial class ntgroupDbContext : IdentityDbContext<AppUser>
 
 //Create mirations: dotnet ef migrations add Init -o Data/Migrations
 //Create database: dotnet ef database update
-//Publish project: dotnet publish -c Release --output ./Publish IdentityBlazorCoreAPI.csproj
+//Publish project: dotnet publish -c Release --output ./Publish ntgroup.csproj

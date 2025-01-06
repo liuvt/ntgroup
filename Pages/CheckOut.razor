@@ -153,21 +153,23 @@
                                     <MudText Color="Color.Primary" Typo="Typo.h6">CUỐC LẺ</MudText>
                                 </CardHeaderContent>
                                 <CardHeaderActions>
-                                    @if(item.Note == string.Empty)
+                                    @if(item.Note.Contains("Trừ 10% GSM"))
                                     {
-                                        <MudIconButton Icon="@Icons.Material.Filled.PriceChange" Color="Color.Warning" />
+                                        <MudImage Width="70" Src="../imgs/logo-gsm.png"></MudImage>
                                     }
                                     else
                                     {
-                                        <MudImage Width="70" Src="../imgs/logo-gsm.png"></MudImage>
+                                        <MudImage Width="70" Src="../imgs/logo-namthang.png"></MudImage>
                                     }
                                 </CardHeaderActions>
                             </MudCardHeader>
                             <MudCardContent>
-                                <MudText><b>Cuốc xe</b>: @(index + 1)</MudText>
+                                <MudText><b>Cuốc xe số</b>: @(index + 1)</MudText>
                                 <MudText><b>Khách lên xe</b>: @item.StartTime</MudText>
+                                <MudText><b>Khách xuống xe</b>: @item.StartTime</MudText>
                                 <MudText><b>Khoản cách</b>: @item.Distance km</MudText>
                                 <MudText><b>Điểm đi</b>: <i><u>@item.PickUp</u></i></MudText>
+                                <MudText><b>Điểm đến</b>: <i><u>@item.DropOut</u></i></MudText>
                                 <MudText Color="Color.Primary">Ghi chú: @(item.Note != string.Empty ? item.Note : "Thu theo đồng hồ")</MudText>
                             </MudCardContent>
                             <MudCardActions>
