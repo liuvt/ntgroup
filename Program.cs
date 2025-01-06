@@ -19,8 +19,6 @@ using ntgroup.APIs.Contracts;
 using ntgroup.APIs;
 using ntgroup.Services.Interfaces;
 using ntgroup.Services;
-using ntgroup.Repositories.Interfaces;
-using ntgroup.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -125,20 +123,9 @@ builder.Services.AddAuthentication(authenticationOptions => {
                 });
 
 // API: Register APIs
-builder.Services.AddScoped<ICarServer, CarServer>();
-builder.Services.AddScoped<IDriverServer, DriverServer>();
-
 builder.Services.AddScoped<IAuthServer, AuthServer>();
-builder.Services.AddScoped<ITimepieceServer, TimepieceServer>();
-builder.Services.AddScoped<IShiftworkServer, ShiftworkServer>();
+
 // UI: Register Services
-builder.Services.AddScoped<IContractService, ContractService>();
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<IReportContractService, ReportContractService>();
-builder.Services.AddScoped<IReportTimelineService, ReportTimelineService>();
-builder.Services.AddScoped<ITimepieceService, TimepieceService>();
-// UI: Register Repositories
-builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<ISheetContractService, SheetContractService>();
 builder.Services.AddScoped<ISheetTimepieceService, SheetTimepieceService>();
 builder.Services.AddScoped<ISheetShiftworkService, SheetShiftworkService>();

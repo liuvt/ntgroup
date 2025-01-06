@@ -6,4 +6,5 @@ namespace ntgroup.Services.Interfaces;
 public interface ISheetContractService
 {
     Task<List<BillContract>> Gets(string numberCar);
+    Task<List<BillContract>> GetsKG(string numberCar);
 } 

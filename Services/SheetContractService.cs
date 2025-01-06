@@ -36,7 +36,8 @@ public class SheetContractService : ISheetContractService
         });
 
     }
-
+    
+    // Bạc Liêu
     public async Task<List<BillContract>> Gets(string numberCar)
     {
         var cts = new List<BillContract>();
@@ -84,5 +85,52 @@ public class SheetContractService : ISheetContractService
         return getObject;
     }
 
+    // Kiên Giang
+    public async Task<List<BillContract>> GetsKG(string numberCar)
+    {
+        var cts = new List<BillContract>();
+        var range = $"{sheetDATAHOPDONG}!B2:I";
+        var request = sheetsService.Spreadsheets.Values.Get(configuration["GoogleSheetService:SpreadsSheetIDKG"], range);
+        var response = await request.ExecuteAsync();
+        var values = response.Values;
+        if (values != null && values.Count > 0)
+        {
+            foreach (var item in values)
+            {
+                // Nếu không có dữ liệu thì thoát
+                if (item[0].ToString() == string.Empty)
+                {
+                    break;
+                }
+
+                cts.Add(new BillContract
+                {
+                    NumberCar = item[0].ToString() ?? string.Empty,
+                    Key = item[1].ToString() ?? string.Empty,
+                    Price = FormatCurrency.formatCurrency(item[2].ToString()),
+                    DefaultDistance = item[3].ToString() ?? string.Empty,
+                    OverDistance = item[4].ToString() ?? string.Empty,
+                    Surcharge = FormatCurrency.formatCurrency(item[5].ToString()),
+                    Promotion = FormatCurrency.formatCurrency(item[6].ToString()),
+                    TotalPrice = FormatCurrency.formatCurrency(item[7].ToString())
+                });
+            }
+        }
+        else
+        {
+            Console.WriteLine("No data found.");
+        }
+
+        //Lọc lại danh sách theo Mã Xe
+        var getObject = cts.Select(e => e).Where(e => e.NumberCar == numberCar.ToUpper()).ToList();
+        // Nếu không có trả về 1 giá trị mặc định
+        if (getObject.Count <= 0)
+        {
+            getObject.Add(new BillContract());
+        }
+
+        // Trả về danh sách hợp đồng
+        return getObject;
+    }
 
 }

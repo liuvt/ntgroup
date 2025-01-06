@@ -122,4 +122,43 @@ public class SheetTimepieceService : ISheetTimepieceService
         return FormatCurrency.formatCurrency(totalWallet.ToString());
     }
 
+
+    // Kiên Giang
+    public async Task<List<BillTimepiece>> GetsKG(string numberCar)
+    {
+        var tps = new List<BillTimepiece>();
+        var range = $"{sheetDATALE}!A2:H";
+        var request = sheetsService.Spreadsheets.Values.Get(configuration["GoogleSheetService:SpreadsSheetID"], range);
+        var response = await request.ExecuteAsync();
+        var values = response.Values;
+        if (values != null && values.Count > 0)
+        {
+            foreach (var item in values)
+            {
+                tps.Add(new BillTimepiece
+                {
+                    NumberCar = item[0].ToString() ?? string.Empty,
+                    StartTime = item[1].ToString() ?? string.Empty,
+                    EndTime = item[2].ToString() ?? string.Empty,
+                    Distance = item[3].ToString() ?? string.Empty,
+                    Amount = FormatCurrency.formatCurrency(item[4].ToString()),
+                    PickUp = item[5].ToString() ?? string.Empty,
+                    DropOut = item[6].ToString() ?? string.Empty,
+                    Note = (item.Count < 8) ? string.Empty : item[7].ToString()
+                });
+            }
+        }
+        else
+        {
+            Console.WriteLine("No data found.");
+        }
+        
+        var timepieceByNumberCar = tps.Select(e=> e).Where(e => e.NumberCar == numberCar.ToUpper()).ToList();
+        if(timepieceByNumberCar.Count <= 0)
+        {
+            timepieceByNumberCar.Add(new BillTimepiece());
+        }
+
+        return timepieceByNumberCar;
+    }
 }

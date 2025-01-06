@@ -7,4 +7,6 @@ public interface ISheetTimepieceService
 {
     Task<List<BillTimepiece>> Gets(string numberCar);
     Task<string> TotalWalletGSMByNumberCar(string numberCar);
+    Task<List<BillTimepiece>> GetsKG(string numberCar);
+
 } 

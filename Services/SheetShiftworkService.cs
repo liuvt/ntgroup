@@ -36,7 +36,7 @@ public class SheetShiftworkService : ISheetShiftworkService
         });
     }
 
-    public async Task<BillShiftwork> Gets(string numberCar)
+    public async Task<BillShiftwork> Get(string numberCar)
     {
         var sws = new List<BillShiftwork>();
         var range = $"{sheetDANHSACHLENCA}!A7:G";
@@ -52,6 +52,50 @@ public class SheetShiftworkService : ISheetShiftworkService
                     break;
                 }
                 var url = @$"https://img.vietqr.io/image/970448-0869120210-print.png?amount={item[6].ToString()}&addInfo={item[4].ToString()}&accountName=TRUONG%20TRUNG%20TIEP";
+                sws.Add(new BillShiftwork
+                {
+                    NumberCar = item[0].ToString() ?? string.Empty,
+                    NumberDriver = item[1].ToString() ?? string.Empty,
+                    RevenueTotal = FormatCurrency.formatCurrency(item[2].ToString()),
+                    RevenueByDate = FormatCurrency.formatCurrency(item[3].ToString()),
+                    QRContext = item[4].ToString() ?? string.Empty,
+                    QRUrl = url,
+                    TotalPrice = FormatCurrency.formatCurrency(item[6].ToString())
+                });
+            }
+        }
+        else
+        {
+            Console.WriteLine("No data found.");
+        }
+
+        var shiftworkByNumberCar = sws.Select(e=> e).Where(e => e.NumberCar == numberCar.ToUpper()).FirstOrDefault();
+        if(shiftworkByNumberCar == null)
+        {
+            shiftworkByNumberCar = new BillShiftwork();
+        }
+
+        return shiftworkByNumberCar;
+    }
+
+    // Kiên Giang
+    public async Task<BillShiftwork> GetKG(string numberCar)
+    {
+        var sws = new List<BillShiftwork>();
+        var range = $"{sheetDANHSACHLENCA}!A7:G";
+        var request = sheetsService.Spreadsheets.Values.Get(configuration["GoogleSheetService:SpreadsSheetIDKG"], range);
+        var response = await request.ExecuteAsync();
+        var values = response.Values;
+        if (values != null && values.Count > 0)
+        {
+            foreach (var item in values)
+            {
+                if(item[0].ToString() == string.Empty)
+                {
+                    break;
+                }
+                
+                var url = @$"https://img.vietqr.io/image/970418-8821577275-print.png?amount={item[6].ToString()}&addInfo={item[4].ToString()}&accountName=PHAN%20THI%20HUYNH%20NHUNG";
                 sws.Add(new BillShiftwork
                 {
                     NumberCar = item[0].ToString() ?? string.Empty,

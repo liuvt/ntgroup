@@ -35,12 +35,15 @@ public class CheckOutBase : ComponentBase
     {
         try
         {
-            servicedataShiftwork = await sheetShiftworkService.Gets(numberCar);
+            servicedataShiftwork = await sheetShiftworkService.Get(numberCar);// QR Bạc Liêu
             servicedataContracts = await sheetContractService.Gets(numberCar);
             servicedataTimepieces = await sheetTimepieceService.Gets(numberCar);
 
+            servicedataShiftwork = await sheetShiftworkService.GetKG(numberCar); // QR Kiên Giang
+            servicedataContracts.AddRange(await sheetContractService.GetsKG(numberCar));
+            servicedataTimepieces.AddRange(await sheetTimepieceService.GetsKG(numberCar));
+
             totalWallet = await sheetTimepieceService.TotalWalletGSMByNumberCar(numberCar);
-            
             totalPriceContract = SumTotalListString.SumTotalPrices(servicedataContracts.Cast<object>().ToList(), "TotalPrice");
             totalPriceTimepiece = SumTotalListString.SumTotalPrices(servicedataTimepieces.Cast<object>().ToList(), "Amount");
 

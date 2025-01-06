@@ -5,5 +5,6 @@ namespace ntgroup.Services.Interfaces;
 
 public interface ISheetShiftworkService
 {
-    Task<BillShiftwork> Gets(string numberCar);
+    Task<BillShiftwork> Get(string numberCar);
+    Task<BillShiftwork> GetKG(string numberCar);
 } 
