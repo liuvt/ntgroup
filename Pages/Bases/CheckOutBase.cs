@@ -35,19 +35,24 @@ public class CheckOutBase : ComponentBase
     {
         try
         {
-            servicedataShiftwork = await sheetShiftworkService.Get(numberCar);// QR Bạc Liêu
             servicedataContracts = await sheetContractService.Gets(numberCar);
             servicedataTimepieces = await sheetTimepieceService.Gets(numberCar);
-
-            servicedataShiftwork = await sheetShiftworkService.GetKG(numberCar); // QR Kiên Giang
-            servicedataContracts.AddRange(await sheetContractService.GetsKG(numberCar));
-            servicedataTimepieces.AddRange(await sheetTimepieceService.GetsKG(numberCar));
+            if(numberCar.ToUpper().Contains("BL"))
+            {
+                servicedataShiftwork = await sheetShiftworkService.Get(numberCar);// QR Bạc Liêu 
+            }
+            else if(numberCar.ToUpper().Contains("RG"))
+            {
+                servicedataShiftwork = await sheetShiftworkService.GetKG(numberCar); // QR Kiên Giang
+            }else
+            {
+                servicedataShiftwork = null;
+            }
 
             totalWallet = await sheetTimepieceService.TotalWalletGSMByNumberCar(numberCar);
-            totalPriceContract = SumTotalListString.SumTotalPrices(servicedataContracts.Cast<object>().ToList(), "TotalPrice");
-            totalPriceTimepiece = SumTotalListString.SumTotalPrices(servicedataTimepieces.Cast<object>().ToList(), "Amount");
-
-            totalAmount = FormatCurrency.formatCurrency((decimal.Parse(totalPriceContract) + decimal.Parse(totalPriceTimepiece)).ToString());
+            totalPriceContract = SumString.SumListString(servicedataContracts.Cast<object>().ToList(), "TotalPrice");
+            totalPriceTimepiece = SumString.SumListString(servicedataTimepieces.Cast<object>().ToList(), "Amount");
+            totalAmount = SumString.SumDoubleString(totalPriceContract,totalPriceTimepiece);
         }
         catch (Exception ex)
         {

@@ -66,6 +66,10 @@ public class SheetTimepieceService : ISheetTimepieceService
             Console.WriteLine("No data found.");
         }
         
+        //Add Data Kiên Giang
+        tps.AddRange(await this.GetsKG());
+
+
         var timepieceByNumberCar = tps.Select(e=> e).Where(e => e.NumberCar == numberCar.ToUpper()).ToList();
         if(timepieceByNumberCar.Count <= 0)
         {
@@ -123,12 +127,12 @@ public class SheetTimepieceService : ISheetTimepieceService
     }
 
 
-    // Kiên Giang
-    public async Task<List<BillTimepiece>> GetsKG(string numberCar)
+    // Danh sách Data Kiên Giang
+    public async Task<List<BillTimepiece>> GetsKG()
     {
         var tps = new List<BillTimepiece>();
         var range = $"{sheetDATALE}!A2:H";
-        var request = sheetsService.Spreadsheets.Values.Get(configuration["GoogleSheetService:SpreadsSheetID"], range);
+        var request = sheetsService.Spreadsheets.Values.Get(configuration["GoogleSheetService:SpreadsSheetIDKG"], range);
         var response = await request.ExecuteAsync();
         var values = response.Values;
         if (values != null && values.Count > 0)
@@ -152,13 +156,6 @@ public class SheetTimepieceService : ISheetTimepieceService
         {
             Console.WriteLine("No data found.");
         }
-        
-        var timepieceByNumberCar = tps.Select(e=> e).Where(e => e.NumberCar == numberCar.ToUpper()).ToList();
-        if(timepieceByNumberCar.Count <= 0)
-        {
-            timepieceByNumberCar.Add(new BillTimepiece());
-        }
-
-        return timepieceByNumberCar;
+        return tps;
     }
 }

@@ -14,9 +14,16 @@
 </style>
 <PageTitle>Taxi Nam Thắng Manager</PageTitle>
 
+
 <MudMainContent Class="pa-5 augReFont">
     <MudContainer MaxWidth="MaxWidth.ExtraLarge">
-        <MudGrid>
+        @if(sheetShiftworkService == null)
+        {
+            <MudText>XE @numberCar KHÔNG CÓ PHIẾU CHECKER HOẶC KHÔNG THAM GIA KINH DOANH</MudText>
+        }
+        else
+        {
+            <MudGrid>
             <!-- Header Section -->
             <MudItem xs="12">
                 <MudItem>
@@ -205,5 +212,6 @@
                 </MudItem>
             </MudItem>
         </MudGrid>
+        }
     </MudContainer>
 </MudMainContent>

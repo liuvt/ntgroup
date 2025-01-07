@@ -15,14 +15,14 @@ public static class FormatCurrency
 
             if(amount == 0 && input == "0")
             {
-                return string.Format("{0:N0}", amount);
+                return string.Format(string.Format(new CultureInfo("vi-VN"), "{0:N0}", amount),"{0:N0}", amount); // Không có chữ đ phía sau
             }
 
             // Lấy thông tin
             CultureInfo culture = new CultureInfo(cultureCode);
             
             // Định dạng số thành tiền tệ
-            return string.Format(culture, "{0:C}", amount);
+            return string.Format(culture, "{0:C}", amount); // Có chữ đ phía sau
         }
         catch (FormatException)
         {
@@ -39,7 +39,7 @@ public static class FormatCurrency
             decimal amount = decimal.Parse(input);
 
             // Định dạng số thành tiền tệ
-            return string.Format("{0:N0}", amount);
+            return string.Format(string.Format(new CultureInfo("vi-VN"), "{0:N0}", amount),"{0:N0}", amount);  // Không có chữ đ phía sau
         }
         catch (FormatException)
         {

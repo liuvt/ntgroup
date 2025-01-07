@@ -73,6 +73,9 @@ public class SheetContractService : ISheetContractService
             Console.WriteLine("No data found.");
         }
 
+        //Add data Kiên Giang
+        cts.AddRange(await this.GetsKG());
+
         //Lọc lại danh sách theo Mã Xe
         var getObject = cts.Select(e => e).Where(e => e.NumberCar == numberCar.ToUpper()).ToList();
         // Nếu không có trả về 1 giá trị mặc định
@@ -85,8 +88,14 @@ public class SheetContractService : ISheetContractService
         return getObject;
     }
 
-    // Kiên Giang
-    public async Task<List<BillContract>> GetsKG(string numberCar)
+
+
+    
+
+
+
+    // Data Kiên Giang
+    public async Task<List<BillContract>> GetsKG()
     {
         var cts = new List<BillContract>();
         var range = $"{sheetDATAHOPDONG}!B2:I";
@@ -120,17 +129,8 @@ public class SheetContractService : ISheetContractService
         {
             Console.WriteLine("No data found.");
         }
-
-        //Lọc lại danh sách theo Mã Xe
-        var getObject = cts.Select(e => e).Where(e => e.NumberCar == numberCar.ToUpper()).ToList();
-        // Nếu không có trả về 1 giá trị mặc định
-        if (getObject.Count <= 0)
-        {
-            getObject.Add(new BillContract());
-        }
-
         // Trả về danh sách hợp đồng
-        return getObject;
+        return cts;
     }
 
 }
