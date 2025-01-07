@@ -23,6 +23,6 @@ public class Banking
     public string bank_Type { get; set; } = string.Empty;
     public string bank_AccountName { get; set; } = string.Empty;
     public string bank_Url { get; set; } = string.Empty;
-
+    public string bank_Static { get; set; } = string.Empty; // Kiểm tra trạng thái tài khoản ngân hàng
     public List<Area>? listAreas { get; set; }
 }

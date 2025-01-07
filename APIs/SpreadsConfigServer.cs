@@ -41,6 +41,56 @@ public class SpreadsConfigServer : ISpreadsConfigServer
             ApplicationName = configuration["GoogleSheetConfig:ApplicationName"],
         });
     }
-    
 
+    // Đỗ toàn bộ dữ liệu Sheet về để xữ lý
+    private async Task<IList<IList<object>>> APIGetValues(SheetsService service, string spreadsheetId, string range)
+    {
+        var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
+        var response = await request.ExecuteAsync();
+        return response.Values;
+    }
+
+    // Lấy thông tin sheet Bankings     
+    public async Task<List<Banking>> GetsBankAll ()
+    {
+        var listBanking = new List<Banking>();
+        var range = $"{sheetBankings}!A2:F";
+        var values = await this.APIGetValues(sheetsService, configuration["GoogleSheetConfig:SpreadsSheetIDKG"], range);
+        if (values != null && values.Count > 0)
+        {
+            foreach (var item in values)
+            {
+                listBanking.Add(new Banking
+                {
+                    bank_Id = item[0].ToString()?? string.Empty,
+                    bank_Name = item[1].ToString()?? string.Empty,
+                    bank_Number = item[2].ToString()?? string.Empty,
+                    bank_Type = item[3].ToString()?? string.Empty,
+                    bank_AccountName = item[4].ToString()?? string.Empty,
+                    bank_Url = item[5].ToString()?? string.Empty,
+                    bank_Static = item[6].ToString()?? string.Empty
+                });
+            }
+        }
+        else
+        {
+            throw new Exception("Không có dữ liệu Bankings sheet.");
+        }
+        return listBanking.ToList();
+    }
+
+    public async Task<Banking> GetBankById (string bank_Id)
+    {
+        var listBankings = await this.GetsBankAll ();
+        var byId = listBankings.Select(a => a).Where(a => a.bank_Id == bank_Id).FirstOrDefault();
+
+        if(byId == null)
+        {
+            throw new Exception($"ID ngân hàng ({bank_Id}) không tồn tại!");
+        }
+
+        return byId;
+    }
+
+    
 }
