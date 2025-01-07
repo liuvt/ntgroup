@@ -53,30 +53,41 @@ public class SpreadsConfigServer : ISpreadsConfigServer
     // Lấy thông tin sheet Bankings     
     public async Task<List<Banking>> GetsBankAll ()
     {
-        var listBanking = new List<Banking>();
-        var range = $"{sheetBankings}!A2:F";
-        var values = await this.APIGetValues(sheetsService, configuration["GoogleSheetConfig:SpreadsSheetIDKG"], range);
-        if (values != null && values.Count > 0)
+        try
         {
-            foreach (var item in values)
+            var listBanking = new List<Banking>();
+            var range = $"{sheetBankings}!A2:G";
+            var values = await this.APIGetValues(sheetsService, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
+            if (values != null && values.Count > 0)
             {
-                listBanking.Add(new Banking
+                foreach (var item in values)
                 {
-                    bank_Id = item[0].ToString()?? string.Empty,
-                    bank_Name = item[1].ToString()?? string.Empty,
-                    bank_Number = item[2].ToString()?? string.Empty,
-                    bank_Type = item[3].ToString()?? string.Empty,
-                    bank_AccountName = item[4].ToString()?? string.Empty,
-                    bank_Url = item[5].ToString()?? string.Empty,
-                    bank_Static = item[6].ToString()?? string.Empty
-                });
+                    Console.WriteLine("bank_Id: "+ item[0].ToString() + "| bank_Name: "+ item[1].ToString());
+                    listBanking.Add(new Banking
+                    {
+                        bank_Id = item[0].ToString()?? string.Empty,
+                        bank_Name = item[1].ToString()?? string.Empty,
+                        bank_Number = item[2].ToString()?? string.Empty,
+                        bank_Type = item[3].ToString()?? string.Empty,
+                        bank_AccountName = item[4].ToString()?? string.Empty,
+                        bank_Url = item[5].ToString()?? string.Empty,
+                        bank_Static = item[6].ToString()?? string.Empty
+                    });
+                }
             }
+            else
+            {
+                throw new Exception("Không có dữ liệu Bankings sheet.");
+            }
+            
+            return listBanking;
         }
-        else
+        catch (Exception ex)
         {
-            throw new Exception("Không có dữ liệu Bankings sheet.");
+            
+            throw new Exception($"Không có dữ liệu Bankings sheet: {ex.Message}");
         }
-        return listBanking.ToList();
+        
     }
 
     public async Task<Banking> GetBankById (string bank_Id)
@@ -92,5 +103,5 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         return byId;
     }
 
-    
+
 }

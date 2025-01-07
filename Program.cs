@@ -124,6 +124,7 @@ builder.Services.AddAuthentication(authenticationOptions => {
 
 // API: Register APIs
 builder.Services.AddScoped<IAuthServer, AuthServer>();
+builder.Services.AddScoped<ISpreadsConfigServer, SpreadsConfigServer>();
 
 // UI: Register Services
 builder.Services.AddScoped<ISheetContractService, SheetContractService>();
