@@ -256,7 +256,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
             // Lấy toàn bộ danh sách
             var listAreas = await this.GetsAreaAll();
             
-            // Tìm đối tượng cập nhật
+            // Tìm vị trí đối tượng cập nhật
             var byId = listAreas.FindIndex(a => a.area_Id == model.area_Id.ToUpper());
             if (byId == -1)
             {
@@ -298,7 +298,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         }
     }
 
-    // Cập nhật
+    // Xóa
     public async Task<bool> DeleteArea(string area_Id)
     {
         try
@@ -306,7 +306,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
             // Lấy toàn bộ danh sách
             var listAreas = await this.GetsAreaAll();
             
-            // Tìm đối tượng cập nhật
+            // Tìm vị trí đối tượng xóa
             var byId = listAreas.FindIndex(a => a.area_Id == area_Id.ToUpper());
             if (byId == -1)
             {
@@ -325,7 +325,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         catch (Exception ex)
         {
 
-            throw new Exception($"Không thể cập nhật Area. {ex.Message}");
+            throw new Exception($"Lỗi Area. {ex.Message}");
         }
     }
 
