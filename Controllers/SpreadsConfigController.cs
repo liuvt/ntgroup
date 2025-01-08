@@ -115,5 +115,23 @@ public class SpreadsConfigController : ControllerBase
         }
     }
 
+    [HttpPut("Areas/")]
+    public async Task<ActionResult<string>> UpdateArea(AreaCreateDTO model)
+    {
+        try
+        {
+            return Ok(
+                await this.context.UpdateArea(model) == true ? 
+                "Cập nhật thành công" : 
+                "Lỗi không thể cập nhật"
+            );
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                                                                "Error: " + ex.Message);
+        }
+    }
+
     #endregion   
 }

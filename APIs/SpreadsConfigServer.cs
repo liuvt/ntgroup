@@ -86,7 +86,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         catch (Exception ex)
         {
 
-            throw new Exception($"Không có dữ liệu Bankings sheet: {ex.Message}");
+            throw new Exception($"Không có dữ liệu Bankings sheet, {ex.Message}");
         }
 
     }
@@ -146,7 +146,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         catch (Exception ex)
         {
 
-            throw new Exception($"Không thể tạo mới Bank: {ex.Message}");
+            throw new Exception($"Không thể tạo mới Bank, {ex.Message}");
         }
     }
     #endregion
@@ -175,7 +175,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
             }
             else
             {
-                throw new Exception("Không có dữ liệu Bankings sheet.");
+                throw new Exception("Không có dữ liệu");
             }
 
             return listAreas;
@@ -183,7 +183,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         catch (Exception ex)
         {
 
-            throw new Exception($"Không có dữ liệu Bankings sheet: {ex.Message}");
+            throw new Exception($"Không có dữ liệu, {ex.Message}");
         }
 
     }
@@ -207,12 +207,16 @@ public class SpreadsConfigServer : ISpreadsConfigServer
     {
         try
         {
-
             // Kiểm tra tồn tại
             var listAreas = await this.GetsAreaAll();
-            if (listAreas.Any(a => a.area_Id == model.area_Id))
+            if (listAreas.Any(a => a.area_Id == model.area_Id.ToUpper()))
             {
-                throw new Exception($"Số tài khoản này đã tồn tại");
+                throw new Exception($"Khu vực này đã tồn tại không thể tạo thêm");
+            }
+
+            if (listAreas.Any(a => a.bank_Id == model.bank_Id))
+            {
+                throw new Exception($"Số tài khoản ngân hàng này đang trùng với khu vực khác");
             }
 
             var range = $"{sheetArea}!A2:D"; // Không chỉ định dòng
@@ -221,7 +225,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
             // Convert model to object
             var objectList = new List<object>()
             {
-                model.area_Id,
+                model.area_Id.ToUpper(),
                 model.area_Name,
                 model.area_SpreadId,
                 model.bank_Id
@@ -240,7 +244,58 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         catch (Exception ex)
         {
 
-            throw new Exception($"Không thể tạo mới Area: {ex.Message}");
+            throw new Exception($"Không thể tạo mới Area, {ex.Message}");
+        }
+    }
+
+    // Cập nhật
+    public async Task<bool> UpdateArea(AreaCreateDTO model)
+    {
+        try
+        {
+            // Lấy toàn bộ danh sách
+            var listAreas = await this.GetsAreaAll();
+            
+            // Tìm đối tượng cập nhật
+            var byId = listAreas.FindIndex(a => a.area_Id == model.area_Id.ToUpper());
+            if (byId == -1)
+            {
+                throw new Exception($"Khu vực này không tồn tại không thể cập nhật");
+            }
+
+            if (listAreas.Any(a => a.bank_Id == model.bank_Id))
+            {
+                throw new Exception($"Số tài khoản ngân hàng này đang trùng với khu vực khác");
+            }
+
+            Console.WriteLine("Vị trí: " + byId);
+            var range = $"{sheetArea}!A{byId+2}:D"; // Không chỉ định dòng
+            
+            var valueRange = new ValueRange();
+
+            // Convert model to object
+            var objectList = new List<object>()
+            {
+                model.area_Id.ToUpper(), // Không được cập nhật
+                model.area_Name,
+                model.area_SpreadId,
+                model.bank_Id 
+            };
+
+            // Gán giá trị vào trong valueRange
+            valueRange.Values = new List<IList<object>> { objectList };
+
+            var appendRequest = sheetsService.Spreadsheets.Values.Update(valueRange, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
+            //Type input
+            appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
+            var result = await appendRequest.ExecuteAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+
+            throw new Exception($"Không thể cập nhật Area, {ex.Message}");
         }
     }
 
