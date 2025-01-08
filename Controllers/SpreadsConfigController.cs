@@ -47,4 +47,22 @@ public class SpreadsConfigController : ControllerBase
                                                                 "Error: " + ex.Message);
         }
     }
+
+    [HttpPost("Bankings/")]
+    public async Task<ActionResult<string>> CreateBank(BankingCreateDTO model)
+    {
+        try
+        {
+            return Ok(
+                await this.context.CreateBank(model) == true ? 
+                "Tạo thành công tài khoản ngân hàng" : 
+                "Lỗi không thể tạo tài khoản ngân hàng"
+            );
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                                                                "Error: " + ex.Message);
+        }
+    }
 }

@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Google.Apis.Sheets.v4.Data;
+using DocumentFormat.OpenXml.Office2010.PowerPoint;
 
 namespace ntgroup.APIs;
 
@@ -50,7 +52,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         return response.Values;
     }
 
-    // Lấy thông tin sheet Bankings     
+    // Lấy toàn thông tin sheet Bankings     
     public async Task<List<Banking>> GetsBankAll ()
     {
         try
@@ -79,7 +81,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
             {
                 throw new Exception("Không có dữ liệu Bankings sheet.");
             }
-            
+
             return listBanking;
         }
         catch (Exception ex)
@@ -90,6 +92,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         
     }
 
+    // Lấy thông tin Bank qua ID bank
     public async Task<Banking> GetBankById (string bank_Id)
     {
         var listBankings = await this.GetsBankAll ();
@@ -103,5 +106,83 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         return byId;
     }
 
+    // Tạo dữ liệu
+    public async Task<bool> CreateBank(BankingCreateDTO model)
+    {
+        try
+        {
+
+            // Kiểm tra tồn tại trùng số tài khoản và mã ngân hàng
+            var listBankings = await this.GetsBankAll ();
+            if(listBankings.Any(a => a.bank_Id == model.bank_Id && a.bank_Number == model.bank_Number))
+            {
+                throw new Exception($"Số tài khoản này đã tồn tại");
+            }
+
+
+            var range = $"{sheetBankings}!A:G"; // Không chỉ định dòng
+            var valueRange = new ValueRange();
+
+            // Convert model to object
+            var objectList = new List<object>()
+            {
+                model.bank_Id, 
+                model.bank_Name,	
+                model.bank_Number, 
+                "print.png", 
+                model.bank_AccountName, 
+                model.bank_Url, 
+                model.bank_Static
+            };
+            // Gán giá trị vào trong valueRange
+            valueRange.Values = new List<IList<object>> { objectList };
+
+            var appendRequest = sheetsService.Spreadsheets.Values.Append(valueRange, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
+            //Type input
+            appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+            var result = await appendRequest.ExecuteAsync();
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            
+            throw new Exception($"Không thể tạo mới Bank: {ex.Message}");
+        }
+    }
+
+    // Cập nhật
+    public async Task UpdateBank(BankingCreateDTO model)
+    {
+        try
+        {
+            var range = $"{sheetBankings}!A:G"; // Không chỉ định dòng
+            var valueRange = new ValueRange();
+
+            // Convert model to object
+            var objectList = new List<object>()
+            {
+                model.bank_Id, 
+                model.bank_Name,	
+                model.bank_Number, 
+                "print.png", 
+                model.bank_AccountName, 
+                model.bank_Url, 
+                model.bank_Static
+            };
+            // Gán giá trị vào trong valueRange
+            valueRange.Values = new List<IList<object>> { objectList };
+
+            var appendRequest = sheetsService.Spreadsheets.Values.Append(valueRange, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
+            //Type input
+            appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+            var result = await appendRequest.ExecuteAsync();
+        }
+        catch (Exception ex)
+        {
+            
+            throw new Exception($"Không thể tạo mới Bank: {ex.Message}");
+        }
+    }
 
 }
