@@ -86,7 +86,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         catch (Exception ex)
         {
 
-            throw new Exception($"Không có dữ liệu Bankings sheet, {ex.Message}");
+            throw new Exception($"Lỗi dữ liệu. {ex.Message}");
         }
 
     }
@@ -146,7 +146,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         catch (Exception ex)
         {
 
-            throw new Exception($"Không thể tạo mới Bank, {ex.Message}");
+            throw new Exception($"Không thể tạo mới Bank. {ex.Message}");
         }
     }
     #endregion
@@ -175,7 +175,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
             }
             else
             {
-                throw new Exception("Không có dữ liệu");
+                throw new Exception("Không có dữ liệu Area sheet");
             }
 
             return listAreas;
@@ -183,7 +183,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         catch (Exception ex)
         {
 
-            throw new Exception($"Không có dữ liệu, {ex.Message}");
+            throw new Exception($"Lỗi dữ liệu. {ex.Message}");
         }
 
     }
@@ -244,7 +244,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         catch (Exception ex)
         {
 
-            throw new Exception($"Không thể tạo mới Area, {ex.Message}");
+            throw new Exception($"Không thể tạo mới Area. {ex.Message}");
         }
     }
 
@@ -268,7 +268,6 @@ public class SpreadsConfigServer : ISpreadsConfigServer
                 throw new Exception($"Số tài khoản ngân hàng này đang trùng với khu vực khác");
             }
 
-            Console.WriteLine("Vị trí: " + byId);
             var range = $"{sheetArea}!A{byId+2}:D"; // Không chỉ định dòng
             
             var valueRange = new ValueRange();
@@ -285,17 +284,48 @@ public class SpreadsConfigServer : ISpreadsConfigServer
             // Gán giá trị vào trong valueRange
             valueRange.Values = new List<IList<object>> { objectList };
 
-            var appendRequest = sheetsService.Spreadsheets.Values.Update(valueRange, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
+            var updateRequest = sheetsService.Spreadsheets.Values.Update(valueRange, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
             //Type input
-            appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-            var result = await appendRequest.ExecuteAsync();
+            updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
+            var result = await updateRequest.ExecuteAsync();
 
             return true;
         }
         catch (Exception ex)
         {
 
-            throw new Exception($"Không thể cập nhật Area, {ex.Message}");
+            throw new Exception($"Không thể cập nhật Area. {ex.Message}");
+        }
+    }
+
+    // Cập nhật
+    public async Task<bool> DeleteArea(string area_Id)
+    {
+        try
+        {
+            // Lấy toàn bộ danh sách
+            var listAreas = await this.GetsAreaAll();
+            
+            // Tìm đối tượng cập nhật
+            var byId = listAreas.FindIndex(a => a.area_Id == area_Id.ToUpper());
+            if (byId == -1)
+            {
+                throw new Exception($"Khu vực này không tồn tại không thể xóa");
+            }
+
+            var range = $"{sheetArea}!A{byId+2}:D"; // Không chỉ định dòng
+            
+            var valueRange = new ClearValuesRequest();
+
+            var clearRequest = sheetsService.Spreadsheets.Values.Clear(valueRange, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
+            var result = await clearRequest.ExecuteAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+
+            throw new Exception($"Không thể cập nhật Area. {ex.Message}");
         }
     }
 

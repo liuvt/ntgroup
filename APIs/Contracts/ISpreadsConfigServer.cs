@@ -14,4 +14,5 @@ public interface ISpreadsConfigServer
     Task<Area> GetAreaById (string area_Id);
     Task<bool> CreateArea(AreaCreateDTO model);
     Task<bool> UpdateArea(AreaCreateDTO model);
+    Task<bool> DeleteArea(string area_Id);
 } 
