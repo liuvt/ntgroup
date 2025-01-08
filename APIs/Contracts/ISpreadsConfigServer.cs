@@ -7,7 +7,10 @@ namespace ntgroup.APIs.Contracts;
 public interface ISpreadsConfigServer
 {
     Task<List<Banking>> GetsBankAll ();
-
     Task<Banking> GetBankById (string bank_Id);
     Task<bool> CreateBank(BankingCreateDTO model);
+
+    Task<List<Area>> GetsAreaAll ();
+    Task<Area> GetAreaById (string area_Id);
+    Task<bool> CreateArea(AreaCreateDTO model);
 } 

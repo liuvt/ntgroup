@@ -7,7 +7,7 @@ public class SpreadsConfigDTO
 
 }
 
-public class AreaDTO
+public class AreaCreateDTO
 {
     public string area_Id { get; set; } = string.Empty;
     public string area_Name { get; set; } = string.Empty;

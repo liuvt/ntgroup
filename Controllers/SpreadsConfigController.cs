@@ -19,7 +19,7 @@ public class SpreadsConfigController : ControllerBase
         this.context = _context;
         this.logger = _logger;
     }
-
+#region Bankings
     [HttpGet("Bankings")]
     public async Task<ActionResult<Banking>> GetsBankAll()
     {
@@ -65,4 +65,55 @@ public class SpreadsConfigController : ControllerBase
                                                                 "Error: " + ex.Message);
         }
     }
+    #endregion  
+
+#region Areas
+
+    [HttpGet("Areas")]
+    public async Task<ActionResult<Area>> GetsAreaAll()
+    {
+        try
+        {
+            return Ok(await this.context.GetsAreaAll());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                                                                "Error: " + ex.Message);
+        }
+    }
+
+    [HttpGet("Areas/{area_Id}")]
+    public async Task<ActionResult<Area>> GetAreaById(string area_Id)
+    {
+        try
+        {
+            return Ok(await this.context.GetAreaById(area_Id));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                                                                "Error: " + ex.Message);
+        }
+    }
+
+    [HttpPost("Areas/")]
+    public async Task<ActionResult<string>> CreateArea(AreaCreateDTO model)
+    {
+        try
+        {
+            return Ok(
+                await this.context.CreateArea(model) == true ? 
+                "Tạo mới thành công" : 
+                "Lỗi không thể tạo mới"
+            );
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                                                                "Error: " + ex.Message);
+        }
+    }
+
+    #endregion   
 }
