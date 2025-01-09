@@ -42,6 +42,18 @@ public class SpreadsConfigServer : ISpreadsConfigServer
             HttpClientInitializer = credential,
             ApplicationName = configuration["GoogleSheetConfig:ApplicationName"],
         });
+
+        /* Lấy ID của SheetID
+        // Gửi yêu cầu để lấy thông tin metadata của spreadsheet
+        var request = sheetsService.Spreadsheets.Get(configuration["GoogleSheetConfig:SpreadsSheetID"]);
+        var response = request.Execute();
+
+        // Duyệt qua các sheet và in thông tin
+        foreach (var sheet in response.Sheets)
+        {
+            Console.WriteLine($"Sheet Name: {sheet.Properties.Title}, Sheet ID: {sheet.Properties.SheetId}");
+        }
+       */
     }
 
     // Đỗ toàn bộ dữ liệu Sheet về để xữ lý
@@ -239,6 +251,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
             appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
             var result = await appendRequest.ExecuteAsync();
 
+            Console.WriteLine("Create successfully.");
             return true;
         }
         catch (Exception ex)
@@ -289,6 +302,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
             updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
             var result = await updateRequest.ExecuteAsync();
 
+            Console.WriteLine("Update successfully.");
             return true;
         }
         catch (Exception ex)
@@ -298,7 +312,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         }
     }
 
-    // Xóa
+    // Xóa dữ liệu
     public async Task<bool> DeleteArea(string area_Id)
     {
         try
@@ -313,12 +327,62 @@ public class SpreadsConfigServer : ISpreadsConfigServer
                 throw new Exception($"Khu vực này không tồn tại không thể xóa");
             }
 
-            var range = $"{sheetArea}!A{byId+2}:D"; // Không chỉ định dòng
+            var range = $"{sheetArea}!A{byId+2}:D{byId+2}"; // Không chỉ định dòng
             
             var valueRange = new ClearValuesRequest();
 
             var clearRequest = sheetsService.Spreadsheets.Values.Clear(valueRange, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
             var result = await clearRequest.ExecuteAsync();
+
+            Console.WriteLine("Clear successfully.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+
+            throw new Exception($"Lỗi Area. {ex.Message}");
+        }
+    }
+
+    // Xóa dòng dữ liệu
+    public async Task<bool> DeleteRowArea(string area_Id)
+    {
+        try
+        {
+            // Lấy toàn bộ danh sách
+            var listAreas = await this.GetsAreaAll();
+            
+            // Tìm vị trí đối tượng xóa
+            var byId = listAreas.FindIndex(a => a.area_Id == area_Id.ToUpper());
+            if (byId == -1)
+            {
+                throw new Exception($"Khu vực này không tồn tại không thể xóa");
+            }
+            
+            // Create the delete row request
+            var deleteRequest = new Request()
+            {
+                DeleteDimension = new DeleteDimensionRequest()
+                {
+                    Range = new DimensionRange()
+                    {
+                        SheetId = 1799356618,
+                        Dimension = "ROWS",
+                        StartIndex = byId+1, // Row to delete (inclusive)
+                        EndIndex = byId+1 +1, // One past the row to delete (exclusive)
+                    }
+                }
+            };
+                    // Create and execute the batch update request
+            var batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
+            {
+                Requests = new[] { deleteRequest }
+            };
+
+            var request = sheetsService.Spreadsheets.BatchUpdate(batchUpdateRequest, configuration["GoogleSheetConfig:SpreadsSheetID"]);
+            var response = request.Execute();
+
+            Console.WriteLine("Row deleted successfully.");
 
             return true;
         }

@@ -151,5 +151,23 @@ public class SpreadsConfigController : ControllerBase
         }
     }
 
+    [HttpDelete("Areas/DeleteRow/{area_Id}")]
+    public async Task<ActionResult<string>> DeleteRowArea(string area_Id)
+    {
+        try
+        {
+            return Ok(
+                await this.context.DeleteRowArea(area_Id) == true ? 
+                "Xóa thành công" : 
+                "Lỗi không thể xóa"
+            );
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                                                                "Error: " + ex.Message);
+        }
+    }
+
     #endregion   
 }
