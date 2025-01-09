@@ -65,6 +65,60 @@ public class SpreadsConfigController : ControllerBase
                                                                 "Error: " + ex.Message);
         }
     }
+
+    [HttpPut("Bankings/")]
+    public async Task<ActionResult<string>> UpdateBank(BankingCreateDTO model)
+    {
+        try
+        {
+            return Ok(
+                await this.context.UpdateBank(model) == true ? 
+                "Cập nhật thành công" : 
+                "Lỗi không thể cập nhật"
+            );
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                                                                "Error: " + ex.Message);
+        }
+    }
+
+    [HttpDelete("Bankings/{bank_Id}")]
+    public async Task<ActionResult<string>> DeleteBank(string bank_Id)
+    {
+        try
+        {
+            return Ok(
+                await this.context.DeleteBank(bank_Id) == true ? 
+                "Xóa thành công" : 
+                "Lỗi không thể xóa"
+            );
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                                                                "Error: " + ex.Message);
+        }
+    }
+
+    [HttpDelete("Bankings/DeleteRow/{bank_Id}")]
+    public async Task<ActionResult<string>> DeleteRowBank(string bank_Id)
+    {
+        try
+        {
+            return Ok(
+                await this.context.DeleteRowBank(bank_Id) == true ? 
+                "Xóa thành công" : 
+                "Lỗi không thể xóa"
+            );
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                                                                "Error: " + ex.Message);
+        }
+    }
     #endregion  
 
 #region Areas
