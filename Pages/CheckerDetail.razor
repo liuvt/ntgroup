@@ -1,0 +1,210 @@
+@page "/checkers/{area_Id}/{numberCar}"
+@inherits CheckerDetailBase
+<style>
+    .custom-header {
+        background-color: #16a31b;
+        /* Replace with your desired color */
+    }
+
+    .mud-table-root .mud-table-head .mud-table-cell {
+        color: white;
+        /* Optional: Set text color for better contrast */
+
+    }
+</style>
+<PageTitle>Taxi Nam Thắng Manager</PageTitle>
+
+
+<MudMainContent Class="pa-5 augReFont">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+            <MudGrid>
+            <!-- Header Section -->
+            <MudItem xs="12">
+                <MudItem>
+                    <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">
+                        <MudIcon Class="mr-1" Icon="@Icons.Material.Filled.PlaylistAddCheckCircle" Color="Color.Primary" Size="Size.Large"/>PHIẾU CHECKER
+                    </MudText>
+                    <MudText Class="d-flex justify-center" Typo="Typo.subtitle2"><i>Ngày:
+                            @DateTime.Now.AddDays(-1).ToString("dd/MM/yyyy")</i></MudText>
+                </MudItem>
+                <MudItem>
+                    <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6"> 
+                        <MudIcon Class="mt-1 mr-2" Icon="@Icons.Material.Filled.DirectionsCar" Color="Color.Tertiary" Size="Size.Small"/>
+                            Mã: @(servicedataShiftwork.NumberCar)</MudText>
+                    <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">
+                        <MudIcon Class="mt-1 mr-2" Icon="@Icons.Material.Filled.PermIdentity" Color="Color.Tertiary" Size="Size.Small"/>
+                            Tên: @(servicedataShiftwork.NumberDriver.ToUpper())</MudText>
+                    <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">
+                        <MudIcon Class="mt-1 mr-2" Icon="@Icons.Material.Filled.PriceCheck" Color="Color.Tertiary" Size="Size.Small"/>
+                            Doanh thu tổng: @(servicedataShiftwork.RevenueTotal)</MudText>
+                </MudItem>
+            </MudItem>
+            @if (servicedataContracts.Count > 0 && servicedataContracts[0].NumberCar != string.Empty)
+            {
+                <MudItem xs="12">
+                    <!-- Bảng hiển thị trên màn hình nhỏ và lớn hơn : Class="d-none d-sm-block"-->
+                    <MudTable Class="d-none d-sm-block" HeaderClass="custom-header" T="BillContract"
+                        Items="@servicedataContracts" Dense="true" Bordered="true" Striped="true" Hover="true">
+                        <ToolBarContent>
+                            <MudText Color="Color.Primary" Typo="Typo.h6">HỢP ĐỒNG</MudText>
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh>STT</MudTh>
+                            <MudTh>Hợp đồng</MudTh>
+                            <MudTh>Giá hợp đồng</MudTh>
+                            <MudTh>KM/Giờ quy định</MudTh>
+                            <MudTh>KM/Giờ vượt</MudTh>
+                            <MudTh>Truy thu</MudTh>
+                            <MudTh>Khuyến mãi</MudTh>
+                            <MudTh>Thực thu</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@(servicedataContracts.IndexOf(@context) + 1)</MudTd>
+                            <MudTd>@context.Key</MudTd>
+                            <MudTd>@context.Price</MudTd>
+                            <MudTd>@context.DefaultDistance</MudTd>
+                            <MudTd>@context.OverDistance</MudTd>
+                            <MudTd>@context.Surcharge</MudTd>
+                            <MudTd>@context.Promotion</MudTd>
+                            <MudTd>@context.TotalPrice</MudTd>
+                        </RowTemplate>
+                        <PagerContent>
+                            <MudText Class="d-flex justify-center" Color="Color.Error" Typo="Typo.h5">TỔNG TIỀN HỢP ĐỒNG: @totalPriceContract</MudText>
+                            <MudSpacer />
+                            <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100 }" />
+                        </PagerContent>
+                    </MudTable>
+
+                    @foreach (var (item, index) in servicedataContracts.Select((value, i) => (value, i)))
+                    {
+                        <!-- Bảng hiển thị trên moblie:d-block, ẩn từ màn hình tablet: d-sm-none-->
+                        <MudCard Class="d-block d-sm-none mt-2">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Color="Color.Primary" Typo="Typo.h6">HỢP ĐỒNG</MudText>
+                                </CardHeaderContent>
+                                <CardHeaderActions>
+                                    <MudIcon Icon="icons:description" Color="Color.Default" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.MenuBook" Color="Color.Success" />
+                                </CardHeaderActions>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudText><b>HĐ</b>: @(index + 1)</MudText>
+                                <MudText><b>Di chuyển</b>: @item.Key</MudText>
+                                <MudText><b>Giá HĐ</b>: @item.Price</MudText>
+                                <MudText><b>KM/Giờ quy định</b>: @item.DefaultDistance</MudText>
+                                <MudDivider />
+                                <MudText Class="d-flex justify-center">SAI LỆCH HỢP ĐỒNG</MudText>
+                                <MudText Color="Color.Primary">KM/Giờ vượt: @item.OverDistance</MudText>
+                                <MudText Color="Color.Primary">Truy thu: @item.Surcharge</MudText>
+                                <MudText Color="Color.Primary">Khuyến mãi (-): @item.Promotion</MudText>
+                            </MudCardContent>
+                            <MudCardActions>
+                                <MudSpacer />
+                                <MudButton Variant="Variant.Text" Color="Color.Error">THỰC THU: @item.TotalPrice</MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    }
+                </MudItem>
+            }
+
+            <!-- Kiểm trả cuốc lẻ lớn hơn 1 phần tử và phần tử đó ở trạng thái rổng-->
+            @if (servicedataTimepieces.Count > 0 && servicedataTimepieces[0].NumberCar != string.Empty)
+            {
+                <MudItem xs="12">
+                    <!-- Bảng hiển thị trên màn hình nhỏ và lớn hơn : Class="d-none d-sm-block"-->
+                    <MudTable Class="d-none d-sm-block" HeaderClass="custom-header" T="BillTimepiece" 
+                        Items="@servicedataTimepieces" Dense="true" Bordered="true" Striped="true" Hover="true">
+                        <ToolBarContent>
+                            <MudText Color="Color.Primary" Typo="Typo.h6">CUỐC XE KHÁCH LẺ</MudText>
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh>STT</MudTh>
+                            <MudTh>Giờ đón</MudTh>
+                            <MudTh>Giờ trả</MudTh>
+                            <MudTh>Số KM</MudTh>
+                            <MudTh>Số tiền</MudTh>
+                            <MudTh>Điểm đón</MudTh>
+                            <MudTh>Điểm trả</MudTh>
+                            <MudTh>Ghi chú</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@(servicedataTimepieces.IndexOf(@context) + 1)</MudTd>
+                            <MudTd>@context.StartTime</MudTd>
+                            <MudTd>@context.EndTime</MudTd>
+                            <MudTd>@context.Distance</MudTd>
+                            <MudTd>@context.Amount</MudTd>
+                            <MudTd>@context.PickUp</MudTd>
+                            <MudTd>@context.DropOut</MudTd>
+                            <MudTd>@context.Note</MudTd>
+                        </RowTemplate>
+                        <PagerContent>
+                            <MudText Class="d-flex justify-center" Color="Color.Error" Typo="Typo.h5">TỔNG TIỀN CUỐC LẺ: @totalPriceTimepiece</MudText>
+                            <MudSpacer />
+                            <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100 }" />
+                        </PagerContent>
+                    </MudTable>
+
+                    @foreach (var (item, index) in servicedataTimepieces.Select((value, i) => (value, i)))
+                    {
+                        <!-- Bảng hiển thị trên moblie:d-block, ẩn từ màn hình tablet: d-sm-none-->
+                        <MudCard Class="d-block d-sm-none mt-2">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Color="Color.Primary" Typo="Typo.h6">CUỐC LẺ</MudText>
+                                </CardHeaderContent>
+                                <CardHeaderActions>
+                                    @if(item.Note.Contains("Trừ 10% GSM"))
+                                    {
+                                        <MudImage Width="70" Src="../imgs/logo-gsm.png"></MudImage>
+                                    }
+                                    else
+                                    {
+                                        <MudImage Width="70" Src="../imgs/logo-namthang.png"></MudImage>
+                                    }
+                                </CardHeaderActions>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudText><b>Cuốc xe số</b>: @(index + 1)</MudText>
+                                <MudText><b>Khách lên xe</b>: @item.StartTime</MudText>
+                                <MudText><b>Khách xuống xe</b>: @item.StartTime</MudText>
+                                <MudText><b>Khoản cách</b>: @item.Distance km</MudText>
+                                <MudText><b>Điểm đi</b>: <i><u>@item.PickUp</u></i></MudText>
+                                <MudText><b>Điểm đến</b>: <i><u>@item.DropOut</u></i></MudText>
+                                <MudText Color="Color.Primary">Ghi chú: @(item.Note != string.Empty ? item.Note : "Thu theo đồng hồ")</MudText>
+                            </MudCardContent>
+                            <MudCardActions>
+                                <MudSpacer />
+                                <MudButton Variant="Variant.Text" Color="Color.Error">THỰC THU: @item.Amount</MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    }
+                </MudItem>
+            }
+            <!-- Footer Section -->
+            <MudItem xs="12">
+                <MudDivider />
+                <MudItem Class="d-flex flex-wrap align-center justify-center gap-3 mt-4">
+                    <MudItem>
+                        <MudText Typo="Typo.subtitle1">Tổng tiền (hợp đồng + cuốc lẻ): @totalAmount</MudText>
+                        <MudText Typo="Typo.subtitle1">Khuyến mãi GSM (-): 0</MudText>
+                        <MudText Typo="Typo.subtitle1">Ví GSM (-): @(totalWallet)</MudText>
+                        <MudItem Class="d-flex mt-2">
+                            <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.Payment" Color="Color.Error" Size="Size.Medium"/>
+                                <MudText Color="Color.Error" Typo="Typo.h5" >
+                                    TỔNG NỢP: @(servicedataShiftwork.TotalPrice)</MudText>
+                        </MudItem>
+                        <MudDivider />
+                        <MudText Color="Color.Secondary" Typo="Typo.subtitle1" Class="mt-2">
+                            <MudIcon Class="mr-1" Icon="@Icons.Material.Filled.PriceCheck" Color="Color.Secondary" Size="Size.Small"/>
+                                Doanh thu ngày: @(servicedataShiftwork.RevenueByDate)</MudText>
+                    </MudItem>
+                    <MudSpacer />
+                    <MudItem>
+                        <MudImage Width="300" Height="388" Src="@(servicedataShiftwork.QRUrl)" />
+                    </MudItem>
+                </MudItem>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+</MudMainContent>

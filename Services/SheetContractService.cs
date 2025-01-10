@@ -37,7 +37,6 @@ public class SheetContractService : ISheetContractService
 
     }
     
-    // Bạc Liêu
     public async Task<List<BillContract>> Gets(string numberCar)
     {
         var cts = new List<BillContract>();
@@ -87,12 +86,6 @@ public class SheetContractService : ISheetContractService
         // Trả về danh sách hợp đồng
         return getObject;
     }
-
-
-
-    
-
-
 
     // Data Kiên Giang
     public async Task<List<BillContract>> GetsKG()

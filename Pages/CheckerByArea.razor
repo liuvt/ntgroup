@@ -1,0 +1,37 @@
+@page "/checkers"
+@inherits CheckerByAreaBase
+
+<PageTitle>Taxi Nam Thắng Manager</PageTitle>
+
+<MudMainContent Class="pa-5 augReFont">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+        <MudGrid>
+            <!-- Header Section -->
+            <MudItem xs="12">
+                <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">TRA CỨU PHIẾU CHECKER
+                </MudText>
+                <MudItem Class="d-flex flex-wrap align-center justify-center gap-3 mt-4">
+                    <MudItem xs="12" sm="2" Class="d-flex">
+                        <MudSelect Immediate="true" T="Area" Label="Khu vực" Placeholder="Chọn khu vực" @bind-Value="area"
+                            AdornmentIcon="@Icons.Material.Filled.LocationOn"
+                            AdornmentColor="Color.Error" Adornment="Adornment.Start">
+                            @foreach (var item in areas) {
+                                <MudSelectItem Value="@item">@item.area_Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="9">
+                        <MudTextField @bind-Value="_searchString" Placeholder="Nhập mã hiệu xe"
+                        Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Success"
+                        IconSize="Size.Medium" Class="mt-4"></MudTextField>
+                    </MudItem>
+                    <MudItem xs="12" sm="9">
+                        <MudButton OnClick="@(() => navigationTo())">
+                            Tra cứu
+                        </MudButton>
+                    </MudItem>
+                </MudItem>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+</MudMainContent> 
