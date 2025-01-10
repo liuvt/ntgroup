@@ -14,97 +14,52 @@ namespace ntgroup.Pages.Bases;
 public class IndexBase : ComponentBase
 {
 
-    protected string searchString1 = "";
-    protected DemoDataSkySoftMain selectedItem1 = null;
-
-    protected List<DemoDataSkySoftMain> dataSkySoft = new List<DemoDataSkySoftMain>();
-
-    //For Google Sheet
-    private readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
-    private readonly string ApplicationName = "ntgroupforchecker";
-    private readonly string Spreadsheets = "1WW022rLTmzI499efQxYXEl4oHBMRLBNuGpdtSOyP8vk";
-    private readonly string sheetSKYSOFT = "SKYSOFT";
-    private readonly string sheetDANHSACHLENCA = "DANH SÁCH LÊN CA";
-    //Tổng tiền skysoft
-    protected string totalSkySoft;
-
-    protected SheetsService sheetsService;
-
+    [Inject]
+    protected ISheetRegisterContractService sheetRegisterContractService { get; set; }
+    protected IEnumerable<DefaultContract> defaultContracts = new List<DefaultContract>();
+    protected string _searchString {get; set;} = string.Empty;
     protected override async Task OnInitializedAsync()
     {
-        
-        //File xác thực google thông qua file ntgroup-48f65f9c97d0.json
-        GoogleCredential credential;
-        using (var stream = new FileStream("ntgroup-48f65f9c97d0.json", FileMode.Open, FileAccess.Read))
-        {
-            credential = GoogleCredential.FromStream(stream)
-                .CreateScoped(Scopes);
-        }
-
-        sheetsService = new SheetsService(new BaseClientService.Initializer()
-        {
-            HttpClientInitializer = credential,
-            ApplicationName = ApplicationName,
-        });
-
-        dataSkySoft = await ReadDataSKYSOFT();
+        defaultContracts = await sheetRegisterContractService.Gets();
     }
 
-    //Tìm kiếm
-    protected bool FilterFunc1(DemoDataSkySoftMain element) => FilterFunc(element, searchString1);
-    protected bool FilterFunc(DemoDataSkySoftMain element, string searchString)
+    private async Task<List<DefaultContract>> ReSearchContains(string _searchString)
     {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (element.NumberCar.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (element.NumberPlate.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (element.Static.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        return false;
-    }
-    
-    //Dữ liệu từ Google Sheet SKYSOFT
-    protected async Task<List<DemoDataSkySoftMain>> ReadDataSKYSOFT()
-    {
-        var datas = new List<DemoDataSkySoftMain>();
-        var range = $"{sheetSKYSOFT}!A3:J";
-        var request = sheetsService.Spreadsheets.Values.Get(Spreadsheets, range);
-        var response = await request.ExecuteAsync();
-        var values = response.Values;
-        if (values != null && values.Count > 0)
+        var results = new List<DefaultContract>();
+        var Items = await sheetRegisterContractService.Gets();
+        foreach(var item in Items)
         {
-            foreach (var item in values)
+            if(
+                item.dc_DistanceOne.Contains(_searchString, StringComparison.OrdinalIgnoreCase)||
+                item.dc_DistanceTwo.Contains(_searchString, StringComparison.OrdinalIgnoreCase)
+            )
             {
-                datas.Add(new DemoDataSkySoftMain
-                {
-                    NumberCar = item[0].ToString() ?? string.Empty,
-                    NumberPlate = item[1].ToString() ?? string.Empty,
-                    Price = FormatCurrency.formatCurrency(item[6].ToString()),
-                    Static = ((item[9].ToString() == "#REF!")) ? "Không kinh doanh" : item[9].ToString(),
-                });
+                Console.WriteLine("Text: "+item.dc_DecriptionFor4);
+                results.Add(item);
             }
+        }
 
-            // Lấy tổng giá trị của tất cả các cuốc lẻ
-            var totalList = datas.Sum(e => {
-                    // Chuyển đổi Price từ string sang decimal
-                    if (decimal.TryParse(e.Price, out decimal price))
-                    {
-                        return price;
-                    }
-                    else
-                    {
-                        return 0; // Nếu không chuyển đổi được, coi như giá là 0
-                    }
-                });
-            totalSkySoft = FormatCurrency.formatCurrency(totalList.ToString());
-        }
-        else
-        {
-            Console.WriteLine("No data found.");
-        }
-        return datas;
+        return (string.IsNullOrWhiteSpace(_searchString)) ? Items : results;
     }
 
+    protected async Task HandleTextChanged(string _searchString)
+    {
+        var results = new List<DefaultContract>();
+        var Items = await sheetRegisterContractService.Gets();
+        foreach(var item in Items)
+        {
+            if(
+                item.dc_DistanceOne.Contains(_searchString, StringComparison.OrdinalIgnoreCase)||
+                item.dc_DistanceTwo.Contains(_searchString, StringComparison.OrdinalIgnoreCase)
+            )
+            {
+                Console.WriteLine("Text: "+item.dc_DecriptionFor4);
+                results.Add(item);
+            }
+        }
+
+        defaultContracts = (string.IsNullOrWhiteSpace(_searchString)) ? Items : results;
+    }
+
+    
 }

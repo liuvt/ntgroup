@@ -8,43 +8,42 @@
         <MudGrid>
             <!-- Header Section -->
             <MudItem xs="12">
-                <MudItem>
-                    <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">DANH SÁCH XE CHẠY NGÀY</MudText>
-                    <MudText Class="d-flex justify-center" Typo="Typo.subtitle2"><i>Ngày:
-                        @DateTime.Now.AddDays(-1).ToShortDateString()</i></MudText>
+                <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">DANH SÁCH XE CHẠY NGÀY
+                </MudText>
+                <MudTextField @bind-Value="_searchString" Placeholder="Nhập khoản cách tìm kiếm" Adornment="Adornment.Start" Immediate="true"
+                AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" TextChanged="@(HandleTextChanged)"></MudTextField>
+            </MudItem>
+            
+            @foreach(var item in defaultContracts){
+                <MudItem xs="12" md="3">
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Color="Color.Primary" Typo="Typo.h6">HỢP ĐỒNG</MudText>
+                            </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudIconButton Icon="@Icons.Material.Filled.MenuBook" Color="Color.Success" />
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudText><b>Hợp đồng 1 chiều</b></MudText>
+                            <MudText><b>Khoảng cách</b>: @item.dc_DistanceOne</MudText>
+                            <MudText><b>Giá</b>: @item.dc_PriceOneFor5</MudText>
+                            <MudText><b>Thời gian chờ</b>: @item.dc_Time</MudText>
+                            <MudDivider Class="mt-3" />
+                            <MudText><b>Hợp đồng 2 chiều</b></MudText>
+                            <MudText><b>Khoảng cách</b>: @item.dc_DistanceTwo</MudText>
+                            <MudText><b>Giá</b>: @item.dc_PriceOneFor7</MudText>
+                            <MudText><b>Thời gian chờ</b>: @item.dc_TimeFor7</MudText>
+                            <MudDivider Class="mt-3" />
+                            <MudText>@item.dc_DecriptionFor4</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudSpacer />
+                        </MudCardActions>
+                    </MudCard>
                 </MudItem>
-            </MudItem>
-
-            <!-- Bill Items Section -->
-            <MudItem xs="12">
-                <MudTable T="DemoDataSkySoftMain" Items="@dataSkySoft" Dense="true" Bordered="false" Striped="true"  Filter="new Func<DemoDataSkySoftMain,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
-                    <ToolBarContent>
-                        <MudText Typo="Typo.h6" Color="Color.Primary">SKY SOFT</MudText>
-                        <MudSpacer />
-                        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                    </ToolBarContent>
-                    <HeaderContent>
-                        <MudTh>STT</MudTh>
-                        <MudTh>Số xe</MudTh>
-                        <MudTh>Biễn số</MudTh>
-                        <MudTh>Tổng tiền</MudTh> 
-                        <MudTh>Trạng thái</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd>@(dataSkySoft.IndexOf(@context) + 1)</MudTd>   
-                        <MudTd>
-                            <MudLink Href="@($"/checker/{context.NumberCar}")">@context.NumberCar</MudLink>
-                        </MudTd>
-                        <MudTd>@context.NumberPlate</MudTd>
-                        <MudTd>@context.Price</MudTd>
-                        <MudTd>@context.Static</MudTd>
-                    </RowTemplate>
-                        <PagerContent>
-                            <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.subtitle1">TỔNG TIỀN: @totalSkySoft</MudText>
-                            <MudTablePager />
-                        </PagerContent>
-                </MudTable>
-            </MudItem>
+            } 
         </MudGrid>
     </MudContainer>
 </MudMainContent>

@@ -130,6 +130,7 @@ builder.Services.AddScoped<ISpreadsConfigServer, SpreadsConfigServer>();
 builder.Services.AddScoped<ISheetContractService, SheetContractService>();
 builder.Services.AddScoped<ISheetTimepieceService, SheetTimepieceService>();
 builder.Services.AddScoped<ISheetShiftworkService, SheetShiftworkService>();
+builder.Services.AddScoped<ISheetRegisterContractService, SheetRegisterContractService>();
 
 var app = builder.Build();
 
