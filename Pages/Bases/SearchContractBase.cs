@@ -12,7 +12,7 @@ using ntgroup.Extensions;
 using DocumentFormat.OpenXml.Office.CustomUI;
 
 namespace ntgroup.Pages.Bases;
-public class IndexBase : ComponentBase
+public class SearchContractBase : ComponentBase
 {
 
     [Inject]

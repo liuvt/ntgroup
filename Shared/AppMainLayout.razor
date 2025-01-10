@@ -6,7 +6,7 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar>
+    <MudAppBar Style="background-color: #aeebb0;">
         <!--For mobile and tablet Navigation Button show-->
         <MudIconButton Class="d-xs-flex d-md-none" Icon="@Icons.Material.Filled.Menu" 
             Edge="Edge.Start" OnClick="@((e) => DrawerToggle(Anchor.Start))" />
@@ -25,8 +25,11 @@
                 mr-15: item thục vào 15
             -->
         <MudItem Class="d-none d-sm-flex gap-4 justify-end mr-5">
-            <MudLink Href="/" Underline="Underline.None" Color="Color.Info">
+            <MudLink Href="/" Underline="Underline.None" Color="Color.Primary">
                 <MudText Typo="Typo.body1">Trang chủ</MudText>
+            </MudLink>
+            <MudLink Href="/contracts" Underline="Underline.None" Color="Color.Primary">
+                <MudText Typo="Typo.body1">Tra cứu hợp đồng</MudText>
             </MudLink>
         </MudItem>
     </MudAppBar>
