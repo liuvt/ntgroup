@@ -7,7 +7,7 @@ using ntgroup.Services.Interfaces;
 
 namespace ntgroup.Services;
 
-public class SpreadsMainService : ISpreadsMainService
+public class SpreadsCheckerService : ISpreadsCheckerService
 {
     private readonly IConfiguration configuration;
     //For Google Sheet
@@ -16,9 +16,10 @@ public class SpreadsMainService : ISpreadsMainService
     private readonly string sheetDATALE = "DATALE";
     private readonly string sheetWALLETGSM = "VỀ VÍ GSM";
     private readonly string sheetDANHSACHLENCA = "DANHSACHLENCA";
+    private readonly string sheetSKYSOFT = "SKYSOFT";
     private SheetsService sheetsService;
 
-    public SpreadsMainService(IConfiguration _configuration)
+    public SpreadsCheckerService(IConfiguration _configuration)
     {
        this.configuration = _configuration;
 
@@ -48,9 +49,9 @@ public class SpreadsMainService : ISpreadsMainService
 
     #region Contracts
     // Lấy toàn bộ dữ liêu về: Theo khu vực
-    private async Task<List<BillContract>> GetContracts(string area_SpreadId)
+    private async Task<List<ReportContract>> GetContracts(string area_SpreadId)
     {
-        var cts = new List<BillContract>();
+        var cts = new List<ReportContract>();
         var range = $"{sheetDATAHOPDONG}!B2:I";
         var values = await this.APIGetValues(sheetsService, area_SpreadId, range);
         if (values != null && values.Count > 0)
@@ -63,7 +64,7 @@ public class SpreadsMainService : ISpreadsMainService
                     break;
                 }
 
-                cts.Add(new BillContract
+                cts.Add(new ReportContract
                 {
                     NumberCar = item[0].ToString() ?? string.Empty,
                     Key = item[1].ToString() ?? string.Empty,
@@ -85,7 +86,7 @@ public class SpreadsMainService : ISpreadsMainService
     }
 
     // Lấy danh sách theo mã nhân viên và khu vực
-    public async Task<List<BillContract>> GetContractsByNumberCar(string numberCar, string area_SpreadId)
+    public async Task<List<ReportContract>> GetContractsByNumberCar(string numberCar, string area_SpreadId)
     {
         var cts = await this.GetContracts(area_SpreadId);
         //Lọc lại danh sách theo Mã Xe
@@ -93,7 +94,7 @@ public class SpreadsMainService : ISpreadsMainService
         // Nếu không có trả về 1 giá trị mặc định
         if (byNumberCar.Count <= 0)
         {
-            byNumberCar.Add(new BillContract());
+            byNumberCar.Add(new ReportContract());
         }
 
         // Trả về danh sách hợp đồng
@@ -103,16 +104,16 @@ public class SpreadsMainService : ISpreadsMainService
 
     #region Timepieces
     // Lấy toàn bộ dữ liêu về: Theo khu vực
-    private async Task<List<BillTimepiece>> GetTimepieces(string area_SpreadId)
+    private async Task<List<ReportTimepiece>> GetTimepieces(string area_SpreadId)
     {
-        var tps = new List<BillTimepiece>();
+        var tps = new List<ReportTimepiece>();
         var range = $"{sheetDATALE}!A2:H";
         var values = await this.APIGetValues(sheetsService, area_SpreadId, range);
         if (values != null && values.Count > 0)
         {
             foreach (var item in values)
             {
-                tps.Add(new BillTimepiece
+                tps.Add(new ReportTimepiece
                 {
                     NumberCar = item[0].ToString() ?? string.Empty,
                     StartTime = item[1].ToString() ?? string.Empty,
@@ -134,14 +135,14 @@ public class SpreadsMainService : ISpreadsMainService
     }
 
     // Lấy danh sách theo mã nhân viên và khu vực
-    public async Task<List<BillTimepiece>> GetTimepiecesByNumberCar(string numberCar, string area_SpreadId)
+    public async Task<List<ReportTimepiece>> GetTimepiecesByNumberCar(string numberCar, string area_SpreadId)
     {
         var tps = await this.GetTimepieces(area_SpreadId);
 
         var byNumberCar = tps.Select(e=> e).Where(e => e.NumberCar == numberCar.ToUpper()).ToList();
         if(byNumberCar.Count <= 0)
         {
-            byNumberCar.Add(new BillTimepiece());
+            byNumberCar.Add(new ReportTimepiece());
         }
 
         return byNumberCar;
@@ -150,7 +151,7 @@ public class SpreadsMainService : ISpreadsMainService
     // Trừ ví
     public async Task<string> TotalWalletGSMByNumberCar(string numberCar, string area_SpreadId)
     {
-        var walletGSM = new List<BillWalletGSM>();
+        var walletGSM = new List<ReportWalletGSM>();
         var range = $"{sheetWALLETGSM}!A2:B";
         var values = await this.APIGetValues(sheetsService, area_SpreadId, range);
         if (values != null && values.Count > 0)
@@ -162,7 +163,7 @@ public class SpreadsMainService : ISpreadsMainService
                     break;
                 }
 
-                walletGSM.Add(new BillWalletGSM
+                walletGSM.Add(new ReportWalletGSM
                 {
                     NumberCar = item[0].ToString() ?? string.Empty,
                     Price = FormatCurrency.formatCurrency(item[1].ToString()),
@@ -194,10 +195,12 @@ public class SpreadsMainService : ISpreadsMainService
     }
     #endregion
 
-    #region Shiftworks
-    private async Task<List<BillShiftwork>> GetShiftworks(string area_SpreadId, Banking banking)
+    #region ReportTotal
+    // Thông tin chuyển khoản phiếu checker, và thông tin tổng tiền, tổng doanh thu của tài xế
+    private async Task<List<ReportTotal>> GetShiftworks(string area_SpreadId, Banking banking)
     {
-        var sws = new List<BillShiftwork>();
+        
+        var sws = new List<ReportTotal>();
         var range = $"{sheetDANHSACHLENCA}!A7:G";
         var values = await this.APIGetValues(sheetsService, area_SpreadId, range);
         if (values != null && values.Count > 0)
@@ -209,7 +212,7 @@ public class SpreadsMainService : ISpreadsMainService
                     break;
                 }
                 var url = @$"{banking.bank_Url}{banking.bank_Id}-{banking.bank_Number}-{banking.bank_Type}?amount={item[6].ToString()}&addInfo={item[4].ToString()}&accountName={banking.bank_AccountName}";
-                sws.Add(new BillShiftwork
+                sws.Add(new ReportTotal
                 {
                     NumberCar = item[0].ToString() ?? string.Empty,
                     NumberDriver = item[1].ToString() ?? string.Empty,
@@ -229,17 +232,71 @@ public class SpreadsMainService : ISpreadsMainService
         return sws;
     }
 
-    public async Task<BillShiftwork> GetShiftworksByNumberCar(string numberCar, string area_SpreadId, Banking banking)
+    // Thông tin chuyển khoản phiếu checker, và thông tin tổng tiền, tổng doanh thu của tài xế
+    public async Task<ReportTotal> GetShiftworksByNumberCar(string numberCar, string area_SpreadId, Banking banking)
     {
         var sws = await this.GetShiftworks(area_SpreadId, banking);
 
         var shiftworkByNumberCar = sws.Select(e=> e).Where(e => e.NumberCar == numberCar.ToUpper()).FirstOrDefault();
         if(shiftworkByNumberCar == null)
         {
-            shiftworkByNumberCar = new BillShiftwork();
+            shiftworkByNumberCar = new ReportTotal();
         }
 
         return shiftworkByNumberCar;
     }
+
+
+    // Tìm tài xế có lên ca
+    public async Task<List<ReportTotal>> GetShiftworks(string area_SpreadId)
+    {
+        var sws = new List<ReportTotal>();
+        var range = $"{sheetDANHSACHLENCA}!A7:G";
+        var values = await this.APIGetValues(sheetsService, area_SpreadId, range);
+        if (values != null && values.Count > 0)
+        {
+            foreach (var item in values)
+            {
+                if(item[0].ToString() == string.Empty)
+                {
+                    break;
+                }
+                sws.Add(new ReportTotal
+                {
+                    NumberCar = item[0].ToString() ?? string.Empty,
+                    NumberDriver = item[1].ToString() ?? string.Empty,
+                    RevenueTotal = FormatCurrency.formatCurrency(item[2].ToString()),
+                    RevenueByDate = FormatCurrency.formatCurrency(item[3].ToString()),
+                    QRContext = item[4].ToString() ?? string.Empty,
+                    QRUrl = item[4].ToString() ?? string.Empty,
+                    TotalPrice = FormatCurrency.formatCurrency(item[6].ToString())
+                });
+            }
+        }
+        else
+        {
+            Console.WriteLine("No data found.");
+        }
+
+        return sws;
+    }
+
+    // Thông tin tài xế lên ca
+    public async Task<ReportTotal> GetShiftworksByNumberCar(string numberCar, string area_SpreadId)
+    {
+        var sws = await this.GetShiftworks(area_SpreadId);
+
+        var shiftworkByNumberCar = sws.Select(e=> e).Where(e => e.NumberCar == numberCar.ToUpper()).FirstOrDefault();
+        if(shiftworkByNumberCar == null)
+        {
+            throw new Exception ("Không tìm thấy");
+        }
+
+        return shiftworkByNumberCar;
+    }
+    #endregion
+
+    #region Skysoft
+   
     #endregion
 }

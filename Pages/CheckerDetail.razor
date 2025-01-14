@@ -30,21 +30,21 @@
                 <MudItem>
                     <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6"> 
                         <MudIcon Class="mt-1 mr-2" Icon="@Icons.Material.Filled.DirectionsCar" Color="Color.Tertiary" Size="Size.Small"/>
-                            Mã: @(servicedataShiftwork.NumberCar)</MudText>
+                            Mã: @(shiftworks.NumberCar)</MudText>
                     <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">
                         <MudIcon Class="mt-1 mr-2" Icon="@Icons.Material.Filled.PermIdentity" Color="Color.Tertiary" Size="Size.Small"/>
-                            Tên: @(servicedataShiftwork.NumberDriver.ToUpper())</MudText>
+                            Tên: @(shiftworks.NumberDriver.ToUpper())</MudText>
                     <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">
                         <MudIcon Class="mt-1 mr-2" Icon="@Icons.Material.Filled.PriceCheck" Color="Color.Tertiary" Size="Size.Small"/>
-                            Doanh thu tổng: @(servicedataShiftwork.RevenueTotal)</MudText>
+                            Doanh thu tổng: @(shiftworks.RevenueTotal)</MudText>
                 </MudItem>
             </MudItem>
-            @if (servicedataContracts.Count > 0 && servicedataContracts[0].NumberCar != string.Empty)
+            @if (contracts.Count > 0 && contracts[0].NumberCar != string.Empty)
             {
                 <MudItem xs="12">
                     <!-- Bảng hiển thị trên màn hình nhỏ và lớn hơn : Class="d-none d-sm-block"-->
-                    <MudTable Class="d-none d-sm-block" HeaderClass="custom-header" T="BillContract"
-                        Items="@servicedataContracts" Dense="true" Bordered="true" Striped="true" Hover="true">
+                    <MudTable Class="d-none d-sm-block" HeaderClass="custom-header" T="ReportContract"
+                        Items="@contracts" Dense="true" Bordered="true" Striped="true" Hover="true">
                         <ToolBarContent>
                             <MudText Color="Color.Primary" Typo="Typo.h6">HỢP ĐỒNG</MudText>
                         </ToolBarContent>
@@ -59,7 +59,7 @@
                             <MudTh>Thực thu</MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd>@(servicedataContracts.IndexOf(@context) + 1)</MudTd>
+                            <MudTd>@(contracts.IndexOf(@context) + 1)</MudTd>
                             <MudTd>@context.Key</MudTd>
                             <MudTd>@context.Price</MudTd>
                             <MudTd>@context.DefaultDistance</MudTd>
@@ -75,7 +75,7 @@
                         </PagerContent>
                     </MudTable>
 
-                    @foreach (var (item, index) in servicedataContracts.Select((value, i) => (value, i)))
+                    @foreach (var (item, index) in contracts.Select((value, i) => (value, i)))
                     {
                         <!-- Bảng hiển thị trên moblie:d-block, ẩn từ màn hình tablet: d-sm-none-->
                         <MudCard Class="d-block d-sm-none mt-2">
@@ -109,12 +109,12 @@
             }
 
             <!-- Kiểm trả cuốc lẻ lớn hơn 1 phần tử và phần tử đó ở trạng thái rổng-->
-            @if (servicedataTimepieces.Count > 0 && servicedataTimepieces[0].NumberCar != string.Empty)
+            @if (timepieces.Count > 0 && timepieces[0].NumberCar != string.Empty)
             {
                 <MudItem xs="12">
                     <!-- Bảng hiển thị trên màn hình nhỏ và lớn hơn : Class="d-none d-sm-block"-->
-                    <MudTable Class="d-none d-sm-block" HeaderClass="custom-header" T="BillTimepiece" 
-                        Items="@servicedataTimepieces" Dense="true" Bordered="true" Striped="true" Hover="true">
+                    <MudTable Class="d-none d-sm-block" HeaderClass="custom-header" T="ReportTimepiece" 
+                        Items="@timepieces" Dense="true" Bordered="true" Striped="true" Hover="true">
                         <ToolBarContent>
                             <MudText Color="Color.Primary" Typo="Typo.h6">CUỐC XE KHÁCH LẺ</MudText>
                         </ToolBarContent>
@@ -129,7 +129,7 @@
                             <MudTh>Ghi chú</MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd>@(servicedataTimepieces.IndexOf(@context) + 1)</MudTd>
+                            <MudTd>@(timepieces.IndexOf(@context) + 1)</MudTd>
                             <MudTd>@context.StartTime</MudTd>
                             <MudTd>@context.EndTime</MudTd>
                             <MudTd>@context.Distance</MudTd>
@@ -145,7 +145,7 @@
                         </PagerContent>
                     </MudTable>
 
-                    @foreach (var (item, index) in servicedataTimepieces.Select((value, i) => (value, i)))
+                    @foreach (var (item, index) in timepieces.Select((value, i) => (value, i)))
                     {
                         <!-- Bảng hiển thị trên moblie:d-block, ẩn từ màn hình tablet: d-sm-none-->
                         <MudCard Class="d-block d-sm-none mt-2">
@@ -192,16 +192,16 @@
                         <MudItem Class="d-flex mt-2">
                             <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.Payment" Color="Color.Error" Size="Size.Medium"/>
                                 <MudText Color="Color.Error" Typo="Typo.h5" >
-                                    TỔNG NỢP: @(servicedataShiftwork.TotalPrice)</MudText>
+                                    TỔNG NỢP: @(shiftworks.TotalPrice)</MudText>
                         </MudItem>
                         <MudDivider />
                         <MudText Color="Color.Secondary" Typo="Typo.subtitle1" Class="mt-2">
                             <MudIcon Class="mr-1" Icon="@Icons.Material.Filled.PriceCheck" Color="Color.Secondary" Size="Size.Small"/>
-                                Doanh thu ngày: @(servicedataShiftwork.RevenueByDate)</MudText>
+                                Doanh thu ngày: @(shiftworks.RevenueByDate)</MudText>
                     </MudItem>
                     <MudSpacer />
                     <MudItem>
-                        <MudImage Width="300" Height="388" Src="@(servicedataShiftwork.QRUrl)" />
+                        <MudImage Width="300" Height="388" Src="@(shiftworks.QRUrl)" />
                     </MudItem>
                 </MudItem>
             </MudItem>

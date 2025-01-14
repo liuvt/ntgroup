@@ -127,12 +127,8 @@ builder.Services.AddScoped<IAuthServer, AuthServer>();
 builder.Services.AddScoped<ISpreadsConfigServer, SpreadsConfigServer>();
 
 // UI: Register Services
-builder.Services.AddScoped<ISheetContractService, SheetContractService>();
-builder.Services.AddScoped<ISheetTimepieceService, SheetTimepieceService>();
-builder.Services.AddScoped<ISheetShiftworkService, SheetShiftworkService>();
-
-builder.Services.AddScoped<ISheetRegisterContractService, SheetRegisterContractService>();
-builder.Services.AddScoped<ISpreadsMainService, SpreadsMainService>();
+builder.Services.AddScoped<ISpreadsRegisterContractService, SpreadsRegisterContractService>();
+builder.Services.AddScoped<ISpreadsCheckerService, SpreadsCheckerService>();
 
 // UI: Register Services to APIs
 builder.Services.AddScoped<ISpreadsConfigService, SpreadsConfigService>();

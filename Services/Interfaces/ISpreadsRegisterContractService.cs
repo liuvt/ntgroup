@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace ntgroup.Services.Interfaces;
 
-public interface ISheetRegisterContractService
+public interface ISpreadsRegisterContractService
 {
     Task<List<DefaultContract>> Gets();
 } 

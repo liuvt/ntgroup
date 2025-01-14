@@ -16,21 +16,23 @@ public class SearchContractBase : ComponentBase
 {
 
     [Inject]
-    protected ISheetRegisterContractService sheetRegisterContractService { get; set; }
+    protected ISpreadsRegisterContractService sheetRegisterContractService { get; set; }
     protected IEnumerable<DefaultContract> defaultContracts = new List<DefaultContract>();
-    protected string _searchString {get; set;} = string.Empty; //TextFields
+    private IEnumerable<DefaultContract> Items = new List<DefaultContract>(); // Lấy dữ liệu về để tìm kiếm cục bộ. Lấy 1 lần đầu tiên khi load dữ liệu
+    protected string _searchString { get; set; } = string.Empty; //TextFields
     protected string stringValue { get; set; } = string.Empty; // TextSelect
     protected string stringResult { get; set; } = string.Empty; // Kết quả trả về khi không tìm thấy đối tượng
     protected override async Task OnInitializedAsync()
     {
+        Items = await sheetRegisterContractService.Gets(); // Load dữ liệu 1 lần 
         defaultContracts = await this.listOptions();
     }
 
+    //Lọc lại dữ liệu
     private async Task<List<DefaultContract>> listOptions()
     {
         var lists = new List<DefaultContract>();
-        var listOptions = await sheetRegisterContractService.Gets();
-        foreach(var item in listOptions)
+        foreach (var item in Items)
         {
 
             if ((Convert.ToInt32(item.dc_DistanceOne) % 10) == 0)
@@ -44,70 +46,67 @@ public class SearchContractBase : ComponentBase
     protected async Task HandleTextChanged(string _searchString)
     {
         var results = new List<DefaultContract>();
-        var Items = await sheetRegisterContractService.Gets();
-        foreach(var item in Items)
+        foreach (var item in Items)
         {
-            if(
-                (item.dc_DistanceOne == _searchString && stringValue == "1") || 
+            if (
+                (item.dc_DistanceOne == _searchString && stringValue == "1") ||
                 (item.dc_DistanceOne == _searchString && string.IsNullOrWhiteSpace(stringValue))
             ) // Tìm kiếm 1 chiều và số km
             {
                 results.Add(item);
             }
 
-            if(item.dc_DistanceTwo == _searchString && stringValue == "2" ) // Tìm kiếm 2 chiều và số km
+            if (item.dc_DistanceTwo == _searchString && stringValue == "2") // Tìm kiếm 2 chiều và số km
             {
                 results.Add(item);
             }
         }
-
-        if(string.IsNullOrWhiteSpace(_searchString) && string.IsNullOrWhiteSpace(stringValue))
-        {
-            defaultContracts = await this.listOptions();
-        }else if(string.IsNullOrWhiteSpace(_searchString) && !string.IsNullOrWhiteSpace(stringValue))
-        {
-            defaultContracts = await this.listOptions();
-        }else if(!string.IsNullOrWhiteSpace(_searchString) && string.IsNullOrWhiteSpace(stringValue))
-        {
-            defaultContracts = results;
-        }else if(!string.IsNullOrWhiteSpace(_searchString) && !string.IsNullOrWhiteSpace(stringValue))
+        if (
+            (!string.IsNullOrWhiteSpace(_searchString) && string.IsNullOrWhiteSpace(stringValue)) ||
+            (!string.IsNullOrWhiteSpace(_searchString) && !string.IsNullOrWhiteSpace(stringValue))
+        )
         {
             defaultContracts = results;
         }
+        else
+        {
+            Thread.Sleep(500);
+            defaultContracts = await this.listOptions();
+        }
+        StateHasChanged();
     }
 
     protected async Task HandleTextSelectChanged(string stringValue)
     {
         var results = new List<DefaultContract>();
-        var Items = await sheetRegisterContractService.Gets();
-        foreach(var item in Items)
+        foreach (var item in Items)
         {
-            if(
-                (item.dc_DistanceOne == _searchString && stringValue == "1") || 
+            if (
+                (item.dc_DistanceOne == _searchString && stringValue == "1") ||
                 (item.dc_DistanceOne == _searchString && string.IsNullOrWhiteSpace(stringValue))
             ) // Tìm kiếm 1 chiều và số km
             {
                 results.Add(item);
             }
 
-            if(item.dc_DistanceTwo == _searchString && stringValue == "2" ) // Tìm kiếm 2 chiều và số km
+            if (item.dc_DistanceTwo == _searchString && stringValue == "2") // Tìm kiếm 2 chiều và số km
             {
                 results.Add(item);
             }
         }
-        
-        if(string.IsNullOrWhiteSpace(_searchString) && string.IsNullOrWhiteSpace(stringValue))
+
+        if (
+            (!string.IsNullOrWhiteSpace(_searchString) && string.IsNullOrWhiteSpace(stringValue)) ||
+            (!string.IsNullOrWhiteSpace(_searchString) && !string.IsNullOrWhiteSpace(stringValue))
+        )
         {
-            defaultContracts = await this.listOptions();
-        }else if(string.IsNullOrWhiteSpace(_searchString) && !string.IsNullOrWhiteSpace(stringValue))
-        {
-            defaultContracts = await this.listOptions();
-        }else if(!string.IsNullOrWhiteSpace(_searchString) && string.IsNullOrWhiteSpace(stringValue))
-        {
-            defaultContracts = results;
-        }else if(!string.IsNullOrWhiteSpace(_searchString) && !string.IsNullOrWhiteSpace(stringValue))
-        {
+            Thread.Sleep(500);
             defaultContracts = results;
         }
+        else
+        {
+            defaultContracts = await this.listOptions();
+        }
+        StateHasChanged();
     }
-}   
+}

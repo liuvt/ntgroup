@@ -17,16 +17,15 @@ public class CheckerDetailBase : ComponentBase
     [Inject]
     protected ISpreadsConfigService spreadsConfigService { get; set; }
     [Inject]
-    protected ISpreadsMainService spreadsMainService { get; set; }
+    protected ISpreadsCheckerService spreadsCheckerService { get; set; }
     protected IEnumerable<Area> areas { get; set; } = new List<Area>();
     protected Area area { get; set; } = new Area();
     protected IEnumerable<Banking> bankings { get; set; } = new List<Banking>();
     protected Banking banking { get; set; } = new Banking();
 
-
-    protected List<BillContract>? servicedataContracts = new List<BillContract>();
-    protected List<BillTimepiece> servicedataTimepieces = new List<BillTimepiece>();
-    protected BillShiftwork servicedataShiftwork = new BillShiftwork();
+    protected List<ReportContract>? contracts = new List<ReportContract>();
+    protected List<ReportTimepiece> timepieces = new List<ReportTimepiece>();
+    protected ReportTotal shiftworks = new ReportTotal();
     public string totalPriceContract;
     public string totalPriceTimepiece;
     public string totalAmount;
@@ -38,21 +37,22 @@ public class CheckerDetailBase : ComponentBase
         {
             areas = await this.listAreas();
             area = areas.Where(e => e.area_Id == area_Id).FirstOrDefault();
-            bankings = await this.listBankings();
-            banking = bankings.Where(e => e.bank_Id == area.bank_Id).FirstOrDefault();
 
-            servicedataContracts = await spreadsMainService.GetContractsByNumberCar(numberCar,area.area_SpreadId);
-            servicedataTimepieces = await spreadsMainService.GetTimepiecesByNumberCar(numberCar,area.area_SpreadId);
-            servicedataShiftwork = await spreadsMainService.GetShiftworksByNumberCar(numberCar,area.area_SpreadId,banking); // QR Kiên Giang
-            if(area_Id.ToUpper() == "BL")
+            bankings = await this.listBankings();
+            banking = bankings.Where(e => e.bank_Id == area.bank_Id).FirstOrDefault()!;
+
+            contracts = await spreadsCheckerService.GetContractsByNumberCar(numberCar.ToUpper(),area.area_SpreadId);
+            timepieces = await spreadsCheckerService.GetTimepiecesByNumberCar(numberCar.ToUpper(),area.area_SpreadId);
+            shiftworks = await spreadsCheckerService.GetShiftworksByNumberCar(numberCar.ToUpper(),area.area_SpreadId,banking); // QR Kiên Giang
+            if(area_Id.ToUpper() == "BL" || area_Id.ToUpper() == "ST")
             {
-                totalWallet = await spreadsMainService.TotalWalletGSMByNumberCar(numberCar,area.area_SpreadId);
+                totalWallet = await spreadsCheckerService.TotalWalletGSMByNumberCar(numberCar.ToUpper(),area.area_SpreadId);
             }else{
                 totalWallet = "0";
             }
             
-            totalPriceContract = SumString.SumListString(servicedataContracts.Cast<object>().ToList(), "TotalPrice");
-            totalPriceTimepiece = SumString.SumListString(servicedataTimepieces.Cast<object>().ToList(), "Amount");
+            totalPriceContract = SumString.SumListString(contracts.Cast<object>().ToList(), "TotalPrice");
+            totalPriceTimepiece = SumString.SumListString(timepieces.Cast<object>().ToList(), "Amount");
             totalAmount = SumString.SumDoubleString(totalPriceContract,totalPriceTimepiece);
         }
         catch (Exception ex)

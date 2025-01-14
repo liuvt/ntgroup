@@ -16,7 +16,7 @@ public class IndexBase : ComponentBase
 {
 
     [Inject]
-    protected ISheetRegisterContractService sheetRegisterContractService { get; set; }
+    protected ISpreadsRegisterContractService sheetRegisterContractService { get; set; }
     protected IEnumerable<DefaultContract> defaultContracts = new List<DefaultContract>();
     protected string _searchString {get; set;} = string.Empty; //TextFields
     protected string stringValue { get; set; } = string.Empty; // TextSelect

@@ -8,53 +8,27 @@
         <MudGrid>
             <!-- Header Section -->
             <MudItem xs="12">
-                <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">TRA CỨU HỢP ĐỒNG
+                <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">TRANG CHỦ
                 </MudText>
-                <MudItem Class="d-flex flex-wrap align-center justify-center gap-3 mt-4">
-                    <MudItem xs="12" sm="2" Class="d-flex">
-                        <MudSelect Immediate="true"  TextChanged="@(HandleTextSelectChanged)"
-                         @bind-Value="stringValue" Placeholder="Chọn loại hợp đồng" AdornmentIcon="@Icons.Material.Filled.MenuBook"
-                         AdornmentColor="Color.Success" Adornment="Adornment.Start">
-                        <MudSelectItem Value="@("1")">1 chiều</MudSelectItem>
-                        <MudSelectItem Value="@("2")">2 chiều</MudSelectItem>
-                    </MudSelect>
-                    </MudItem>
-                    <MudItem xs="12" sm="9">
-                        <MudTextField @bind-Value="_searchString" Placeholder="Nhập khoản cách hợp đồng"
-                        Adornment="Adornment.Start" Immediate="true" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Success"
-                        IconSize="Size.Medium" TextChanged="@(HandleTextChanged)"></MudTextField>
-                    </MudItem>
-                </MudItem>
             </MudItem>
-           
-            @foreach (var item in defaultContracts.Take(8))
+            <MudItem xs="12">
+                <MudLink Href="/checkers" Underline="Underline.None" Color="Color.Primary">
+                <MudText Typo="Typo.body1">Tra cứu phiếu checker</MudText>
+                </MudLink>
+                <MudLink Href="/contracts" Underline="Underline.None" Color="Color.Primary">
+                    <MudText Typo="Typo.body1">Tra cứu hợp đồng</MudText>
+                </MudLink>
+            </MudItem>
+            @foreach (var item in defaultContracts.Take(4))
             {
                 <MudItem xs="12" sm="6" md="3">
                     <MudCard>
-                        <MudCardHeader>
-                            <CardHeaderContent>
-                                <MudText Color="Color.Primary" Typo="Typo.h6">HỢP ĐỒNG</MudText>
-                            </CardHeaderContent>
-                            <CardHeaderActions>
-                                <MudIconButton Icon="@Icons.Material.Filled.MenuBook" Color="Color.Primary" />
-                            </CardHeaderActions>
-                        </MudCardHeader>
                         <MudCardContent>
-                            <MudText Typo="Typo.h5">HỢP ĐỒNG 1 CHIỀU</MudText>
+                            <MudText Typo="Typo.h5" Color="Color.Primary">HỢP ĐỒNG 1 CHIỀU</MudText>
                             <MudText>Khoảng cách: @item.dc_DistanceOne</MudText>
                             <MudText>Giá: @item.dc_PriceOneFor5</MudText>
                             <MudText>Thời gian chờ: @item.dc_Time</MudText>
-                            <MudDivider Class="mt-3" />
-                            <MudText Typo="Typo.h5">HỢP ĐỒNG 2 CHIỀU</MudText>
-                            <MudText>Khoảng cách: @item.dc_DistanceTwo</MudText>
-                            <MudText>Giá: @item.dc_PriceOneFor7</MudText>
-                            <MudText>Thời gian chờ: @item.dc_TimeFor7</MudText>
-                            <MudDivider Class="mt-3" />
-                            <MudText>@item.dc_DecriptionFor4</MudText>
                         </MudCardContent>
-                        <MudCardActions>
-                            <MudSpacer />
-                        </MudCardActions>
                     </MudCard>
                 </MudItem>
             }

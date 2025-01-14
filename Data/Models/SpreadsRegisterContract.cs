@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ntgroup.Data.Models;
 
-public class RegisterContract
+public class SpreadsRegisterContract
 {
 }
 
@@ -24,7 +24,6 @@ public class DefaultContract //Hợp đồng
     public string dc_DecriptionFor7 { get; set; } = string.Empty; // show_7_cho
     public DateTimeOffset? CreatedAt {get; set; }
 }
-
 
 public class DefaultContractNew
 {

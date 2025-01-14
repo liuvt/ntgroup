@@ -10,9 +10,10 @@
             <MudItem xs="12">
                 <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">TRA CỨU PHIẾU CHECKER
                 </MudText>
-                <MudItem Class="d-flex flex-wrap align-center justify-center gap-3 mt-4">
+
+                <MudItem Class="d-flex flex-wrap align-center justify-center gap-2 mt-4">
                     <MudItem xs="12" sm="2" Class="d-flex">
-                        <MudSelect Immediate="true" T="Area" Label="Khu vực" Placeholder="Chọn khu vực" @bind-Value="area"
+                        <MudSelect Immediate="true" Label="Khu vực" Placeholder="Chọn khu vực" @bind-Value="area" TextChanged="@(() => HandleTextSelectChanged(area))"
                             AdornmentIcon="@Icons.Material.Filled.LocationOn"
                             AdornmentColor="Color.Error" Adornment="Adornment.Start">
                             @foreach (var item in areas) {
@@ -20,17 +21,54 @@
                             }
                         </MudSelect>
                     </MudItem>
-                    <MudItem xs="12" sm="9">
-                        <MudTextField @bind-Value="_searchString" Placeholder="Nhập mã hiệu xe"
+                    <MudItem xs="12" sm="8">
+                        <MudTextField @bind-Value="_searchString" Placeholder="Nhập mã hiệu xe" TextChanged="@HandleTextChanged"
                         Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Success"
                         IconSize="Size.Medium" Class="mt-4"></MudTextField>
                     </MudItem>
-                    <MudItem xs="12" sm="9">
-                        <MudButton OnClick="@(() => navigationTo())">
+                    <MudItem xs="12" sm="1" Class="d-flex justify-center mt-5">
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => GetShiftWork())">
                             Tra cứu
                         </MudButton>
                     </MudItem>
                 </MudItem>
+
+                @if(reportTotal != null && reportTotal.NumberCar != string.Empty)
+                {
+                    <MudItem Class="d-flex justify-center mt-3">
+                        <MudCard>
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Color="Color.Primary" Typo="Typo.h6">PHIẾU CHECKER</MudText>
+                                </CardHeaderContent>
+                                <CardHeaderActions>
+                                    <MudIconButton Icon="@Icons.Material.Filled.PlaylistAddCheckCircle" Color="Color.Primary" />
+                                </CardHeaderActions>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                    <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6"> 
+                                        <MudIcon Class="mt-1 mr-2" Icon="@Icons.Material.Filled.DirectionsCar" Color="Color.Tertiary" Size="Size.Small"/>
+                                            Mã: @(reportTotal.NumberCar)</MudText>
+                                    <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">
+                                        <MudIcon Class="mt-1 mr-2" Icon="@Icons.Material.Filled.PermIdentity" Color="Color.Tertiary" Size="Size.Small"/>
+                                            Tên: @(reportTotal.NumberDriver.ToUpper())</MudText>
+                                    <MudText Class="d-flex justify-left" Color="Color.Tertiary" Typo="Typo.h6">
+                                        <MudIcon Class="mt-1 mr-2" Icon="@Icons.Material.Filled.PriceCheck" Color="Color.Tertiary" Size="Size.Small"/>
+                                            Doanh thu ngày: @(reportTotal.RevenueByDate)</MudText>
+                            </MudCardContent>
+                            <MudCardActions>
+                                <MudSpacer />
+                                <MudButton OnClick="@(_ => navigationTo(reportTotal.NumberCar))">XEM</MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                }
+                @if(!string.IsNullOrWhiteSpace(_searchString))
+                {
+                    <MudText Class="mt-4" Color="Color.Tertiary" Typo="Typo.h6"> 
+                                        <MudIcon Class="mr-2" Color="Color.Tertiary" Size="Size.Small"/>
+                                            @(ErrorMessage)</MudText>
+                } 
             </MudItem>
         </MudGrid>
     </MudContainer>

@@ -7,7 +7,7 @@ using ntgroup.Services.Interfaces;
 
 namespace ntgroup.Services;
 
-public class SheetRegisterContractService : ISheetRegisterContractService
+public class SpreadsRegisterContractService : ISpreadsRegisterContractService
 {
     private readonly IConfiguration configuration;
     //For Google Sheet
@@ -16,7 +16,7 @@ public class SheetRegisterContractService : ISheetRegisterContractService
     private readonly string sheetTRA_CUU_GIA_HD = "TRA_CUU_GIA_HD";
     private SheetsService sheetsService;
 
-    public SheetRegisterContractService(IConfiguration _configuration)
+    public SpreadsRegisterContractService(IConfiguration _configuration)
     {
         // Đọc file appsettings.json
         this.configuration = _configuration;
