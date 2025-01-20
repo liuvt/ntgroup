@@ -11,6 +11,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
 using DocumentFormat.OpenXml.Office2010.PowerPoint;
+using ntgroup.Extensions;
 
 namespace ntgroup.APIs;
 
@@ -19,7 +20,8 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
 
     protected readonly IConfiguration configuration;
     private readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
-    private readonly string sheetBankings = "Bankings";
+    private readonly string sheetUsers = "Users";
+    private readonly string sheetDrives = "Drives";
     private readonly string spreadSheetId = "1K8qLOLf4YTEmyw6wLEH-HvTwpPcD0EtIia3o55V7XQs"; //SpreadID of Authentication
     private SheetsService sheetsService;
 
@@ -43,17 +45,6 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
             ApplicationName = configuration["GoogleSheetConfig:ApplicationName"],
         });
 
-        /* Lấy ID của SheetID
-        // Gửi yêu cầu để lấy thông tin metadata của spreadsheet
-        var request = sheetsService.Spreadsheets.Get(configuration["GoogleSheetConfig:SpreadsSheetID"]);
-        var response = request.Execute();
-
-        // Duyệt qua các sheet và in thông tin
-        foreach (var sheet in response.Sheets)
-        {
-            Console.WriteLine($"Sheet Name: {sheet.Properties.Title}, Sheet ID: {sheet.Properties.SheetId}");
-        }
-       */
     }
 
     // Đỗ toàn bộ dữ liệu Sheet về để xữ lý
@@ -63,37 +54,38 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         var response = await request.ExecuteAsync();
         return response.Values;
     }
-    #region Bankings
-    // Lấy toàn thông tin sheet Bankings     
-    public async Task<List<Banking>> GetsBankAll()
+    #region Users
+    // Lấy toàn thông tin sheets   
+    public async Task<List<Driver>> Gets()
     {
         try
         {
-            var listBanking = new List<Banking>();
-            var range = $"{sheetBankings}!A2:G";
-            var values = await this.APIGetValues(sheetsService, configuration["GoogleSheetConfig:SpreadsSheetID"]!, range);
+            var listDrivers = new List<Driver>();
+            var range = $"{sheetUsers}!A2:H";
+            var values = await this.APIGetValues(sheetsService, spreadSheetId, range);
             if (values != null && values.Count > 0)
             {
                 foreach (var item in values)
                 {
-                    listBanking.Add(new Banking
+                    listDrivers.Add(new Driver
                     {
-                        bank_Id = item[0].ToString() ?? string.Empty,
-                        bank_Name = item[1].ToString() ?? string.Empty,
-                        bank_Number = item[2].ToString() ?? string.Empty,
-                        bank_Type = item[3].ToString() ?? string.Empty,
-                        bank_AccountName = item[4].ToString() ?? string.Empty,
-                        bank_Url = item[5].ToString() ?? string.Empty,
-                        bank_Static = item[6].ToString() ?? string.Empty
+                        Id = item[0].ToString() ?? string.Empty,
+                        Username = item[1].ToString() ?? string.Empty,
+                        PasswordHash = item[2].ToString() ?? string.Empty,
+                        FullName = item[3].ToString() ?? string.Empty,
+                        PhoneNumber = item[4].ToString() ?? string.Empty,
+                        EmplyeeID = item[5].ToString().ToUpper() ?? string.Empty,
+                        CreatedAt = DatetimeOffsetExtensions.FromString(item[6].ToString()!),
+                        Static = item[7].ToString().ToUpper() ?? string.Empty,
                     });
                 }
             }
             else
             {
-                throw new Exception("Không có dữ liệu Bankings sheet.");
+                throw new Exception("Không có dữ liệu sheet.");
             }
 
-            return listBanking;
+            return listDrivers;
         }
         catch (Exception ex)
         {
@@ -103,199 +95,125 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
 
     }
 
-    // Lấy thông tin Bank qua ID bank
-    public async Task<Banking> GetBankById(string bank_Id)
+    // Lấy thông tin qua ID
+    public async Task<Driver> GetById(string Id)
     {
-        var listBankings = await this.GetsBankAll();
-        var byId = listBankings.Select(a => a).Where(a => a.bank_Id == bank_Id).FirstOrDefault();
+        var listDrivers = await this.Gets();
+        var byId = listDrivers.Select(a => a).Where(a => a.Id == Id).FirstOrDefault();
 
         if (byId == null)
         {
-            throw new Exception($"ID ngân hàng ({bank_Id}) không tồn tại!");
+            throw new Exception($"ID tài xế ({Id}) không tồn tại!");
         }
 
         return byId;
     }
 
     // Tạo dữ liệu
-    public async Task<bool> CreateBank(BankingCreateDTO model)
+    public async Task<string> Register(DriverDTO model)
     {
         try
         {
-
             // Kiểm tra tồn tại trùng số tài khoản và mã ngân hàng
-            var listBankings = await this.GetsBankAll();
-            if (listBankings.Any(a => a.bank_Id == model.bank_Id && a.bank_Number == model.bank_Number))
+            var listDrivers = await this.Gets();
+            if (listDrivers.Any(a => a.Username == model.Username))
             {
-                throw new Exception($"Số tài khoản này đã tồn tại");
+                throw new Exception($"Tên tài khoản này đã tồn tại");
             }
 
-
-            var range = $"{sheetBankings}!A:G"; // Không chỉ định dòng
+            var range = $"{sheetUsers}!A2:H"; // Không chỉ định dòng
             var valueRange = new ValueRange();
+            
+            var passwordHash = new PasswordHasher<DriverDTO>().HashPassword(model, model.Password);
 
             // Convert model to object
             var objectList = new List<object>()
             {
-                model.bank_Id,
-                model.bank_Name,
-                model.bank_Number,
-                "print.png",
-                model.bank_AccountName,
-                model.bank_Url,
-                model.bank_Static
+                Guid.NewGuid().ToString(),
+                model.Username,
+                passwordHash,
+                "NewUser",
+                "0",
+                "0",
+                DateTime.Now.ToString(),
+                "TRUE"
             };
+           
             // Gán giá trị vào trong valueRange
             valueRange.Values = new List<IList<object>> { objectList };
 
-            var appendRequest = sheetsService.Spreadsheets.Values.Append(valueRange, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
+            var appendRequest = sheetsService.Spreadsheets.Values.Append(valueRange, spreadSheetId, range);
             //Type input
             appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
             var result = await appendRequest.ExecuteAsync();
 
-            return true;
+            return "Đăng ký thành công";
         }
         catch (Exception ex)
         {
 
-            throw new Exception($"Không thể tạo mới Bank. {ex.Message}");
+            throw new Exception($"Không thể tạo mới. {ex.Message}");
         }
     }
 
-    // Cập nhật
-    public async Task<bool> UpdateBank(BankingCreateDTO model)
+    // Login
+    public async Task<string> Login(DriverDTO model)
     {
         try
         {
-            // Lấy toàn bộ danh sách
-            var listBanks = await this.GetsBankAll();
+            var listDrivers = await this.Gets();
+            var byUsername = listDrivers.Select(a => a).Where(a => a.Username == model.Username).FirstOrDefault();
+
+            if (byUsername == null) throw new Exception("Sai tài khoản");
+
+            var verify = new PasswordHasher<DriverDTO>().VerifyHashedPassword(model, byUsername.PasswordHash, model.Password);
+
+            if (verify == PasswordVerificationResult.Failed) throw new Exception("Sai mật khẩu");
+
+            var token = await this.CreateToken(byUsername);
             
-            // Tìm vị trí đối tượng cập nhật
-            var byId = listBanks.FindIndex(a => a.bank_Id == model.bank_Id);
-            if (byId == -1)
-            {
-                throw new Exception($"Ngân hàng này không tồn tại không thể cập nhật");
-            }
-
-            var range = $"{sheetBankings}!A{byId+2}:G"; // Không chỉ định dòng
-            
-            var valueRange = new ValueRange();
-
-            // Convert model to object
-            var objectList = new List<object>()
-            {
-                model.bank_Id,
-                model.bank_Name,
-                model.bank_Number,
-                "print.png",
-                model.bank_AccountName,
-                model.bank_Url,
-                model.bank_Static
-            };
-
-            // Gán giá trị vào trong valueRange
-            valueRange.Values = new List<IList<object>> { objectList };
-
-            var updateRequest = sheetsService.Spreadsheets.Values.Update(valueRange, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
-            //Type input
-            updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-            var result = await updateRequest.ExecuteAsync();
-
-            Console.WriteLine("Update successfully.");
-            return true;
+            return token;
         }
         catch (Exception ex)
         {
 
-            throw new Exception($"Không thể cập nhật. {ex.Message}");
-        }
-    }
-
-    // Xóa dữ liệu
-    public async Task<bool> DeleteBank(string bank_Id)
-    {
-        try
-        {
-            // Lấy toàn bộ danh sách
-            var listBanks = await this.GetsBankAll();
-            
-            // Tìm vị trí đối tượng xóa
-            var byId = listBanks.FindIndex(a => a.bank_Id == bank_Id);
-            if (byId == -1)
-            {
-                throw new Exception($"Ngân hàng này không tồn tại không thể xóa");
-            }
-
-            var range = $"{sheetBankings}!A{byId+2}:G{byId+2}"; // Chỉ định đối tượng xóa
-            
-            var valueRange = new ClearValuesRequest();
-
-            var clearRequest = sheetsService.Spreadsheets.Values.Clear(valueRange, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
-            var result = await clearRequest.ExecuteAsync();
-
-            Console.WriteLine("Clear successfully.");
-            return true;
-        }
-        catch (Exception ex)
-        {
-
-            throw new Exception($"Lỗi Banking. {ex.Message}");
-        }
-    }
-
-    // Xóa dòng dữ liệu
-    public async Task<bool> DeleteRowBank(string bank_Id)
-    {
-        try
-        {
-            // Lấy toàn bộ danh sách
-            var listBanks = await this.GetsBankAll();
-            
-            // Tìm vị trí đối tượng xóa
-            var byId = listBanks.FindIndex(a => a.bank_Id == bank_Id);
-            if (byId == -1)
-            {
-                throw new Exception($"Ngân hàng này không tồn tại không thể xóa");
-            }
-            
-            // Create the delete row request
-            var deleteRequest = new Request()
-            {
-                DeleteDimension = new DeleteDimensionRequest()
-                {
-                    Range = new DimensionRange()
-                    {
-                        SheetId = 0,
-                        Dimension = "ROWS",
-                        StartIndex = byId+1, // Row to delete (inclusive) Loại bỏ dòng tiêu đề. 
-                        EndIndex = byId+1 +1, // One past the row to delete (exclusive) Loại bỏ dòng tiêu đề và dòng kế tiếp để kết thúc endindex
-                    }
-                }
-            };
-                    // Create and execute the batch update request
-            var batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
-            {
-                Requests = new[] { deleteRequest }
-            };
-
-            var request = sheetsService.Spreadsheets.BatchUpdate(batchUpdateRequest, configuration["GoogleSheetConfig:SpreadsSheetID"]);
-            var response = request.Execute();
-
-            Console.WriteLine("Row deleted successfully.");
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-
-            throw new Exception($"Lỗi Banking. {ex.Message}");
+            throw new Exception($"Không thể tạo mới. {ex.Message}");
         }
     }
     #endregion
 
-    #region Register
+    private async Task<string> CreateToken(Driver _driver)
+    {
+        try
+        {
+            //Thông tin User đưa vào Token
+            var listClaims = new List<Claim>
+                        {
+                            new Claim("id", _driver.Id),
+                            new Claim("username", _driver.Username),
+                            new Claim(ClaimTypes.Role, "Employee"),
+                            new Claim(JwtRegisteredClaimNames.Jti, _driver.Id)
+                        };
 
+            //Khóa bí mật
+            var autKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("This is my Secret, my infomation: vanlt490811@gmail.com , the key size must be greater than: 512 bits"));
 
-    #endregion
+            //Tạo chữ ký với khóa bí mật
+            var signCredentials = new SigningCredentials(autKey, SecurityAlgorithms.HmacSha512Signature);
 
+            var autToken = new JwtSecurityToken(
+                claims: listClaims, //Thông tin User
+                issuer: "https://localhost:5110",
+                audience: "Taxi Nam Thang Manager API",
+                expires: DateTime.Now.AddDays(30), //Thời gian tồn tại Token
+                signingCredentials: signCredentials //Chữ ký
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(autToken);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
 }

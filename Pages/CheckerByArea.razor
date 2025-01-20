@@ -1,5 +1,6 @@
 @page "/checkers"
 @inherits CheckerByAreaBase
+@attribute [Authorize(Roles = ("Owner"))]
 
 <PageTitle>Taxi Nam Thắng Manager</PageTitle>
 

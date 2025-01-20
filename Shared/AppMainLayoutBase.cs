@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Microsoft.JSInterop;
+using ntgroup.Services;
 
 namespace ntgroup.Shared;
 public class AppMainLayoutBase : LayoutComponentBase
@@ -33,7 +34,7 @@ public class AppMainLayoutBase : LayoutComponentBase
     // Anchor show navigation position
     protected Anchor anchor;
     // Navigation size
-    protected string? width, height; 
+    protected string? width, height;
 
     // Trược cảm ứng từ trái sang phải để hiển thị navigation cho mobile và tablet
     protected void OnSwipeEnd(SwipeEventArgs e)
@@ -58,4 +59,21 @@ public class AppMainLayoutBase : LayoutComponentBase
         width = "300px";
         height = "100%";
     }
+
+    #region Nếu token fake logOut tự động clear token trên localstore
+    [Inject]
+    private IAuthenService authService { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            if (firstRender) await authService.GetAuthenState();
+        }
+        catch (Exception ex)
+        {
+            await authService.LogOut();
+            throw new Exception("Authentication error: " + ex.Message);
+        }
+    }
+    #endregion
 }
