@@ -1,0 +1,51 @@
+@page "/login"
+@inherits LoginBase
+
+@if (ErrorMessage != null)
+{
+    <ErrorMessageDisplay ErrorMS="@ErrorMessage"></ErrorMessageDisplay>
+}
+else
+{
+<EditForm  OnValidSubmit="OnValidSubmit"  >
+<DataAnnotationsValidator/>
+<MudGrid>
+    <MudItem xs="12" sm="5">
+        <MudCard>
+            <MudCardContent>
+                <MudText Typo="Typo.h6">ĐĂNG NHẬP TÀI KHOẢN</MudText>
+                <MudTextField Label="Tên tài khoản"  />
+                <MudTextField Label="Mật khẩu" HelperText="Hãy cẩn thận với mật khẩu cá nhân."
+                              @bind-Value="accountLogin.Password" For="@(() => )" InputType="InputType.Password"/>
+            </MudCardContent>
+            <MudCardActions Class="d-flex justify-space-between pa-2">
+                    <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" 
+                        aria-label="delete" OnClick="ResetModel_Click">
+                    </MudIconButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Login" ButtonType="ButtonType.Submit" 
+                        Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto text-end" Disabled="@_processing">
+                        @if (_processing)
+                        {
+                            <MudProgressCircular Size="Size.Small" Indeterminate="true"/>
+                            <MudText>Processing..</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Đăng nhập</MudText>
+                        }
+                    </MudButton>
+            </MudCardActions>
+            <MudNavLink Href="/register">Đăng ký mới nếu chưa có tài khoản.</MudNavLink>
+            <MudCardContent>
+                <MudText Typo="Typo.button">Trạng thái:</MudText>
+                <MudText Color="@Color.Error" Typo="Typo.subtitle2"><ValidationSummary /></MudText>
+                <MudText Color="@Color.Error" Typo="Typo.subtitle2">@resultLogin</MudText> 
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="7">
+        <MudImage Src="Imgs/Pages/login.jpg" Alt="Login image" Elevation="25" Class="rounded-lg mud-width-full" />
+    </MudItem>
+</MudGrid>
+</EditForm>
+}

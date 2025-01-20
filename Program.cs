@@ -132,6 +132,7 @@ builder.Services.AddScoped<ISpreadsCheckerService, SpreadsCheckerService>();
 
 // UI: Register Services to APIs
 builder.Services.AddScoped<ISpreadsConfigService, SpreadsConfigService>();
+builder.Services.AddScoped<IAuthenService, AuthenService>();
 
 var app = builder.Build();
 
