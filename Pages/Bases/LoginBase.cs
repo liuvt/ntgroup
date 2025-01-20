@@ -1,26 +1,26 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using ntgroup.Data.Entities;
+using ntgroup.Services;
 
 namespace ntgroup.Pages.Bases;
 public class LoginBase : ComponentBase
 {
-    protected NavigationManager NavigationManager { get; set; }
     [Inject]
-    protected ISnackbar snackBar { get; set; }
-
+    private IAuthenService authenService { get; set; }
+    [Inject]
+    private NavigationManager nav { get; set; }
+    [Inject]
+    private ISnackbar snackBar { get; set; }
     protected string token { get; set; }
-    protected string resultLogin = string.Empty;
     protected string ErrorMessage { get; set; }
-
-    //Processing
-    protected bool _processing = false;
-
     protected override async Task OnInitializedAsync()
     {
         try
         {
-          
+            // Check authentication state
+            if (await authenService.CheckAuthenState()) nav.NavigateTo("/", true);
         }
         catch (Exception ex)
         {
@@ -28,30 +28,71 @@ public class LoginBase : ComponentBase
         }
     }
 
-    //Sau khi thực hiện đăng nhập
-    //--> Lấy token
-    //--> Ghi token vào localstorage
-    //GetAuthenticationStateAsync
-    protected async Task HandleLogin_Click()
+    #region Private to handler with data                             
+    // Login
+    private async Task LoginHandler(DriverDTO _models)
     {
         try
         {
+            await authenService.Login(_models);
+            snackBar.Add($"Đăng nhập thành công.", Severity.Success);
 
-            NavigationManager.NavigateTo("/", true);
+            // Dừng 3s sau khi chuyển hướng
+            Thread.Sleep(TimeSpan.FromSeconds(3));
+
+            // Chuyển về trang chủ
+            nav.NavigateTo("/", true);
         }
         catch (Exception ex)
         {
-            snackBar.Add($"""{ex.Message}""", Severity.Error);
+            await ClearEditForm();
+            snackBar.Add(ex.Message, Severity.Error);
         }
     }
-        protected async void OnValidSubmit(EditContext context)
+    #endregion
+
+    #region EditFrom to login
+    protected DriverDTO models = new DriverDTO();
+    protected bool _processing = false;
+    protected string textResult;
+
+    // Submit
+    protected async void OnValidSubmit(EditContext editContext)
     {
         _processing = true;
-        await HandleLogin_Click();
+        // Do something
+        await LoginHandler(models);
         StateHasChanged();
     }
 
-    protected void ResetModel_Click()
+    // Clean models
+    protected async Task ClearEditForm()
     {
+        models = new DriverDTO();
+        _processing = false;
+        StateHasChanged();
     }
+    #endregion
+
+    #region MudTextField Password
+    protected bool isShowPassword = false;
+    protected InputType PasswordInput = InputType.Password;
+    protected string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    protected async Task ShowPasswordEvent()
+    {
+        if (isShowPassword)
+        {
+            isShowPassword = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            isShowPassword = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
+    #endregion
 }

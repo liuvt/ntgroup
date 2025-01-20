@@ -74,6 +74,37 @@ builder.Services.AddScoped(
                                 throw new InvalidOperationException("Can't found [Secret Key] in appsettings.json !"))
     });
 
+// API: Add controllers
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+// API: Add Jwt, Gooogle Authentication
+builder.Services.AddAuthentication(authenticationOptions =>
+{
+    authenticationOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    authenticationOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    authenticationOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    // Once a user is authenticated, the OAuth2 token info is stored in cookies.
+    authenticationOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+                .AddCookie()
+                .AddJwtBearer(jwtBearerOptions =>
+                {
+                    jwtBearerOptions.RequireHttpsMetadata = false;
+                    jwtBearerOptions.SaveToken = true;
+                    jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]
+                                                ?? throw new InvalidOperationException("Can't found [Secret Key] in appsettings.json !"))
+                            ),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
+
 // API: Add SwaggerGen (dotnet add package Swashbuckle.AspNetCore)
 builder.Services.AddSwaggerGen(
     opt =>
@@ -94,34 +125,6 @@ builder.Services.AddSwaggerGen(
     }
 );
 
-// API: Add controllers
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-
-// API: Add Jwt, Gooogle Authentication
-builder.Services.AddAuthentication(authenticationOptions => {
-                    authenticationOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    authenticationOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    authenticationOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    // Once a user is authenticated, the OAuth2 token info is stored in cookies.
-                    authenticationOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                })
-                .AddCookie()
-                .AddJwtBearer(jwtBearerOptions => {
-                    jwtBearerOptions.RequireHttpsMetadata = false;
-                    jwtBearerOptions.SaveToken = true;
-                    jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters {
-                            ValidateIssuerSigningKey = true,
-                            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-                            ValidAudience = builder.Configuration["JWT:ValidAudience"],
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]
-                                                ?? throw new InvalidOperationException("Can't found [Secret Key] in appsettings.json !"))
-                            ),
-                            ValidateIssuer = false,
-                            ValidateAudience = false
-                    };
-                });
-
 // API: Register APIs
 builder.Services.AddScoped<IAuthServer, AuthServer>();
 builder.Services.AddScoped<ISpreadsConfigServer, SpreadsConfigServer>();
@@ -132,7 +135,12 @@ builder.Services.AddScoped<ISpreadsCheckerService, SpreadsCheckerService>();
 
 // UI: Register Services to APIs
 builder.Services.AddScoped<ISpreadsConfigService, SpreadsConfigService>();
+
+// UI: Authentication
 builder.Services.AddScoped<IAuthenService, AuthenService>();
+builder.Services.AddScoped<AuthenticationStateProvider, AuthenService>();
+builder.Services.AddAuthorizationCore();
+builder.Services.AddCascadingAuthenticationState();
 
 var app = builder.Build();
 

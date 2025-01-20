@@ -1,51 +1,61 @@
 @page "/login"
 @inherits LoginBase
 
-@if (ErrorMessage != null)
-{
-    <ErrorMessageDisplay ErrorMS="@ErrorMessage"></ErrorMessageDisplay>
-}
-else
-{
-<EditForm  OnValidSubmit="OnValidSubmit"  >
-<DataAnnotationsValidator/>
-<MudGrid>
-    <MudItem xs="12" sm="5">
-        <MudCard>
-            <MudCardContent>
-                <MudText Typo="Typo.h6">ĐĂNG NHẬP TÀI KHOẢN</MudText>
-                <MudTextField Label="Tên tài khoản"  />
-                <MudTextField Label="Mật khẩu" HelperText="Hãy cẩn thận với mật khẩu cá nhân."
-                              @bind-Value="accountLogin.Password" For="@(() => )" InputType="InputType.Password"/>
-            </MudCardContent>
-            <MudCardActions Class="d-flex justify-space-between pa-2">
-                    <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" 
-                        aria-label="delete" OnClick="ResetModel_Click">
-                    </MudIconButton>
-                    <MudButton StartIcon="@Icons.Material.Filled.Login" ButtonType="ButtonType.Submit" 
-                        Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto text-end" Disabled="@_processing">
+<MudContainer MaxWidth="MaxWidth.Medium" Class="augReFont augImg pa-5">
+    <AuthorizeView Context="authContext">
+    <Authorized>
+        <MessageError Title="Bạn đã đăng nhập" Link="/" TitleLink="Quay lại trang chủ!" />
+    </Authorized>
+    <NotAuthorized>
+        <MudItem Class="d-flex justify-center">
+            <MudText Typo="Typo.h4" Color="Color.Primary">Đăng nhập tài khoản</MudText>
+        </MudItem>
+        <EditForm Model="@models" OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator />
+        <MudGrid Class="justify-center">
+            <MudItem sm="12" md="6">
+            <MudPaper Class="mt-3">
+                <MudCardContent>
+                    <MudItem xs="12">
+                        <MudTextField Label="Email" HelperText="Nhập tên tài khoản"
+                            @bind-Value="models.Username" For="@(() => models.Username)" Disabled="@_processing"/>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField Label="Mật khẩu" HelperText="Vui lòng bảo vệ mật khẩu!"
+                            @bind-Value="models.Password" For="@(() => models.Password)" Disabled="@_processing"
+                                InputType="@PasswordInput"
+                                Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon"
+                                OnAdornmentClick="@(() => ShowPasswordEvent())" AdornmentAriaLabel="Show Password" />
+                    </MudItem>
+                </MudCardContent>
+                <MudCardActions Class="d-flex justify-space-between pa-2">
+                    <MudIconButton OnClick="@(() => ClearEditForm())" Color="Color.Error"
+                        Icon="@Icons.Material.Filled.Autorenew" Disabled="@_processing"/>
+                    <MudButton StartIcon="@Icons.Material.Filled.Login" ButtonType="ButtonType.Submit"
+                        Variant="Variant.Filled" Color="Color.Primary" Class="buttonOrMudTabs ml-auto text-end"
+                        Disabled="@_processing">
                         @if (_processing)
                         {
-                            <MudProgressCircular Size="Size.Small" Indeterminate="true"/>
-                            <MudText>Processing..</MudText>
+                            <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                            <MudText>Đang xữ lý..</MudText>
                         }
                         else
                         {
                             <MudText>Đăng nhập</MudText>
                         }
                     </MudButton>
-            </MudCardActions>
-            <MudNavLink Href="/register">Đăng ký mới nếu chưa có tài khoản.</MudNavLink>
-            <MudCardContent>
-                <MudText Typo="Typo.button">Trạng thái:</MudText>
-                <MudText Color="@Color.Error" Typo="Typo.subtitle2"><ValidationSummary /></MudText>
-                <MudText Color="@Color.Error" Typo="Typo.subtitle2">@resultLogin</MudText> 
-            </MudCardContent>
-        </MudCard>
-    </MudItem>
-    <MudItem xs="12" sm="7">
-        <MudImage Src="Imgs/Pages/login.jpg" Alt="Login image" Elevation="25" Class="rounded-lg mud-width-full" />
-    </MudItem>
-</MudGrid>
-</EditForm>
-}
+                </MudCardActions>
+                <MudItem Class="pa-3">
+                    <MudLink Color="Color.Primary" Href="/register">Đăng ký ngay! nếu bạn chưa có tài khoản</MudLink>
+                </MudItem>
+                <MudCardContent>
+                    <MudText Color="@Color.Error" Typo="Typo.subtitle2"> <ValidationSummary /> </MudText>
+                    <MudText Color="@Color.Error" Typo="Typo.subtitle2">@textResult</MudText>
+                </MudCardContent>
+            </MudPaper>
+            </MudItem>
+        </MudGrid>
+        </EditForm>
+    </NotAuthorized>
+</AuthorizeView>
+</MudContainer>
