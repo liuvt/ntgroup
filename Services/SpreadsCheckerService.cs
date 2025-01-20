@@ -265,11 +265,11 @@ public class SpreadsCheckerService : ISpreadsCheckerService
                 {
                     NumberCar = item[0].ToString() ?? string.Empty,
                     NumberDriver = item[1].ToString() ?? string.Empty,
-                    RevenueTotal = FormatCurrency.formatCurrency(item[2].ToString()),
-                    RevenueByDate = FormatCurrency.formatCurrency(item[3].ToString()),
+                    RevenueTotal = FormatCurrency.formatCurrency(item[2].ToString()!),
+                    RevenueByDate = FormatCurrency.formatCurrency(item[3].ToString()!),
                     QRContext = item[4].ToString() ?? string.Empty,
                     QRUrl = item[4].ToString() ?? string.Empty,
-                    TotalPrice = FormatCurrency.formatCurrency(item[6].ToString())
+                    TotalPrice = FormatCurrency.formatCurrency(item[6].ToString()!)
                 });
             }
         }

@@ -26,7 +26,7 @@ public class SpreadsConfigService : ISpreadsConfigService
             {
                 if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {
-                    return default(List<Area>);
+                    return default(List<Area>)!;
                 }
 
                 return await response.Content.ReadFromJsonAsync<List<Area>>();
@@ -39,7 +39,7 @@ public class SpreadsConfigService : ISpreadsConfigService
         }
         catch (Exception ex)
         {
-            throw;
+            throw new Exception(ex.Message);
         }
     }
 
@@ -53,7 +53,7 @@ public class SpreadsConfigService : ISpreadsConfigService
             {
                 if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {
-                    return default(List<Banking>);
+                    return default(List<Banking>)!;
                 }
 
                 return await response.Content.ReadFromJsonAsync<List<Banking>>();
@@ -66,7 +66,7 @@ public class SpreadsConfigService : ISpreadsConfigService
         }
         catch (Exception ex)
         {
-            throw;
+            throw new Exception(ex.Message);
         }
     }
 }

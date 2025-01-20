@@ -20,7 +20,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     protected readonly IConfiguration configuration;
     private readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
     private readonly string sheetBankings = "Bankings";
-    private readonly string sheetArea = "Areas";
+    private readonly string spreadSheetId = "1K8qLOLf4YTEmyw6wLEH-HvTwpPcD0EtIia3o55V7XQs"; //SpreadID of Authentication
     private SheetsService sheetsService;
 
     //Constructor
@@ -30,7 +30,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
 
         //File xác thực google tài khoản
         GoogleCredential credential;
-        using (var stream = new FileStream(configuration["GoogleSheetConfig:ServiceAccount"], FileMode.Open, FileAccess.Read))
+        using (var stream = new FileStream(configuration["GoogleSheetConfig:ServiceAccount"]!, FileMode.Open, FileAccess.Read))
         {
             credential = GoogleCredential.FromStream(stream)
                 .CreateScoped(Scopes);
@@ -71,7 +71,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         {
             var listBanking = new List<Banking>();
             var range = $"{sheetBankings}!A2:G";
-            var values = await this.APIGetValues(sheetsService, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
+            var values = await this.APIGetValues(sheetsService, configuration["GoogleSheetConfig:SpreadsSheetID"]!, range);
             if (values != null && values.Count > 0)
             {
                 foreach (var item in values)
@@ -292,4 +292,10 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         }
     }
     #endregion
+
+    #region Register
+
+
+    #endregion
+
 }

@@ -30,7 +30,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
 
         //File xác thực google tài khoản
         GoogleCredential credential;
-        using (var stream = new FileStream(configuration["GoogleSheetConfig:ServiceAccount"], FileMode.Open, FileAccess.Read))
+        using (var stream = new FileStream(configuration["GoogleSheetConfig:ServiceAccount"]!, FileMode.Open, FileAccess.Read))
         {
             credential = GoogleCredential.FromStream(stream)
                 .CreateScoped(Scopes);
@@ -71,7 +71,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         {
             var listBanking = new List<Banking>();
             var range = $"{sheetBankings}!A2:G";
-            var values = await this.APIGetValues(sheetsService, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
+            var values = await this.APIGetValues(sheetsService, configuration["GoogleSheetConfig:SpreadsSheetID"]!, range);
             if (values != null && values.Count > 0)
             {
                 foreach (var item in values)
@@ -129,7 +129,6 @@ public class SpreadsConfigServer : ISpreadsConfigServer
             {
                 throw new Exception($"Số tài khoản này đã tồn tại");
             }
-
 
             var range = $"{sheetBankings}!A:G"; // Không chỉ định dòng
             var valueRange = new ValueRange();
@@ -238,7 +237,6 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         }
         catch (Exception ex)
         {
-
             throw new Exception($"Lỗi Banking. {ex.Message}");
         }
     }
@@ -301,7 +299,7 @@ public class SpreadsConfigServer : ISpreadsConfigServer
         {
             var listAreas = new List<Area>();
             var range = $"{sheetArea}!A2:D";
-            var values = await this.APIGetValues(sheetsService, configuration["GoogleSheetConfig:SpreadsSheetID"], range);
+            var values = await this.APIGetValues(sheetsService, configuration["GoogleSheetConfig:SpreadsSheetID"]!, range);
             if (values != null && values.Count > 0)
             {
                 foreach (var item in values)
