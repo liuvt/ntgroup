@@ -74,9 +74,9 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
                         PasswordHash = item[2].ToString() ?? string.Empty,
                         FullName = item[3].ToString() ?? string.Empty,
                         PhoneNumber = item[4].ToString() ?? string.Empty,
-                        EmplyeeID = item[5].ToString().ToUpper() ?? string.Empty,
+                        EmplyeeID = item[5].ToString().ToUpper() ,
                         CreatedAt = DatetimeOffsetExtensions.FromString(item[6].ToString()!),
-                        Static = item[7].ToString().ToUpper() ?? string.Empty,
+                        Static = item[7].ToString().ToUpper(),
                     });
                 }
             }
@@ -85,7 +85,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
                 throw new Exception("Không có dữ liệu sheet.");
             }
 
-            return listDrivers;
+            return listDrivers.ToList();
         }
         catch (Exception ex)
         {
@@ -98,7 +98,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     // Lấy thông tin qua ID
     public async Task<Driver> GetById(string Id)
     {
-        var listDrivers = await this.Gets();
+        List<Driver> listDrivers = await this.Gets();
         var byId = listDrivers.Select(a => a).Where(a => a.Id == Id).FirstOrDefault();
 
         if (byId == null)
@@ -110,7 +110,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     }
 
     // Tạo dữ liệu
-    public async Task<string> Register(DriverDTO model)
+    public async Task<bool> Register(DriverDTO model)
     {
         try
         {
@@ -132,10 +132,10 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
                 Guid.NewGuid().ToString(),
                 model.Username,
                 passwordHash,
-                "NewUser",
-                "0",
-                "0",
-                DateTime.Now.ToString(),
+                "null",
+                "null",
+                "null",
+                DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"),
                 "TRUE"
             };
            
@@ -147,7 +147,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
             appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
             var result = await appendRequest.ExecuteAsync();
 
-            return "Đăng ký thành công";
+            return true;
         }
         catch (Exception ex)
         {
@@ -161,7 +161,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     {
         try
         {
-            var listDrivers = await this.Gets();
+            List<Driver> listDrivers = await this.Gets();
             var byUsername = listDrivers.Select(a => a).Where(a => a.Username == model.Username).FirstOrDefault();
 
             if (byUsername == null) throw new Exception("Sai tài khoản");
@@ -177,7 +177,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         catch (Exception ex)
         {
 
-            throw new Exception($"Không thể tạo mới. {ex.Message}");
+            throw new Exception($"Lỗi đăng nhập. {ex.Message}");
         }
     }
     #endregion

@@ -58,4 +58,18 @@ public class SpreadsAuthenController : ControllerBase
                                                                 "Error: " + ex.Message);
         }
     }
+
+    [HttpGet("Auth/Gets")]
+    public async Task<ActionResult<List<Driver>>> Gets()
+    {
+        try
+        {
+            return Ok(await this.spreadsAuthenServer.Gets());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                                                                "Error: " + ex.Message);
+        }
+    }
 }

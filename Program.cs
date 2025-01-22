@@ -128,15 +128,15 @@ builder.Services.AddSwaggerGen(
 // API: Register APIs
 builder.Services.AddScoped<IAuthServer, AuthServer>();
 builder.Services.AddScoped<ISpreadsConfigServer, SpreadsConfigServer>();
+builder.Services.AddScoped<ISpreadsAuthenServer, SpreadsAuthenServer>();
 
 // UI: Register Services
 builder.Services.AddScoped<ISpreadsRegisterContractService, SpreadsRegisterContractService>();
 builder.Services.AddScoped<ISpreadsCheckerService, SpreadsCheckerService>();
 
-// UI: Register Services to APIs
+// UI: Register Services Config to APIs
 builder.Services.AddScoped<ISpreadsConfigService, SpreadsConfigService>();
-
-// UI: Authentication
+// UI: Register Services Authentication to APIs
 builder.Services.AddScoped<IAuthenService, AuthenService>();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenService>();
 builder.Services.AddAuthorizationCore();
