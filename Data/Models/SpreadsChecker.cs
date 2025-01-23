@@ -92,3 +92,24 @@ public class ShiftworkMain
     public DateTimeOffset? CreatedAt { get; set; }
     protected string SkySoftId { get; set; } = string.Empty;
 }
+
+/// <summary>
+/// APP KHÁCH HÀNG
+/// </summary>
+public class NTApp
+{
+    public string nt_Id { get; set; } = string.Empty;
+    public string nt_PhoneCustomer { get; set; } = string.Empty;
+    public string nt_NameCustomer { get; set; } = string.Empty;
+    public string nt_Static { get; set; } = string.Empty;
+    public string nt_Distance { get; set; } = string.Empty;
+    public string nt_PhoneDriver { get; set; } = string.Empty;
+    public string nt_NumberDrive { get; set; } = string.Empty;
+    public string nt_Price { get; set; } = string.Empty;
+    public string nt_PickUp { get; set; } = string.Empty; 
+    public string nt_DropOut { get; set; } = string.Empty;
+    public string nt_OrderTime { get; set; } = string.Empty;
+    public string nt_StartTime { get; set; } = string.Empty;
+    public string nt_EndTime { get; set; } = string.Empty;
+    public string nt_Type { get; set; } = string.Empty;
+}

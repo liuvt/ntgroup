@@ -12,6 +12,7 @@ using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
 using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using ntgroup.Extensions;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace ntgroup.APIs;
 
@@ -125,18 +126,29 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
             var valueRange = new ValueRange();
             
             var passwordHash = new PasswordHasher<DriverDTO>().HashPassword(model, model.Password);
+            var _driver = new Driver
+            {
+                Id = Guid.NewGuid().ToString(),
+                Username = model.Username,
+                PasswordHash= passwordHash,
+                FullName = "null",
+                PhoneNumber = "null",
+                EmplyeeID = "null",
+                CreatedAt = DateTime.Now,
+                Static = "TRUE"
+            };
 
             // Convert model to object
             var objectList = new List<object>()
             {
-                Guid.NewGuid().ToString(),
-                model.Username,
-                passwordHash,
-                "null",
-                "null",
-                "null",
-                DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"),
-                "TRUE"
+                _driver.Id,
+                _driver.Username,
+                _driver.PasswordHash,
+                _driver.FullName,
+                _driver.PhoneNumber,
+                _driver.EmplyeeID,
+                _driver.CreatedAt,
+                _driver.Static
             };
            
             // Gán giá trị vào trong valueRange

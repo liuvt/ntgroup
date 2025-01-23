@@ -26,8 +26,6 @@ public class SpreadsAuthenController : ControllerBase
         this.spreadsAuthenServer = _spreadsAuthenServer;
     }
 
-    static Driver _driver { get; set; } = new();
-
     [HttpPost("Auth/Register")]
     public async Task<IActionResult> Register(DriverDTO model)
     {
