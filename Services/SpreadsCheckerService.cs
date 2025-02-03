@@ -196,6 +196,40 @@ public class SpreadsCheckerService : ISpreadsCheckerService
     #endregion
 
     #region ReportTotal
+    // Tìm tài xế có lên ca
+    private async Task<List<ReportTotal>> GetShiftworks(string area_SpreadId)
+    {
+        var sws = new List<ReportTotal>();
+        var range = $"{sheetDANHSACHLENCA}!A7:G";
+        var values = await this.APIGetValues(sheetsService, area_SpreadId, range);
+        if (values != null && values.Count > 0)
+        {
+            foreach (var item in values)
+            {
+                if(item[0].ToString() == string.Empty)
+                {
+                    break;
+                }
+                sws.Add(new ReportTotal
+                {
+                    NumberCar = item[0].ToString() ?? string.Empty,
+                    NumberDriver = item[1].ToString() ?? string.Empty,
+                    RevenueTotal = FormatCurrency.formatCurrency(item[2].ToString()!),
+                    RevenueByDate = FormatCurrency.formatCurrency(item[3].ToString()!),
+                    QRContext = item[4].ToString() ?? string.Empty,
+                    QRUrl = item[4].ToString() ?? string.Empty,
+                    TotalPrice = FormatCurrency.formatCurrency(item[6].ToString()!)
+                });
+            }
+        }
+        else
+        {
+            Console.WriteLine("No data found.");
+        }
+
+        return sws;
+    }
+    
     // Thông tin chuyển khoản phiếu checker, và thông tin tổng tiền, tổng doanh thu của tài xế
     private async Task<List<ReportTotal>> GetShiftworks(string area_SpreadId, Banking banking)
     {
@@ -244,41 +278,6 @@ public class SpreadsCheckerService : ISpreadsCheckerService
         }
 
         return shiftworkByNumberCar;
-    }
-
-
-    // Tìm tài xế có lên ca
-    public async Task<List<ReportTotal>> GetShiftworks(string area_SpreadId)
-    {
-        var sws = new List<ReportTotal>();
-        var range = $"{sheetDANHSACHLENCA}!A7:G";
-        var values = await this.APIGetValues(sheetsService, area_SpreadId, range);
-        if (values != null && values.Count > 0)
-        {
-            foreach (var item in values)
-            {
-                if(item[0].ToString() == string.Empty)
-                {
-                    break;
-                }
-                sws.Add(new ReportTotal
-                {
-                    NumberCar = item[0].ToString() ?? string.Empty,
-                    NumberDriver = item[1].ToString() ?? string.Empty,
-                    RevenueTotal = FormatCurrency.formatCurrency(item[2].ToString()!),
-                    RevenueByDate = FormatCurrency.formatCurrency(item[3].ToString()!),
-                    QRContext = item[4].ToString() ?? string.Empty,
-                    QRUrl = item[4].ToString() ?? string.Empty,
-                    TotalPrice = FormatCurrency.formatCurrency(item[6].ToString()!)
-                });
-            }
-        }
-        else
-        {
-            Console.WriteLine("No data found.");
-        }
-
-        return sws;
     }
 
     // Thông tin tài xế lên ca

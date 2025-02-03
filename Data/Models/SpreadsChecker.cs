@@ -96,7 +96,7 @@ public class ShiftworkMain
 /// <summary>
 /// APP KHÁCH HÀNG
 /// </summary>
-public class NTApp
+public partial class NTApp
 {
     public string nt_Id { get; set; } = string.Empty;
     public string nt_PhoneCustomer { get; set; } = string.Empty;
@@ -106,10 +106,20 @@ public class NTApp
     public string nt_PhoneDriver { get; set; } = string.Empty;
     public string nt_NumberDrive { get; set; } = string.Empty;
     public string nt_Price { get; set; } = string.Empty;
+    public string nt_Point { get; set; } = string.Empty;
+    public string nt_Time { get; set; } = string.Empty;
+    public string nt_Note { get; set; } = string.Empty;
+}
+
+public partial class NTApp
+{
     public string nt_PickUp { get; set; } = string.Empty; 
     public string nt_DropOut { get; set; } = string.Empty;
     public string nt_OrderTime { get; set; } = string.Empty;
     public string nt_StartTime { get; set; } = string.Empty;
     public string nt_EndTime { get; set; } = string.Empty;
-    public string nt_Type { get; set; } = string.Empty;
 }
+
+/// <summary>
+/// APP XANH SM
+/// </summary>
