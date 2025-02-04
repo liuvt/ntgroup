@@ -16,7 +16,7 @@ public partial class Driver
     public string FullName { get; set; } = string.Empty; // Họ tên
     public string PhoneNumber { get; set; } = string.Empty;
     public string EmplyeeID { get; set; } = string.Empty; //Mã nhân viên
-    public DateTimeOffset? CreatedAt { get; set; }
+    public string CreatedAt { get; set; } = string.Empty; 
     public string Static { get; set; } = string.Empty; // True / False
 }
 
@@ -26,6 +26,6 @@ public partial class Drive
     public string NumberPlate { get; set; } = string.Empty; 
     public string NumberDrive { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty; 
-    public DateTimeOffset? CreatedAt { get; set; }
+    public string CreatedAt { get; set; } = string.Empty; 
     public string Static { get; set; } = string.Empty; // True / False
 }

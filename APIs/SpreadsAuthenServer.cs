@@ -10,9 +10,6 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
-using DocumentFormat.OpenXml.Office2010.PowerPoint;
-using ntgroup.Extensions;
-using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace ntgroup.APIs;
 
@@ -55,6 +52,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         var response = await request.ExecuteAsync();
         return response.Values;
     }
+
     #region Users
     // Lấy toàn thông tin sheets   
     public async Task<List<Driver>> Gets()
@@ -75,9 +73,9 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
                         PasswordHash = item[2].ToString() ?? string.Empty,
                         FullName = item[3].ToString() ?? string.Empty,
                         PhoneNumber = item[4].ToString() ?? string.Empty,
-                        EmplyeeID = item[5].ToString().ToUpper() ,
-                        CreatedAt = DatetimeOffsetExtensions.FromString(item[6].ToString()!),
-                        Static = item[7].ToString().ToUpper(),
+                        EmplyeeID = item[5].ToString()!.ToUpper() ,
+                        CreatedAt = item[6].ToString() ?? string.Empty,
+                        Static = item[7].ToString()!.ToUpper(),
                     });
                 }
             }
@@ -86,7 +84,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
                 throw new Exception("Không có dữ liệu sheet.");
             }
 
-            return listDrivers.ToList();
+            return listDrivers;
         }
         catch (Exception ex)
         {
@@ -99,8 +97,8 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     // Lấy thông tin qua ID
     public async Task<Driver> GetById(string Id)
     {
-        List<Driver> listDrivers = await this.Gets();
-        var byId = listDrivers.Select(a => a).Where(a => a.Id == Id).FirstOrDefault();
+        var listDrivers = await this.Gets();
+        var byId = listDrivers.Where(a => a.Id == Id).FirstOrDefault();
 
         if (byId == null)
         {
@@ -125,30 +123,21 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
             var range = $"{sheetUsers}!A2:H"; // Không chỉ định dòng
             var valueRange = new ValueRange();
             
-            var passwordHash = new PasswordHasher<DriverDTO>().HashPassword(model, model.Password);
-            var _driver = new Driver
-            {
-                Id = Guid.NewGuid().ToString(),
-                Username = model.Username,
-                PasswordHash= passwordHash,
-                FullName = "null",
-                PhoneNumber = "null",
-                EmplyeeID = "null",
-                CreatedAt = DateTime.Now,
-                Static = "TRUE"
-            };
+            string passwordHash = new PasswordHasher<DriverDTO>().HashPassword(model, model.Password);
 
+            string Id = Guid.NewGuid().ToString();
+            string CreatedAt = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
             // Convert model to object
             var objectList = new List<object>()
             {
-                _driver.Id,
-                _driver.Username,
-                _driver.PasswordHash,
-                _driver.FullName,
-                _driver.PhoneNumber,
-                _driver.EmplyeeID,
-                _driver.CreatedAt,
-                _driver.Static
+                Id,
+                model.Username,
+                passwordHash,
+                "new",
+                "new",
+                "new",
+                CreatedAt,
+                "TRUE"
             };
            
             // Gán giá trị vào trong valueRange
@@ -173,8 +162,8 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     {
         try
         {
-            List<Driver> listDrivers = await this.Gets();
-            var byUsername = listDrivers.Select(a => a).Where(a => a.Username == model.Username).FirstOrDefault();
+            var listDrivers = await Gets();
+            var byUsername = listDrivers.Where(a => a.Username == model.Username).FirstOrDefault();
 
             if (byUsername == null) throw new Exception("Sai tài khoản");
 
@@ -182,7 +171,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
 
             if (verify == PasswordVerificationResult.Failed) throw new Exception("Sai mật khẩu");
 
-            var token = await this.CreateToken(byUsername);
+            var token = await CreateToken(byUsername);
             
             return token;
         }

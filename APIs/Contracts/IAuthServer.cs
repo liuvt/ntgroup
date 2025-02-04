@@ -6,7 +6,7 @@ namespace ntgroup.APIs.Contracts;
 
 public interface IAuthServer
 {
-    //Login
+    //Login https://vi.xhamster2.com/
     Task<AppUser> Login(AppLoginDTO login);
     //Register
     Task<IdentityResult> Register(AppRegisterDTO register);

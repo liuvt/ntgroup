@@ -31,7 +31,7 @@ public class SpreadsAuthenController : ControllerBase
     {
         try
         {
-            var result = this.spreadsAuthenServer.Register(model);
+            var result = await this.spreadsAuthenServer.Register(model);
             
             return Ok(result);
         }
@@ -47,7 +47,7 @@ public class SpreadsAuthenController : ControllerBase
         try
         {
 
-             var result = this.spreadsAuthenServer.Login(model);
+            var result = await this.spreadsAuthenServer.Login(model);
             return Ok(result);
         }
         catch (Exception ex)

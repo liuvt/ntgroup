@@ -1,16 +1,10 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using ntgroup.APIs.Contracts;
 using ntgroup.Data.Entities;
 using ntgroup.Data.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
-using DocumentFormat.OpenXml.Office2010.PowerPoint;
 
 namespace ntgroup.APIs;
 
