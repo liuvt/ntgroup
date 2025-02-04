@@ -1,15 +1,6 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using ntgroup.Data.Models;
 using ntgroup.Services.Interfaces;
-using MudBlazor;
-using Google.Apis.Sheets.v4;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using DocumentFormat.OpenXml.Office2013.Excel;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using ntgroup.Extensions;
-using DocumentFormat.OpenXml.Office.CustomUI;
 
 namespace ntgroup.Pages.Bases;
 public class SearchContractBase : ComponentBase

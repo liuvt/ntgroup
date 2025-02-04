@@ -1,12 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using AspNetCoreGeneratedDocument;
-using DocumentFormat.OpenXml.Bibliography;
-using Microsoft.AspNetCore.Builder.Extensions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using ntgroup.APIs.Contracts;
 using ntgroup.Data.Entities;
 using ntgroup.Data.Models;
@@ -27,7 +19,7 @@ public class SpreadsAuthenController : ControllerBase
     }
 
     [HttpPost("Auth/Register")]
-    public async Task<IActionResult> Register(DriverDTO model)
+    public async Task<ActionResult<bool>> Register(DriverDTO model)
     {
         try
         {

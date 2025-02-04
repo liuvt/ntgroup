@@ -1,9 +1,7 @@
 using ntgroup.APIs.Contracts;
 using ntgroup.Data.Models;
 using ntgroup.Data.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace ntgroup.Controllers;
 

@@ -4,11 +4,43 @@ using System.Globalization;
 namespace ntgroup.Extensions;
 public static class DatetimeExtensions
 {
-    public static DateTime FromString(string date)
+    /// <summary>
+    /// Giải thích:
+    //     Sử dụng DateTime.ParseExact() để phân tích chuỗi ngày tháng với định dạng "MM/dd/yyyy hh:mm:ss tt".
+    //     DateTimeOffset được tạo từ DateTime, có thể đặt TimeSpan.Zero nếu muốn thời gian ở UTC hoặc sử dụng TimeZoneInfo.Local.GetUtcOffset(dateTime) 
+    //   để có múi giờ địa phương.
+    /// </summary>
+    /// <param name="offsetString"></param>
+    /// <returns></returns>
+    public static DateTimeOffset DateTimeOffsetFromString(string offsetString)
     {
-        // Parse the input string into a DateTime object
-        var dateTime = DateTime.ParseExact(date, "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture);
-        // Parse the input string into a DateTime object
+        string format = "dd/MM/yyyy hh:mm:ss tt"; // Định dạng của chuỗi đầu vào
+        CultureInfo provider = CultureInfo.InvariantCulture;
+
+        // Chuyển đổi thành DateTime
+        DateTime dateTime = DateTime.ParseExact(offsetString, format, provider);
+
+        // Chuyển đổi thành DateTimeOffset với múi giờ UTC hoặc local
+        DateTimeOffset dateTimeOffset = new DateTimeOffset(dateTime, TimeSpan.Zero); // UTC
+        //DateTimeOffset dateTimeOffset = new DateTimeOffset(dateTime, TimeZoneInfo.Local.GetUtcOffset(dateTime)); // Local
+        return dateTimeOffset;
+    }
+
+    /// <summary>
+    /// Giải thích:
+    //    Chuyển đổi format 
+    /// </summary>
+    /// <param name="offsetString"></param>
+    /// <returns></returns>
+    public static DateTime DateTimeFromString(string dateString)
+    {
+        string format = "dd/MM/yyyy HH:mm:ss"; // Định dạng của chuỗi đầu vào
+        CultureInfo provider = CultureInfo.InvariantCulture;
+        // Convert to DateTime
+        DateTime dateTime = DateTime.ParseExact(dateString, format, provider);
+        
+        // Convert back to string in 24-hour format
+        string formatedDate = dateTime.ToString("dd/MM/yyyy HH:mm:ss");
         
         return dateTime;
     }

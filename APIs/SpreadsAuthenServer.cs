@@ -10,6 +10,7 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
+using System.Globalization;
 
 namespace ntgroup.APIs;
 
@@ -19,6 +20,8 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     protected readonly IConfiguration configuration;
     private readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
     private readonly string sheetUsers = "Users";
+    private readonly string sheetRoles = "Roles";
+    private readonly string sheetUserRoles = "UserRoles";
     private readonly string sheetDrives = "Drives";
     private readonly string spreadSheetId = "1K8qLOLf4YTEmyw6wLEH-HvTwpPcD0EtIia3o55V7XQs"; //SpreadID of Authentication
     private SheetsService sheetsService;
@@ -52,7 +55,6 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         var response = await request.ExecuteAsync();
         return response.Values;
     }
-
     #region Users
     // Lấy toàn thông tin sheets   
     public async Task<List<Driver>> Gets()
@@ -73,9 +75,9 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
                         PasswordHash = item[2].ToString() ?? string.Empty,
                         FullName = item[3].ToString() ?? string.Empty,
                         PhoneNumber = item[4].ToString() ?? string.Empty,
-                        EmplyeeID = item[5].ToString()!.ToUpper() ,
-                        CreatedAt = item[6].ToString() ?? string.Empty,
-                        Static = item[7].ToString()!.ToUpper(),
+                        EmplyeeID = item[5].ToString().ToUpper(),
+                        CreatedAt = DateTime.ParseExact(item[6].ToString(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+                        Static = item[7].ToString().ToUpper(),
                     });
                 }
             }
@@ -114,32 +116,31 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         try
         {
             // Kiểm tra tồn tại trùng số tài khoản và mã ngân hàng
-            var listDrivers = await this.Gets();
-            if (listDrivers.Any(a => a.Username == model.Username))
+            IEnumerable<Driver> listDrivers = await this.Gets();
+            var byUsername = listDrivers.Where(a => a.Username == model.Username).FirstOrDefault();
+            if (byUsername != null)
             {
-                throw new Exception($"Tên tài khoản này đã tồn tại");
+                throw new Exception($"Tên tài khoản ({model.Username}) đả tồn tại");
             }
 
             var range = $"{sheetUsers}!A2:H"; // Không chỉ định dòng
             var valueRange = new ValueRange();
-            
-            string passwordHash = new PasswordHasher<DriverDTO>().HashPassword(model, model.Password);
 
-            string Id = Guid.NewGuid().ToString();
-            string CreatedAt = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+            var passwordHash = new PasswordHasher<DriverDTO>().HashPassword(model, model.Password);
+
             // Convert model to object
             var objectList = new List<object>()
             {
-                Id,
+                Guid.NewGuid().ToString(),
                 model.Username,
                 passwordHash,
                 "new",
                 "new",
                 "new",
-                CreatedAt,
+                DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
                 "TRUE"
             };
-           
+
             // Gán giá trị vào trong valueRange
             valueRange.Values = new List<IList<object>> { objectList };
 
@@ -162,7 +163,9 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     {
         try
         {
-            var listDrivers = await Gets();
+            
+            var listDrivers = await this.Gets();
+            
             var byUsername = listDrivers.Where(a => a.Username == model.Username).FirstOrDefault();
 
             if (byUsername == null) throw new Exception("Sai tài khoản");
@@ -171,7 +174,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
 
             if (verify == PasswordVerificationResult.Failed) throw new Exception("Sai mật khẩu");
 
-            var token = await CreateToken(byUsername);
+            var token = await this.CreateToken(byUsername);
             
             return token;
         }
@@ -187,12 +190,19 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     {
         try
         {
+            
+            // Lấy thông tin UserRole
+            var userRole = await this.GetUserRole(_driver.Id);
+            // Lấy role
+            var role = await this.GetRole(userRole.role_Id);
+            Console.WriteLine(role.role_Name);
+
             //Thông tin User đưa vào Token
             var listClaims = new List<Claim>
                         {
                             new Claim("id", _driver.Id),
                             new Claim("username", _driver.Username),
-                            new Claim(ClaimTypes.Role, "Employee"),
+                            new Claim(ClaimTypes.Role, role.role_Name),
                             new Claim(JwtRegisteredClaimNames.Jti, _driver.Id)
                         };
 
@@ -211,6 +221,80 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
             );
 
             return new JwtSecurityTokenHandler().WriteToken(autToken);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    private async Task<Role> GetRole(string role_Id)
+    {
+        try
+        {
+            var listRoles = new List<Role>();
+            var range = $"{sheetRoles}!A2:D";
+            var values = await this.APIGetValues(sheetsService, spreadSheetId, range);
+            if (values != null && values.Count > 0)
+            {
+                foreach (var item in values)
+                {
+                    listRoles.Add(new Role
+                    {
+                        role_Id = item[0].ToString() ?? string.Empty,
+                        role_Name = item[1].ToString() ?? string.Empty,
+                        role_NormalizedName = item[2].ToString() ?? string.Empty,
+                        CreatedAt = DateTime.ParseExact(item[3].ToString(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+                    });
+                }
+            }
+            else
+            {
+                throw new Exception("Không có dữ liệu sheet.");
+            }
+
+            var role = listRoles.Where(a => a.role_Id == role_Id).FirstOrDefault();
+            if(role == null)
+            {
+                throw new Exception("Chưa tồn tại role này");
+            }
+            return role;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    private async Task<UserRole> GetUserRole(string driver_Id)
+    {
+        try
+        {
+            var listUserRoles = new List<UserRole>();
+            var range = $"{sheetUserRoles}!A2:B";
+            var values = await this.APIGetValues(sheetsService, spreadSheetId, range);
+            if (values != null && values.Count > 0)
+            {
+                foreach (var item in values)
+                {
+                    listUserRoles.Add(new UserRole
+                    {
+                        user_Id = item[0].ToString() ?? string.Empty,
+                        role_Id = item[1].ToString() ?? string.Empty,
+                    });
+                }
+            }
+            else
+            {
+                throw new Exception("Không có dữ liệu sheet.");
+            }
+
+            var userRole = listUserRoles.Where(a => a.user_Id == driver_Id).FirstOrDefault();
+            if(userRole == null)
+            {
+                throw new Exception("Không tìm thấy quyền truy cập của tài khoản này");
+            }
+            return userRole;
         }
         catch (Exception ex)
         {

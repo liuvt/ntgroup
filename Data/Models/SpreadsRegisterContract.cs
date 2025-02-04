@@ -22,7 +22,7 @@ public class DefaultContract //Hợp đồng
     public string dc_TimeFor7 { get; set; } = string.Empty;  // thoigian_cho_7cho
     public string dc_DecriptionFor4 { get; set; } = string.Empty; // show_4_cho
     public string dc_DecriptionFor7 { get; set; } = string.Empty; // show_7_cho
-    public DateTimeOffset? CreatedAt {get; set; }
+    public DateTime? CreatedAt {get; set; }
 }
 
 public class DefaultContractNew
@@ -32,7 +32,7 @@ public class DefaultContractNew
     public string dc_Distance { get; set; } = string.Empty; //so_km_1c
     public string dc_Price {get; set;} = string.Empty;
     public string dc_Decription { get; set; } = string.Empty; // show_4_cho
-    public DateTimeOffset? CreatedAt {get; set; }
+    public DateTime? CreatedAt {get; set; }
     public DriveType? driveType {get; set;}
     public ContractType? contractType {get; set;}
 }
@@ -43,7 +43,7 @@ public class DriveType //Loại xe
     public string dt_Id { get; set; } = string.Empty; // Mã
     public string dt_Name { get; set; } = string.Empty; // Tên xe : 4 chổ, 5chổ, 7 chổ
     public string dt_Decription { get; set; } = string.Empty; // Mô tả
-    public DateTimeOffset? CreatedAt {get; set; }
+    public DateTime? CreatedAt {get; set; }
     public string dc_Id {get; set;} = string.Empty;
 }
 

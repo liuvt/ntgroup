@@ -8,7 +8,7 @@ namespace ntgroup.Services;
 public interface IAuthenService
 {
     Task<string> Login(DriverDTO login);
-    Task<string> Register(DriverDTO register);
+    Task<bool> Register(DriverDTO register);
     
     // Authen
     Task LogOut();

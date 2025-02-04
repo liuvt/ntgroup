@@ -21,7 +21,7 @@ public class ReportContract //Hợp đồng
     public string Surcharge { get; set; } = string.Empty; // Phụ phí
     public string Promotion { get; set; } = string.Empty; // Khuyến mãi
     public string TotalPrice { get; set; } = string.Empty; // Thành tiền
-    public DateTimeOffset? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
 }
 
 public class ReportTimepiece // Cuốc lẻ
@@ -37,7 +37,7 @@ public class ReportTimepiece // Cuốc lẻ
     public string DropOut { get; set; } = string.Empty;
     public string Note { get; set; } = string.Empty;
     public string Contacts { get; set; } = string.Empty; //Hợp đồng
-    public DateTimeOffset? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
 }
 
 public class ReportWalletGSM // Cuốc lẻ Ví GSM
@@ -46,7 +46,7 @@ public class ReportWalletGSM // Cuốc lẻ Ví GSM
     public string Id { get; set; } = string.Empty;
     public string NumberCar { get; set; } = string.Empty; //Mã xe
     public string Price { get; set; } = string.Empty; // Thành tiền
-    public DateTimeOffset? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
 }
 
 public class ReportTotal // Báo cáo tổng và thông tin chuyển khoản
@@ -60,7 +60,7 @@ public class ReportTotal // Báo cáo tổng và thông tin chuyển khoản
     public string QRContext { get; set; } = string.Empty;
     public string QRUrl { get; set; } = string.Empty;
     public string TotalPrice { get; set; } = string.Empty;
-    public DateTimeOffset? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
 }
 
 /// <summary>
@@ -74,7 +74,7 @@ public class SkySoftMain
     public string NumberPlate { get; set; } = string.Empty;
     public string Price { get; set; } = string.Empty;
     public string Static { get; set; } = string.Empty;
-    public DateTimeOffset? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
     public ShiftworkMain? shiftworkMain { get; set; }
 }
 
@@ -89,14 +89,14 @@ public class ShiftworkMain
     public string Phone { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Date { get; set; } = string.Empty;
-    public DateTimeOffset? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
     protected string SkySoftId { get; set; } = string.Empty;
 }
 
 /// <summary>
 /// APP KHÁCH HÀNG
 /// </summary>
-public partial class NTApp
+public class NTApp
 {
     public string nt_Id { get; set; } = string.Empty;
     public string nt_PhoneCustomer { get; set; } = string.Empty;
@@ -106,20 +106,10 @@ public partial class NTApp
     public string nt_PhoneDriver { get; set; } = string.Empty;
     public string nt_NumberDrive { get; set; } = string.Empty;
     public string nt_Price { get; set; } = string.Empty;
-    public string nt_Point { get; set; } = string.Empty;
-    public string nt_Time { get; set; } = string.Empty;
-    public string nt_Note { get; set; } = string.Empty;
-}
-
-public partial class NTApp
-{
     public string nt_PickUp { get; set; } = string.Empty; 
     public string nt_DropOut { get; set; } = string.Empty;
     public string nt_OrderTime { get; set; } = string.Empty;
     public string nt_StartTime { get; set; } = string.Empty;
     public string nt_EndTime { get; set; } = string.Empty;
+    public string nt_Type { get; set; } = string.Empty;
 }
-
-/// <summary>
-/// APP XANH SM
-/// </summary>

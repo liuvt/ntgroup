@@ -7,6 +7,7 @@ using ntgroup.Data.Entities;
 using ntgroup.Extensions;
 using System.Text.Json;
 using System.IdentityModel.Tokens.Jwt;
+using DocumentFormat.OpenXml.Office.MetaAttributes;
 
 namespace ntgroup.Services;
 public class AuthenService : AuthenticationStateProvider, IAuthenService
@@ -46,7 +47,7 @@ public class AuthenService : AuthenticationStateProvider, IAuthenService
 
                  //Lấy token từ API đăng nhập
                 var token = await response.Content.ReadAsStringAsync();
-
+                
                 //Lưu token vào localStorage
                 await jS.SetFromLocalStorage(key, token);
 
@@ -111,7 +112,7 @@ public class AuthenService : AuthenticationStateProvider, IAuthenService
     public async Task<AuthenticationState> GetAuthenState() => await GetAuthenticationStateAsync();
 
 
-    public async Task<string> Register(DriverDTO register)
+    public async Task<bool> Register(DriverDTO register)
     {
         try
         {
@@ -121,10 +122,10 @@ public class AuthenService : AuthenticationStateProvider, IAuthenService
             {
                 if (response.StatusCode == HttpStatusCode.NoContent)
                 {
-                    return string.Empty;
+                    return false;
                 }
 
-                return await response.Content.ReadAsStringAsync();
+                return true;
             }
             else
             {
