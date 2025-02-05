@@ -55,6 +55,32 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         var response = await request.ExecuteAsync();
         return response.Values;
     }
+
+    // Cập nhật dữ liệu
+    private async Task<IList<IList<object>>> APIUpdateValues(SheetsService service, string spreadsheetId, string range, ValueRange valueRange)
+    {
+        var updateRequest = service.Spreadsheets.Values.Update(valueRange, spreadsheetId, range);
+        updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
+        var response = await updateRequest.ExecuteAsync();
+        return response.UpdatedData.Values;
+    }
+    // Xóa dữ liệu
+    private async Task APIRemoveValues(SheetsService service, string spreadsheetId, string range)
+    {
+        var clearRequest = service.Spreadsheets.Values.Clear(new ClearValuesRequest(), spreadsheetId, range);
+        await clearRequest.ExecuteAsync();
+    }
+    
+    // Tạo dữ liệu
+    private async Task<IList<IList<object>>> APICreateValues(SheetsService service, string spreadsheetId, string range, ValueRange valueRange)
+    {
+        var appendRequest = service.Spreadsheets.Values.Append(valueRange, spreadsheetId, range);
+        appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+        var response = await appendRequest.ExecuteAsync();
+        return response.Updates.UpdatedData.Values;
+    }
+
+
     #region Users
     // Lấy toàn thông tin sheets   
     public async Task<List<Driver>> Gets()
@@ -120,7 +146,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
             var byUsername = listDrivers.Where(a => a.Username == model.Username).FirstOrDefault();
             if (byUsername != null)
             {
-                throw new Exception($"Tên tài khoản ({model.Username}) đả tồn tại");
+                throw new Exception($"Tên tài khoản ({model.Username}) đã tồn tại");
             }
 
             var range = $"{sheetUsers}!A2:H"; // Không chỉ định dòng
@@ -195,7 +221,6 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
             var userRole = await this.GetUserRole(_driver.Id);
             // Lấy role
             var role = await this.GetRole(userRole.role_Id);
-            Console.WriteLine(role.role_Name);
 
             //Thông tin User đưa vào Token
             var listClaims = new List<Claim>
@@ -295,6 +320,41 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
                 throw new Exception("Không tìm thấy quyền truy cập của tài khoản này");
             }
             return userRole;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    private async Task<UserRole> CreateUserRole(string driver_Id, string role_Id)
+    {
+        try
+        {
+            // Lấy thông tin UserRole
+            var range = $"{sheetUserRoles}!A2:B"; // Không chỉ định dòng
+            var valueRange = new ValueRange();
+
+            // Convert model to object
+            var objectList = new List<object>()
+            {
+                driver_Id,
+                role_Id
+            };
+
+            // Gán giá trị vào trong valueRange
+            valueRange.Values = new List<IList<object>> { objectList };
+
+            var appendRequest = sheetsService.Spreadsheets.Values.Append(valueRange, spreadSheetId, range);
+            //Type input
+            appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+            var result = await appendRequest.ExecuteAsync();
+            
+            return new UserRole
+            {
+                user_Id = driver_Id,
+                role_Id = role_Id
+            };
         }
         catch (Exception ex)
         {
