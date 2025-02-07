@@ -45,6 +45,7 @@
 /* Format font style */
 .augReFont {
     font-family: "Trirong", serif;
+    cursor: default !important; /* Đổi về con trỏ mặc định */
 }
 
 .augReFont p,

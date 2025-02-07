@@ -38,7 +38,7 @@
                     </MudItem>
                 </MudMenuItem>
                 <MudMenuItem @onclick="@(()=> Logout_Click())">
-                    <MudItem Class="d-flex  ">
+                    <MudItem Class="d-flex">
                         <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.Logout"/>
                         <MudText Color="Color.Error">Đăng xuất</MudText>
                     </MudItem>
@@ -46,6 +46,13 @@
             </ChildContent>
         </MudMenu>
     </Authorized>
+    <NotAuthorized>
+        <MudLink Href="/login" Underline="Underline.None" Color="Color.Primary">
+            <MudItem Class="d-none d-md-flex">
+                <MudText>Đăng nhập</MudText>
+            </MudItem>
+        </MudLink>
+    </NotAuthorized>
 </AuthorizeView>
 
 @code {

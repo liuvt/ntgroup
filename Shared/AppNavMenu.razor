@@ -4,7 +4,64 @@
 <MudDrawerContainer>
     <MudNavMenu>
         <MudNavLink Href="/" Match="NavLinkMatch.All">Trang chủ</MudNavLink>
-        <MudNavLink Href="/checkers" Match="NavLinkMatch.All">Tra cứu phiếu checker</MudNavLink>
         <MudNavLink Href="/contracts" Match="NavLinkMatch.All">Tra cứu hợp đồng</MudNavLink>
+        <AuthorizeView>
+            <NotAuthorized>
+                <MudNavLink Href="/login" Match="NavLinkMatch.All">
+                    <MudItem Class="d-flex">
+                        <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.Login"/>
+                        <MudText Color="Color.Error">Đăng nhập</MudText>
+                    </MudItem>
+                </MudNavLink>
+            </NotAuthorized>
+            <Authorized>
+                <MudNavLink>
+                    <MudItem @onclick="@(()=> Logout_Click())" Class="d-flex">
+                        <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.Logout"/>
+                        <MudText Color="Color.Error">Đăng xuất</MudText>
+                    </MudItem>
+                </MudNavLink>
+            </Authorized>
+        </AuthorizeView>
     </MudNavMenu>
 </MudDrawerContainer>
+
+@code {
+
+    [Inject]
+    IAuthenService authService { get; set; }
+    [Inject]
+    NavigationManager nav { get; set; }
+    //Hiển thị thông báo khi add/update/deleted category
+    [Inject]
+    ISnackbar snackBar { get; set; }
+
+    async Task Logout_Click()
+    {
+        try
+        {
+            await this.authService.LogOut();
+
+            snackBar.Add($"Đã đăng xuất thành công.", Severity.Success);
+            //Chuyển về trang chủ
+            nav.NavigateTo("/", true);
+        }
+        catch (Exception ex)
+        {
+            snackBar.Add($"Lỗi: {ex.Message}.", Severity.Error);
+        }
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        try
+        {
+            if (firstRender) await authService.GetAuthenState();
+        }
+        catch (Exception ex)
+        {
+            await authService.LogOut();
+            throw new Exception("Authentication error: " + ex.Message);
+        }
+    }
+}

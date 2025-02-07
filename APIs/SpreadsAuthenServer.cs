@@ -11,6 +11,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
 using System.Globalization;
+using ntgroup.Extensions;
 
 namespace ntgroup.APIs;
 
@@ -48,39 +49,6 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
 
     }
 
-    // Đỗ toàn bộ dữ liệu Sheet về để xữ lý
-    private async Task<IList<IList<object>>> APIGetValues(SheetsService service, string spreadsheetId, string range)
-    {
-        var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
-        var response = await request.ExecuteAsync();
-        return response.Values;
-    }
-
-    // Cập nhật dữ liệu
-    private async Task<IList<IList<object>>> APIUpdateValues(SheetsService service, string spreadsheetId, string range, ValueRange valueRange)
-    {
-        var updateRequest = service.Spreadsheets.Values.Update(valueRange, spreadsheetId, range);
-        updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-        var response = await updateRequest.ExecuteAsync();
-        return response.UpdatedData.Values;
-    }
-    // Xóa dữ liệu
-    private async Task APIRemoveValues(SheetsService service, string spreadsheetId, string range)
-    {
-        var clearRequest = service.Spreadsheets.Values.Clear(new ClearValuesRequest(), spreadsheetId, range);
-        await clearRequest.ExecuteAsync();
-    }
-    
-    // Tạo dữ liệu
-    private async Task<IList<IList<object>>> APICreateValues(SheetsService service, string spreadsheetId, string range, ValueRange valueRange)
-    {
-        var appendRequest = service.Spreadsheets.Values.Append(valueRange, spreadsheetId, range);
-        appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
-        var response = await appendRequest.ExecuteAsync();
-        return response.Updates.UpdatedData.Values;
-    }
-
-
     #region Users
     // Lấy toàn thông tin sheets   
     public async Task<List<Driver>> Gets()
@@ -89,7 +57,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         {
             var listDrivers = new List<Driver>();
             var range = $"{sheetUsers}!A2:H";
-            var values = await this.APIGetValues(sheetsService, spreadSheetId, range);
+            var values = await GGSExtensions.APIGetValues(sheetsService, spreadSheetId, range);
             if (values != null && values.Count > 0)
             {
                 foreach (var item in values)
@@ -142,9 +110,8 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         try
         {
             // Kiểm tra tồn tại trùng số tài khoản và mã ngân hàng
-            IEnumerable<Driver> listDrivers = await this.Gets();
-            var byUsername = listDrivers.Where(a => a.Username == model.Username).FirstOrDefault();
-            if (byUsername != null)
+            var listDrivers = await this.Gets();
+            if (listDrivers.Any(a => a.Username == model.Username))
             {
                 throw new Exception($"Tên tài khoản ({model.Username}) đã tồn tại");
             }
@@ -157,7 +124,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
             // Convert model to object
             var objectList = new List<object>()
             {
-                Guid.NewGuid().ToString(),
+                Guid.NewGuid().ToString().ToUpper(),
                 model.Username,
                 passwordHash,
                 "new",
@@ -169,11 +136,12 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
 
             // Gán giá trị vào trong valueRange
             valueRange.Values = new List<IList<object>> { objectList };
-
-            var appendRequest = sheetsService.Spreadsheets.Values.Append(valueRange, spreadSheetId, range);
-            //Type input
-            appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
-            var result = await appendRequest.ExecuteAsync();
+            
+            //Create user
+            await GGSExtensions.APICreateValues(sheetsService, spreadSheetId, range, valueRange);
+           
+            //Tạo role cho user
+            await CreateUserRole(objectList[0].ToString()!, "2");
 
             return true;
         }
@@ -189,7 +157,6 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     {
         try
         {
-            
             var listDrivers = await this.Gets();
             
             var byUsername = listDrivers.Where(a => a.Username == model.Username).FirstOrDefault();
@@ -259,7 +226,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         {
             var listRoles = new List<Role>();
             var range = $"{sheetRoles}!A2:D";
-            var values = await this.APIGetValues(sheetsService, spreadSheetId, range);
+            var values = await GGSExtensions.APIGetValues(sheetsService, spreadSheetId, range);
             if (values != null && values.Count > 0)
             {
                 foreach (var item in values)
@@ -297,7 +264,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         {
             var listUserRoles = new List<UserRole>();
             var range = $"{sheetUserRoles}!A2:B";
-            var values = await this.APIGetValues(sheetsService, spreadSheetId, range);
+            var values = await GGSExtensions.APIGetValues(sheetsService, spreadSheetId, range);
             if (values != null && values.Count > 0)
             {
                 foreach (var item in values)
@@ -327,34 +294,19 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         }
     }
 
-    private async Task<UserRole> CreateUserRole(string driver_Id, string role_Id)
+    private async Task CreateUserRole(string driver_Id, string user_Id)
     {
         try
-        {
-            // Lấy thông tin UserRole
-            var range = $"{sheetUserRoles}!A2:B"; // Không chỉ định dòng
-            var valueRange = new ValueRange();
-
-            // Convert model to object
-            var objectList = new List<object>()
+        {  
+            //Create extensions
+            await GGSExtensions.APICreateValues(sheetsService, spreadSheetId, $"{sheetUserRoles}!A2:B", new ValueRange 
             {
-                driver_Id,
-                role_Id
-            };
-
-            // Gán giá trị vào trong valueRange
-            valueRange.Values = new List<IList<object>> { objectList };
-
-            var appendRequest = sheetsService.Spreadsheets.Values.Append(valueRange, spreadSheetId, range);
-            //Type input
-            appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
-            var result = await appendRequest.ExecuteAsync();
-            
-            return new UserRole
-            {
-                user_Id = driver_Id,
-                role_Id = role_Id
-            };
+                Values = new List<IList<object>> 
+                { 
+                    new List<object> { driver_Id, user_Id } 
+                }
+            });
+            Console.WriteLine("Create UserRole success");
         }
         catch (Exception ex)
         {
