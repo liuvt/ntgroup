@@ -8,6 +8,7 @@ using ntgroup.Extensions;
 using System.Text.Json;
 using System.IdentityModel.Tokens.Jwt;
 using DocumentFormat.OpenXml.Office.MetaAttributes;
+using ntgroup.Data.Models;
 
 namespace ntgroup.Services;
 public class AuthenService : AuthenticationStateProvider, IAuthenService
@@ -110,6 +111,32 @@ public class AuthenService : AuthenticationStateProvider, IAuthenService
 
     /* Xem trạng thái đăng nhập của User */
     public async Task<AuthenticationState> GetAuthenState() => await GetAuthenticationStateAsync();
+
+    /* Lay thông tin User */
+    public async Task<UserRole> GetUserAuth()
+    {
+        try
+        {
+            var userRole = new UserRole();
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+            if (user.Identity.IsAuthenticated)
+            {
+                userRole.user_Id = user.FindFirst("id")?.Value ?? "Mã nhân viên";
+                userRole.area_Id = user.FindFirst("area")?.Value ?? "Không tìm thấy Khu vực";
+                userRole.role_Id = user.FindFirst(ClaimTypes.Role)?.Value ?? "Không tìm thấy role";
+            }
+            else
+            {
+                throw new Exception("Vui lòng đăng nhập lại");
+            }
+            return userRole;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
 
 
     public async Task<bool> Register(DriverDTO register)

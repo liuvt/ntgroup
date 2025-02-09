@@ -167,7 +167,9 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
 
             if (verify == PasswordVerificationResult.Failed) throw new Exception("Sai mật khẩu");
 
-            var token = await this.CreateToken(byUsername, model.Area_Id);
+            
+
+            var token = await this.CreateToken(byUsername);
             
             return token;
         }
@@ -179,7 +181,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     }
     #endregion
 
-    private async Task<string> CreateToken(Driver _driver, string area_Id)
+    private async Task<string> CreateToken(Driver _driver)
     {
         try
         {
@@ -194,7 +196,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
                         {
                             new Claim("id", _driver.Id),
                             new Claim("username", _driver.Username),
-                            new Claim("area", area_Id),
+                            new Claim("area", userRole.area_Id),
                             new Claim(ClaimTypes.Role, role.role_Name),
                             new Claim(JwtRegisteredClaimNames.Jti, _driver.Id)
                         };

@@ -16,17 +16,6 @@ public class AppMainLayoutBase : LayoutComponentBase
                 FontFamily = new[] { "Trirong", "sans-serif" },
             }
         },
-        //  // Thay đổi trạng thái dark và light
-        // PaletteLight = new PaletteLight()
-        // {
-        //     // Đổi màu thanh appbar
-        //     AppbarBackground = Colors.Gray.Lighten2,
-        // },
-        // PaletteDark = new PaletteDark()
-        // {
-        //     // Đổi màu thanh appbar
-        //     AppbarBackground = Colors.Gray.Darken3,
-        // },
     };
 
     // Drawer navigation

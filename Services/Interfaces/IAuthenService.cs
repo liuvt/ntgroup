@@ -14,4 +14,7 @@ public interface IAuthenService
     Task LogOut();
     Task<bool> CheckAuthenState();
     Task<AuthenticationState> GetAuthenState();
+
+    // User
+    Task<UserRole> GetUserAuth();
 }
