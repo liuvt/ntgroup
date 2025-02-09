@@ -11,7 +11,7 @@ public class AppMainLayoutBase : LayoutComponentBase
         // Thay đổi font mặt định của MudBlazor
         Typography = new Typography()
         {
-            Default = new Default()
+            Default = new DefaultTypography()
             {
                 FontFamily = new[] { "Trirong", "sans-serif" },
             }

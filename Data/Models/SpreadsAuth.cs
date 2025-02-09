@@ -34,8 +34,10 @@ public partial class UserRole
 {
     public string user_Id { get; set; } = string.Empty;
     public string role_Id { get; set; } = string.Empty; 
+    public string area_Id { get; set; } = string.Empty;
     public Driver? driver { get; set; } 
     public Role? role { get; set; } 
+    public Area? area { get; set; } //Bổ sung khu vực cho tài khoản
 }
 
 public partial class Role

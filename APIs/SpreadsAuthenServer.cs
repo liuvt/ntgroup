@@ -141,7 +141,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
             await GGSExtensions.APICreateValues(sheetsService, spreadSheetId, range, valueRange);
            
             //Tạo role cho user
-            await CreateUserRole(objectList[0].ToString()!, "2");
+            await CreateUserRole(objectList[0].ToString()!, "2", model.Area_Id);
 
             return true;
         }
@@ -167,7 +167,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
 
             if (verify == PasswordVerificationResult.Failed) throw new Exception("Sai mật khẩu");
 
-            var token = await this.CreateToken(byUsername);
+            var token = await this.CreateToken(byUsername, model.Area_Id);
             
             return token;
         }
@@ -179,7 +179,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     }
     #endregion
 
-    private async Task<string> CreateToken(Driver _driver)
+    private async Task<string> CreateToken(Driver _driver, string area_Id)
     {
         try
         {
@@ -194,6 +194,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
                         {
                             new Claim("id", _driver.Id),
                             new Claim("username", _driver.Username),
+                            new Claim("area", area_Id),
                             new Claim(ClaimTypes.Role, role.role_Name),
                             new Claim(JwtRegisteredClaimNames.Jti, _driver.Id)
                         };
@@ -263,7 +264,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         try
         {
             var listUserRoles = new List<UserRole>();
-            var range = $"{sheetUserRoles}!A2:B";
+            var range = $"{sheetUserRoles}!A2:C";
             var values = await GGSExtensions.APIGetValues(sheetsService, spreadSheetId, range);
             if (values != null && values.Count > 0)
             {
@@ -273,6 +274,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
                     {
                         user_Id = item[0].ToString() ?? string.Empty,
                         role_Id = item[1].ToString() ?? string.Empty,
+                        area_Id = item[2].ToString() ?? string.Empty,
                     });
                 }
             }
@@ -294,16 +296,16 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         }
     }
 
-    private async Task CreateUserRole(string driver_Id, string user_Id)
+    private async Task CreateUserRole(string driver_Id, string user_Id, string area_Id)
     {
         try
         {  
             //Create extensions
-            await GGSExtensions.APICreateValues(sheetsService, spreadSheetId, $"{sheetUserRoles}!A2:B", new ValueRange 
+            await GGSExtensions.APICreateValues(sheetsService, spreadSheetId, $"{sheetUserRoles}!A2:C", new ValueRange 
             {
                 Values = new List<IList<object>> 
                 { 
-                    new List<object> { driver_Id, user_Id } 
+                    new List<object> { driver_Id, user_Id, area_Id } 
                 }
             });
             Console.WriteLine("Create UserRole success");

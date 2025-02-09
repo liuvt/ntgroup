@@ -6,7 +6,7 @@ namespace ntgroup.Pages.Displays;
 public class TemplatingDialogBase : ComponentBase
 {
     [CascadingParameter] 
-    public MudDialogInstance MudDialog { get; set; }
+    public IMudDialogInstance MudDialog { get; set; }
     [Parameter]
     public string TextContent { get; set; } //Nội dung
 

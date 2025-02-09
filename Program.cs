@@ -19,6 +19,7 @@ using ntgroup.APIs.Contracts;
 using ntgroup.APIs;
 using ntgroup.Services.Interfaces;
 using ntgroup.Services;
+using ntgroup;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +53,8 @@ builder.Services.AddSignalR(e =>
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 // UI: Add MudBlazor
 builder.Services.AddMudServices();
@@ -175,6 +177,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapBlazorHub();
+
 app.MapFallbackToPage("/_Host");
 
 app.Run();

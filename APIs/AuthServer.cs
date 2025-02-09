@@ -11,7 +11,6 @@ namespace ntgroup.APIs;
 
 public class AuthServer : IAuthServer
 {
-
     //User Manager
     protected readonly UserManager<AppUser> userManager;
     protected readonly SignInManager<AppUser> loginManager;

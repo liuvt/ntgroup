@@ -23,21 +23,5 @@ public class IndexBase : ComponentBase
     protected string stringResult { get; set; } = string.Empty; // Kết quả trả về khi không tìm thấy đối tượng
     protected override async Task OnInitializedAsync()
     {
-        defaultContracts = await this.listOptions();
-    }
-
-    private async Task<List<DefaultContract>> listOptions()
-    {
-        var lists = new List<DefaultContract>();
-        var listOptions = await sheetRegisterContractService.Gets();
-        foreach(var item in listOptions)
-        {
-
-            if ((Convert.ToInt32(item.dc_DistanceOne) % 10) == 0)
-            {
-                lists.Add(item);
-            }
-        }
-        return lists;
     }
 }   
