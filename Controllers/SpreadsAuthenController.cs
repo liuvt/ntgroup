@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ntgroup.APIs.Contracts;
 using ntgroup.Data.Entities;
@@ -19,7 +20,7 @@ public class SpreadsAuthenController : ControllerBase
     }
 
     [HttpPost("Auth/Register")]
-    public async Task<ActionResult<bool>> Register(DriverDTO model)
+    public async Task<ActionResult<bool>> Register(DriverRegisterDTO model)
     {
         try
         {
@@ -34,7 +35,7 @@ public class SpreadsAuthenController : ControllerBase
     }
 
     [HttpPost("Auth/Login")]
-    public async Task<ActionResult> Login(DriverDTO model)
+    public async Task<ActionResult> Login(DriverLoginDTO model)
     {
         try
         {
@@ -49,7 +50,7 @@ public class SpreadsAuthenController : ControllerBase
         }
     }
 
-    [HttpGet("Auth/Gets")]
+    [HttpGet("Auth/Gets"), Authorize(Roles = "Owner")] //Sử dụng RoleName để xác thực
     public async Task<ActionResult<List<Driver>>> Gets()
     {
         try

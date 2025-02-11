@@ -105,7 +105,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     }
 
     // Tạo dữ liệu
-    public async Task<bool> Register(DriverDTO model)
+    public async Task<bool> Register(DriverRegisterDTO model)
     {
         try
         {
@@ -119,7 +119,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
             var range = $"{sheetUsers}!A2:H"; // Không chỉ định dòng
             var valueRange = new ValueRange();
 
-            var passwordHash = new PasswordHasher<DriverDTO>().HashPassword(model, model.Password);
+            var passwordHash = new PasswordHasher<DriverRegisterDTO>().HashPassword(model, model.Password);
 
             // Convert model to object
             var objectList = new List<object>()
@@ -153,7 +153,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     }
 
     // Login
-    public async Task<string> Login(DriverDTO model)
+    public async Task<string> Login(DriverLoginDTO model)
     {
         try
         {
@@ -163,7 +163,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
 
             if (byUsername == null) throw new Exception("Sai tài khoản");
 
-            var verify = new PasswordHasher<DriverDTO>().VerifyHashedPassword(model, byUsername.PasswordHash, model.Password);
+            var verify = new PasswordHasher<DriverLoginDTO>().VerifyHashedPassword(model, byUsername.PasswordHash, model.Password);
 
             if (verify == PasswordVerificationResult.Failed) throw new Exception("Sai mật khẩu");
 

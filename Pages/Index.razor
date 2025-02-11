@@ -11,27 +11,6 @@
                 <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">TRANG CHỦ
                 </MudText>
             </MudItem>
-            <MudItem xs="12">
-                <MudLink Href="/checkers" Underline="Underline.None" Color="Color.Primary">
-                <MudText Typo="Typo.body1">Tra cứu phiếu checker</MudText>
-                </MudLink>
-                <MudLink Href="/contracts" Underline="Underline.None" Color="Color.Primary">
-                    <MudText Typo="Typo.body1">Tra cứu hợp đồng</MudText>
-                </MudLink>
-            </MudItem>
-            @foreach (var item in defaultContracts.Take(4))
-            {
-                <MudItem xs="12" sm="6" md="3">
-                    <MudCard>
-                        <MudCardContent>
-                            <MudText Typo="Typo.h5" Color="Color.Primary">HỢP ĐỒNG 1 CHIỀU</MudText>
-                            <MudText>Khoảng cách: @item.dc_DistanceOne</MudText>
-                            <MudText>Giá: @item.dc_PriceOneFor5</MudText>
-                            <MudText>Thời gian chờ: @item.dc_Time</MudText>
-                        </MudCardContent>
-                    </MudCard>
-                </MudItem>
-            }
         </MudGrid>
     </MudContainer>
 </MudMainContent>

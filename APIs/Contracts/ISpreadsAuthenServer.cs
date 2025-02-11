@@ -6,7 +6,7 @@ namespace ntgroup.APIs.Contracts;
 
 public interface ISpreadsAuthenServer
 {
-    Task<bool> Register(DriverDTO model);
-    Task<string> Login(DriverDTO model);
+    Task<bool> Register(DriverRegisterDTO model);
+    Task<string> Login(DriverLoginDTO model);
     Task<List<Driver>> Gets();
 } 

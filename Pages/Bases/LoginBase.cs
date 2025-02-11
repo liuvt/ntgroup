@@ -30,7 +30,7 @@ public class LoginBase : ComponentBase
 
     #region Private to handler with data                             
     // Login
-    private async Task LoginHandler(DriverDTO _models)
+    private async Task LoginHandler(DriverLoginDTO _models)
     {
         try
         {
@@ -52,7 +52,7 @@ public class LoginBase : ComponentBase
     #endregion
 
     #region EditFrom to login
-    protected DriverDTO models = new DriverDTO();
+    protected DriverLoginDTO models = new DriverLoginDTO();
     protected bool _processing = false;
     protected string textResult;
 
@@ -68,7 +68,7 @@ public class LoginBase : ComponentBase
     // Clean models
     protected async Task ClearEditForm()
     {
-        models = new DriverDTO();
+        models = new DriverLoginDTO();
         _processing = false;
         StateHasChanged();
     }

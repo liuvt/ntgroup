@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Microsoft.JSInterop;
 using ntgroup.Services;
 
 namespace ntgroup.Shared;

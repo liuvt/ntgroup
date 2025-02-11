@@ -33,11 +33,11 @@ public class AuthenService : AuthenticationStateProvider, IAuthenService
         - Set Token to LocalStorage
         - Call BuildAuthenticationState(token) to check state login
     */
-    public async Task<string> Login(DriverDTO login)
+    public async Task<string> Login(DriverLoginDTO login)
     {
         try
         {
-            var response = await httpClient.PostAsJsonAsync<DriverDTO>("api/SpreadsAuthen/Auth/Login", login);
+            var response = await httpClient.PostAsJsonAsync<DriverLoginDTO>("api/SpreadsAuthen/Auth/Login", login);
 
             if (response.IsSuccessStatusCode)
             {
@@ -139,11 +139,11 @@ public class AuthenService : AuthenticationStateProvider, IAuthenService
     }
 
 
-    public async Task<bool> Register(DriverDTO register)
+    public async Task<bool> Register(DriverRegisterDTO register)
     {
         try
         {
-            var response = await httpClient.PostAsJsonAsync<DriverDTO>("api/SpreadsAuthen/Auth/Register", register);
+            var response = await httpClient.PostAsJsonAsync<DriverRegisterDTO>("api/SpreadsAuthen/Auth/Register", register);
 
             if (response.IsSuccessStatusCode)
             {
