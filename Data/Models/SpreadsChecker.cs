@@ -9,6 +9,7 @@ public class SpreadsChecker
 {
 }
 
+// Báo cáo doanh thu chi tiết
 public class ReportContract //Hợp đồng
 {
     [Key]

@@ -8,5 +8,5 @@ public interface ISpreadsAuthenServer
 {
     Task<bool> Register(DriverRegisterDTO model);
     Task<string> Login(DriverLoginDTO model);
-    Task<List<Driver>> Gets();
+    Task<List<NTUser>> Gets();
 } 

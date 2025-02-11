@@ -51,7 +51,7 @@ public class SpreadsAuthenController : ControllerBase
     }
 
     [HttpGet("Auth/Gets"), Authorize(Roles = "Owner")] //Sử dụng RoleName để xác thực
-    public async Task<ActionResult<List<Driver>>> Gets()
+    public async Task<ActionResult<List<NTUser>>> Gets()
     {
         try
         {

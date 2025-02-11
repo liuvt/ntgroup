@@ -51,18 +51,18 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
 
     #region Users
     // Lấy toàn thông tin sheets   
-    public async Task<List<Driver>> Gets()
+    public async Task<List<NTUser>> Gets()
     {
         try
         {
-            var listDrivers = new List<Driver>();
+            var listDrivers = new List<NTUser>();
             var range = $"{sheetUsers}!A2:H";
             var values = await GGSExtensions.APIGetValues(sheetsService, spreadSheetId, range);
             if (values != null && values.Count > 0)
             {
                 foreach (var item in values)
                 {
-                    listDrivers.Add(new Driver
+                    listDrivers.Add(new NTUser
                     {
                         Id = item[0].ToString() ?? string.Empty,
                         Username = item[1].ToString() ?? string.Empty,
@@ -91,7 +91,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     }
 
     // Lấy thông tin qua ID
-    public async Task<Driver> GetById(string Id)
+    public async Task<NTUser> GetById(string Id)
     {
         var listDrivers = await this.Gets();
         var byId = listDrivers.Where(a => a.Id == Id).FirstOrDefault();
@@ -141,7 +141,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
             await GGSExtensions.APICreateValues(sheetsService, spreadSheetId, range, valueRange);
            
             //Tạo role cho user
-            await CreateUserRole(objectList[0].ToString()!, "2", model.Area_Id);
+            await CreateUserRole(objectList[0].ToString()!, "5", model.Area_Id);
 
             return true;
         }
@@ -181,24 +181,24 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
     }
     #endregion
 
-    private async Task<string> CreateToken(Driver _driver)
+    private async Task<string> CreateToken(NTUser _ntUser)
     {
         try
         {
             
             // Lấy thông tin UserRole
-            var userRole = await this.GetUserRole(_driver.Id);
+            var userRole = await this.GetUserRole(_ntUser.Id);
             // Lấy role
             var role = await this.GetRole(userRole.role_Id);
 
             //Thông tin User đưa vào Token
             var listClaims = new List<Claim>
                         {
-                            new Claim("id", _driver.Id),
-                            new Claim("username", _driver.Username),
+                            new Claim("id", _ntUser.Id),
+                            new Claim("username", _ntUser.Username),
                             new Claim("area", userRole.area_Id),
                             new Claim(ClaimTypes.Role, role.role_Name),
-                            new Claim(JwtRegisteredClaimNames.Jti, _driver.Id)
+                            new Claim(JwtRegisteredClaimNames.Jti, _ntUser.Id)
                         };
 
             //Khóa bí mật
@@ -298,7 +298,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
         }
     }
 
-    private async Task CreateUserRole(string driver_Id, string user_Id, string area_Id)
+    private async Task CreateUserRole(string user_Id, string role_Id, string area_Id)
     {
         try
         {  
@@ -307,7 +307,7 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
             {
                 Values = new List<IList<object>> 
                 { 
-                    new List<object> { driver_Id, user_Id, area_Id } 
+                    new List<object> { user_Id, role_Id, area_Id } 
                 }
             });
             Console.WriteLine("Create UserRole success");
