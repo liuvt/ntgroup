@@ -10,13 +10,13 @@ namespace ntgroup.Controllers;
 [Route("api/[controller]")]
 public class SpreadsAuthenController : ControllerBase
 {
-    private readonly ISpreadsAuthenServer spreadsAuthenServer;
+    private readonly ISpreadsAuthenServer context;
     //Get API Server
     private readonly ILogger<SpreadsAuthenController> logger;
-    public SpreadsAuthenController(ILogger<SpreadsAuthenController> _logger, ISpreadsAuthenServer _spreadsAuthenServer)
+    public SpreadsAuthenController(ILogger<SpreadsAuthenController> _logger, ISpreadsAuthenServer _context)
     {
         this.logger = _logger;
-        this.spreadsAuthenServer = _spreadsAuthenServer;
+        this.context = _context;
     }
 
     [HttpPost("Auth/Register")]
@@ -24,7 +24,7 @@ public class SpreadsAuthenController : ControllerBase
     {
         try
         {
-            var result = await this.spreadsAuthenServer.Register(model);
+            var result = await this.context.Register(model);
             
             return Ok(result);
         }
@@ -40,7 +40,7 @@ public class SpreadsAuthenController : ControllerBase
         try
         {
 
-            var result = await this.spreadsAuthenServer.Login(model);
+            var result = await this.context.Login(model);
             return Ok(result);
         }
         catch (Exception ex)
@@ -55,7 +55,7 @@ public class SpreadsAuthenController : ControllerBase
     {
         try
         {
-            return Ok(await this.spreadsAuthenServer.Gets());
+            return Ok(await this.context.Gets());
         }
         catch (Exception ex)
         {

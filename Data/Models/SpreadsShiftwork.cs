@@ -18,7 +18,7 @@ public class Shiftwork
     public string ShiftworkType { get; set; } = string.Empty;
     public string ShiftworkStatus { get; set; } = string.Empty;
     public string ShiftworkNote { get; set; } = string.Empty;
-    public DateTime? CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 }
 
 public class Drive
@@ -29,5 +29,5 @@ public class Drive
     public string drive_Name { get; set; } = string.Empty;
     public string drive_Type { get; set; } = string.Empty;
     public string drive_Static { get; set; } = string.Empty;
-    public DateTime? CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

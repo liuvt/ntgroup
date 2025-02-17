@@ -87,7 +87,6 @@ public class SpreadsAuthenServer : ISpreadsAuthenServer
 
             throw new Exception($"Lỗi dữ liệu. {ex.Message}");
         }
-
     }
 
     // Lấy thông tin qua ID
