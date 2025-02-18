@@ -128,7 +128,7 @@ builder.Services.AddSwaggerGen(
 );
 
 // API: Register APIs
-builder.Services.AddScoped<IAuthServer, AuthServer>();
+builder.Services.AddScoped<ISpreadsShiftworkServer, SpreadsShiftworkServer>();
 builder.Services.AddScoped<ISpreadsConfigServer, SpreadsConfigServer>();
 builder.Services.AddScoped<ISpreadsAuthenServer, SpreadsAuthenServer>();
 

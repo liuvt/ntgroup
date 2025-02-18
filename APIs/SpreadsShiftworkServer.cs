@@ -21,6 +21,7 @@ public class SpreadsShiftworkServer : ISpreadsShiftworkServer
     protected readonly IConfiguration configuration;
     private readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
     private readonly string sheetDrives = "Drives";
+    private readonly string sheetShiftworks = "Shiftworks";
     private readonly string spreadSheetId = "1VX5fbHH4A5rabQOi6lMBWEzo_Fk8QpzgzmvQ_p1_feo"; //SpreadID of DBShiftworkDrive
     private SheetsService sheetsService;
 
@@ -46,9 +47,32 @@ public class SpreadsShiftworkServer : ISpreadsShiftworkServer
 
     }
 
-    Task<bool> ISpreadsShiftworkServer.CreateDrive(Drive model)
+    public async Task<bool> CreateDrive(Drive model)
     {
-        throw new NotImplementedException();
+        try
+        {  
+            //Create extensions
+            await GGSExtensions.APICreateValues(sheetsService, spreadSheetId, $"{sheetDrives}!A2:F", new ValueRange 
+            {
+                Values = new List<IList<object>> 
+                { 
+                    new List<object> { 
+                        Guid.NewGuid(), 
+                        model.drive_Plate, 
+                        model.drive_Name, 
+                        model.drive_Type, 
+                        model.drive_Static, 
+                        DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") 
+                    } 
+                }
+            });
+            Console.WriteLine("Create Drive success");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
     }
 
     Task<bool> ISpreadsShiftworkServer.DeleteDrive(string drive_Id)
@@ -61,9 +85,17 @@ public class SpreadsShiftworkServer : ISpreadsShiftworkServer
         throw new NotImplementedException();
     }
 
-    Task<Drive> ISpreadsShiftworkServer.GetDriveById(string drive_Id)
+    public async Task<Drive> GetDriveById(string drive_Id)
     {
-        throw new NotImplementedException();
+        var listDrives = await this.GetsDriveAll();
+        var byId = listDrives.Where(a => a.drive_Id == drive_Id).FirstOrDefault();
+
+        if (byId == null)
+        {
+            throw new Exception($"ID xe ({drive_Id}) không tồn tại!");
+        }
+
+        return byId;
     }
 
     public async Task<List<Drive>> GetsDriveAll()
