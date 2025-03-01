@@ -48,9 +48,6 @@ public class CheckDetailBase : ComponentBase
             // Thông tin Tổng và QR chuyển khoản
             shiftworks = await spreadsCheckerService.GetShiftworksByNumberCar(numberCar.ToUpper(),area.area_SpreadId,banking); // QR Kiên Giang
             
-            // Tổng ví
-            totalWallet = await spreadsCheckerService.TotalWalletGSMByNumberCar(numberCar.ToUpper(),area.area_SpreadId);
-            
             // Tổng tiền hợp đồng
             totalPriceContract = SumString.SumListString(contracts.Cast<object>().ToList(), "TotalPrice");
             // Tổng tiền đồng hồ

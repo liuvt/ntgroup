@@ -17,5 +17,4 @@ public interface ISpreadsCheckerService
     Task<List<ReportTimepiece>> GetTimepiecesByNumberCar(string numberCar, string area_SpreadId);
     Task<ReportTotal> GetShiftworksByNumberCar(string numberCar, string area_SpreadId, Banking banking);
     Task<ReportTotal> GetShiftworksByNumberCar(string numberCar, string area_SpreadId);
-    Task<string> TotalWalletGSMByNumberCar(string numberCar, string area_SpreadId);
 }

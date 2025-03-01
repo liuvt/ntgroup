@@ -1,0 +1,37 @@
+@page "/revenues"
+@inherits RevenueBase
+
+<PageTitle>Doanh thu lái xe</PageTitle>
+
+<MudMainContent Class="pa-5 augReFont">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+        <MudGrid>
+            <!-- Header Section -->
+            <MudItem xs="12">
+                <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">DOANH THU LÁI XE</MudText>
+            </MudItem>
+            <!-- Header Section -->
+
+            <!-- Filter Section -->
+        </MudGrid>
+        <MudDataGrid T="StatisticalReport" MultiSelection="true" Items="@statisticalDetail" SortMode="SortMode.Multiple" Filterable="true"
+                FilterMode="DataGridFilterMode.ColumnFilterRow">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Thông tin chi tiết</MudText>
+                    <MudSpacer />
+                </ToolBarContent>
+                <Columns>
+                    <!--<SelectColumn T="StatisticalReport" />-->
+                    <PropertyColumn Property="x => x.id" Title="ID" Sortable="false" Filterable="false" />
+                    <PropertyColumn Property="x => x.msnv" Title="Mã NV"/>
+                    <PropertyColumn Property="x => x.hoten_laixe" Title="Lái xe"/>
+                    <PropertyColumn Property="x => x.tien_phai_thu" Title="Tiền phải thu"/>
+                    <PropertyColumn Property="x => x.doanh_thu" Title="Doanh thu" />
+                    <PropertyColumn Property="x => x.thoi_gian_tao" Title="Ngày" />
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="StatisticalReport" />
+                </PagerContent>
+            </MudDataGrid>
+    </MudContainer>
+</MudMainContent>

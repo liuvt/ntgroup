@@ -64,6 +64,4 @@ public static class GGSExtensions
         await appendRequest.ExecuteAsync();
     }
 
-     
-
 }

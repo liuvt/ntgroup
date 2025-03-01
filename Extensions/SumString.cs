@@ -6,18 +6,18 @@ public static class SumString
 {
 
     // Value là danh sách, namefields là tên cột cần tính tổng
-    public static string SumListString(List<object> value, string namefields)
+    public static string SumListString<T>(List<T> value, string namefields)
     {
         // Sum the values of all contracts, assuming each object has a 'Price' property.
         var totalList = value.Sum(e =>
         {
             // Lấy tên cột
-            var fieldsNameToSum = e.GetType().GetProperty(namefields)?.GetValue(e)?.ToString();
+            var fieldsNameToSum = e.GetType().GetProperty(namefields)?.GetValue(e)?.ToString() ?? "0";
             
             // Sau khi định dang tiền là hàng nghìn (.), thì decimal hiểu đó là phần thập phân (,) dẫn đến mất các số 0 phía sau dấu (.)
             // Do đó cần thay đổi dâu (.) thành dấu (,) để decimal hiểu được đâu là phần thập phân, đâu là hàng nghìn 
             // Trim(): Loại bỏ khoảng trắng thừa
-            fieldsNameToSum = fieldsNameToSum?.Replace(".", ",").Trim();
+            fieldsNameToSum = fieldsNameToSum?.Replace(".", "").Replace(",", "").Trim();
             // Try to parse the price string to decimal
             if (decimal.TryParse(fieldsNameToSum, out decimal price))
             {

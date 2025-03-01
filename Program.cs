@@ -131,10 +131,12 @@ builder.Services.AddSwaggerGen(
 builder.Services.AddScoped<ISpreadsShiftworkServer, SpreadsShiftworkServer>();
 builder.Services.AddScoped<ISpreadsConfigServer, SpreadsConfigServer>();
 builder.Services.AddScoped<ISpreadsAuthenServer, SpreadsAuthenServer>();
+builder.Services.AddScoped<ISpreadsReportServer, SpreadsReportServer>();
 
 // UI: Register Services
 builder.Services.AddScoped<ISpreadsRegisterContractService, SpreadsRegisterContractService>();
 builder.Services.AddScoped<ISpreadsCheckerService, SpreadsCheckerService>();
+builder.Services.AddScoped<ISpreadsReportService, SpreadsReportService>();
 
 // UI: Register Services Config to APIs
 builder.Services.AddScoped<ISpreadsConfigService, SpreadsConfigService>();
