@@ -7,17 +7,19 @@ public class SpreadsReport
 {
 }
 
-public class StatisticalReportTotal
+// Doanh thu tổng, đếm số bản ghi
+public class StatisticalReport
 {
     public string id {get; set;} = string.Empty;
     public string cashbasis {get; set;} = string.Empty;
     public string revenue {get; set;} = string.Empty;
     public int records {get; set;}
     public string createdAt {get; set;} = string.Empty;
-    public List<StatisticalReport>? statisticalReports {get; set;} 
+    public List<StatisticalReportDetail>? statisticalReportDetails {get; set;} 
 }
 
-public class StatisticalReport {
+// Chi tiết doanh thu của lái xe
+public class StatisticalReportDetail {
     public string id {get; set;} = string.Empty;
     public string stt {get; set;} = string.Empty;
     public string thoi_gian_tao {get; set;} = string.Empty;
@@ -60,4 +62,44 @@ public class StatisticalReport {
     public string tru_chenhlech_gsm {get; set;} = string.Empty;
     public string hinhthuc_kinhdoanh {get; set;} = string.Empty;
     public string tratruoc_trasau {get; set;} = string.Empty;
+}
+
+public class Cashbasis
+{
+    public string id {get; set;} = string.Empty;
+    public string cashbasis {get; set;} = string.Empty;
+    public string revenue {get; set;} = string.Empty;
+    public int records {get; set;}
+    public string createdAt {get; set;} = string.Empty;
+    public List<CashbasisDetail>? statisticalReports {get; set;} 
+}
+// Chi tiết các khoản trừ của lái xe
+public class CashbasisDetail {
+    public string id {get; set;} = string.Empty;
+    public string id_tongdoanhthu {get; set;} = string.Empty;
+    public string nhan_vien_tao {get; set;} = string.Empty;
+    public string ngay_tao {get; set;} = string.Empty;
+    public string thang_nam {get; set;} = string.Empty;
+    public string so_tai {get; set;} = string.Empty;
+    public string msnv {get; set;} = string.Empty;
+    public string hoten_laixe {get; set;} = string.Empty;
+    public string hoten_msnv {get; set;} = string.Empty;
+    public string tru_kyquy {get; set;} = string.Empty;
+    public string tru_tainan {get; set;} = string.Empty;
+    public string tru_luongung {get; set;} = string.Empty;
+    public string tru_vipham_bienban {get; set;} = string.Empty;
+    public string tru_bhxh {get; set;} = string.Empty;
+    public string tru_tncn {get; set;} = string.Empty;
+    public string tru_trachnhiem_baoquan_xe {get; set;} = string.Empty;
+    public string tru__trachnhiem_loi_dongphuc {get; set;} = string.Empty;
+    public string tru_trachnhiem_giaoca {get; set;} = string.Empty;
+    public string tru_phidaudo {get; set;} = string.Empty;
+    public string tru_khac {get; set;} = string.Empty;
+    public string ghichu_trukhac {get; set;} = string.Empty;
+    public string ghi_chu {get; set;} = string.Empty;
+    public string show_thongtinchung {get; set;} = string.Empty;
+    public string show_cackhoantru {get; set;} = string.Empty;
+    public string show_trutien_trachnhiem {get; set;} = string.Empty;
+    public string tru_tienquatram {get; set;} = string.Empty;
+    public string tru_tamung {get; set;} = string.Empty;
 }

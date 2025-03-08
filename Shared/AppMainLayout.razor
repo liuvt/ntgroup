@@ -2,7 +2,15 @@
 
 <MudThemeProvider Theme="@_theme" />
 <MudPopoverProvider />
-<MudDialogProvider />
+<MudDialogProvider
+    FullWidth="true"
+    MaxWidth="MaxWidth.ExtraExtraLarge"
+    CloseButton="true"
+    BackdropClick="false"
+    NoHeader="false"
+    Position="DialogPosition.Center"
+    CloseOnEscapeKey="true"
+    BackgroundClass="augReFont"/>
 <MudSnackbarProvider />
 
 <MudLayout>
@@ -28,9 +36,13 @@
             <MudLink Href="/" Underline="Underline.None" Color="Color.Primary">
                 <MudText Typo="Typo.body1">Trang chủ</MudText>
             </MudLink>
-            <MudLink Href="/revenues" Underline="Underline.None" Color="Color.Primary">
-                <MudText Typo="Typo.body1">Doanh thu</MudText>
-            </MudLink>
+            <AuthorizeView Roles="Owner,Manager,Accountant,Checker">
+                <Authorized>
+                    <MudLink Href="/revenues" Underline="Underline.None" Color="Color.Primary">
+                        <MudText Typo="Typo.body1">Doanh thu</MudText>
+                    </MudLink>
+                </Authorized>
+            </AuthorizeView>
         </MudItem>
 
         <!-- Infomation Option MudMenu -->

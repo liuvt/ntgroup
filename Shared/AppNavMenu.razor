@@ -4,10 +4,16 @@
 <MudDrawerContainer>
     <MudNavMenu>
         <MudNavLink Href="/" Match="NavLinkMatch.All">Trang chủ</MudNavLink>
-        <MudNavLink Href="/revenues" Match="NavLinkMatch.All">Doanh thu</MudNavLink>
+        <!-- Hiển thị "Doanh thu" chỉ khi user là Admin hoặc Owner -->
+        <AuthorizeView Roles="Owner,Manager,Accountant,Checker">
+            <Authorized>
+                <MudNavLink Href="/revenues"  Match="NavLinkMatch.All">Doanh thu</MudNavLink>
+            </Authorized>
+        </AuthorizeView>
+
         <AuthorizeView>
             <NotAuthorized>
-                <MudNavLink Href="/login" Match="NavLinkMatch.All">
+                <MudNavLink Href="/login"  Match="NavLinkMatch.All">
                     <MudItem Class="d-flex">
                         <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.Login"/>
                         <MudText Color="Color.Error">Đăng nhập</MudText>
@@ -16,7 +22,7 @@
             </NotAuthorized>
             <Authorized>
                 <MudNavLink>
-                    <MudItem @onclick="@(()=> Logout_Click())" Class="d-flex">
+                    <MudItem @onclick="@(()=> Logout_Click())" Class="d-flex"  Match="NavLinkMatch.All">
                         <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.Logout"/>
                         <MudText Color="Color.Error">Đăng xuất</MudText>
                     </MudItem>

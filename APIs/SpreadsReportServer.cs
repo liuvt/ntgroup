@@ -25,6 +25,8 @@ public class SpreadsReportServer : ISpreadsReportServer
     // Lấy SpreadSheetId để đỗ dữ liệu
     private readonly string spreadSheetId = "1Q642xyAmlz2qoxAszCJsOJTLxrcBlefpIFLJSJvAdoI";
     private readonly string sheetDOANH_THU_LX_NGAY_DIEN = "DOANH_THU_LX_NGAY_DIEN";
+    private readonly string sheetCAC_KHOAN_TRU_LUONG_LX_DIEN = "CAC_KHOAN_TRU_LUONG_LX_DIEN";
+    
     private SheetsService sheetsService;
 
     // Constructor
@@ -50,18 +52,18 @@ public class SpreadsReportServer : ISpreadsReportServer
     }
 
     // Lấy toàn bộ thông tin doanh thu lái xe mỗi ngày trong tháng
-    public async Task<List<StatisticalReport>> Gets()
+    public async Task<List<StatisticalReportDetail>> GetsStatisticalReportDetail()
     {
         try
         {
-            var statisticalReport = new List<StatisticalReport>();
+            var statisticalReport = new List<StatisticalReportDetail>();
             var range = $"{sheetDOANH_THU_LX_NGAY_DIEN}!A2:AP";
             var values = await GGSExtensions.APIGetValues(sheetsService, spreadSheetId, range);
             if (values != null && values.Count > 0)
             {
                 foreach (var item in values)
                 {
-                    statisticalReport.Add(new StatisticalReport
+                    statisticalReport.Add(new StatisticalReportDetail
                     {
                         id = item[0].ToString() ?? string.Empty,
                         stt = item[1].ToString() ?? string.Empty,
@@ -122,56 +124,28 @@ public class SpreadsReportServer : ISpreadsReportServer
         }
     }
 
-    public async Task<StatisticalReportTotal> GetsTotal()
+    public async Task<StatisticalReport> GetsStatisticalReportByMonth(string month)
     {
         try
         {
-            var newObject = await this.Gets();
-            if (newObject == null || newObject.Count <= 0)
-            {
-                throw new Exception($"Không tồn tại!");
-            }
-
-            var total = new StatisticalReportTotal
-            {
-                id = Guid.NewGuid().ToString(),
-                cashbasis = SumString.SumListString<StatisticalReport>(newObject, "tien_phai_thu"),
-                revenue = SumString.SumListString<StatisticalReport>(newObject, "doanh_thu"),
-                records = newObject.Count,
-                createdAt = newObject.Select(a => a.thang_nam).FirstOrDefault() ?? string.Empty,
-                statisticalReports = newObject
-            };
-
-            return total;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Lỗi dữ liệu. {ex.Message}");
-        }
-    }
-
-    public async Task<StatisticalReportTotal> GetsTotalbyMonth(string month)
-    {
-        try
-        {
-            var newObject = await this.Gets();
+            var newObject = await this.GetsStatisticalReportDetail();
             var formatbyDate = month.Replace("%2F", "/");
 
             var result = newObject.Where(a => a.thang_nam == formatbyDate).ToList();
 
-            if (result == null || result.Count <= 0)
+            if (!result.Any())
             {
                 throw new Exception($"Không tồn tại!");
             }
 
-            var total = new StatisticalReportTotal
+            var total = new StatisticalReport
             {
                 id = Guid.NewGuid().ToString(),
-                cashbasis = SumString.SumListString<StatisticalReport>(result, "tien_phai_thu"),
-                revenue = SumString.SumListString<StatisticalReport>(result, "doanh_thu"),
+                cashbasis = SumString.SumListString<StatisticalReportDetail>(result, "tien_phai_thu"),
+                revenue = SumString.SumListString<StatisticalReportDetail>(result, "doanh_thu"),
                 records = result.Count,
                 createdAt = formatbyDate,
-                statisticalReports = result
+                statisticalReportDetails = result
             };
 
             return total;
@@ -182,124 +156,35 @@ public class SpreadsReportServer : ISpreadsReportServer
         }
     }
 
-    // Select by id and Object
-    public async Task<StatisticalReport> Get(string id)
+    public async Task<StatisticalReport> GetsStatisticalReportByUserID(string month, string userId)
     {
         try
         {
-            var newObject = await this.Gets();
-            var byId = newObject.Where(a => a.id == id).FirstOrDefault()!;
+            var newObject = await this.GetsStatisticalReportDetail();
 
-            if (byId == null)
-            {
-                throw new Exception($"ID ({id}) không tồn tại!");
-            }
+            var result = newObject.Where(a => a.thang_nam == month.Replace("%2F", "/") && a.msnv == userId).ToList();
 
-
-            return byId;
-
-        }
-        catch (Exception ex)
-        {
-
-            throw new Exception($"Lỗi dữ liệu. {ex.Message}");
-        }
-    }
-
-    // Lấy danh sách các ngày của 1 tài xế thông qua userId 
-    public async Task<List<StatisticalReport>> GetsByUserId(string userId)
-    {
-        try
-        {
-            var newObject = await this.Gets();
-            var listByUserId = newObject.Where(a => a.msnv == userId).ToList();
-
-            if (listByUserId == null || listByUserId.Count <= 0)
+            if (!result.Any())
             {
                 throw new Exception($"Không tồn tại!");
             }
 
-            return listByUserId;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Lỗi dữ liệu. {ex.Message}");
-        }
-    }
-    
-    // Lấy danh sách các ngày của 1 tài xế thông qua userId 
-    public async Task<List<StatisticalReport>> GetsYesterday()
-    {
-        try
-        {
-            var newObject = await this.Gets();
-            var yesterday = DateTime.Now.AddDays(-1).ToString("dd/MM/yyyy");
-            var result = newObject.Where(a => a.thoi_gian_tao == yesterday).ToList();
-
-            if (result == null || result.Count <= 0)
-            {
-                throw new Exception($"Không tồn tại!");
-            }
-
-            return result;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Lỗi dữ liệu. {ex.Message}");
-        }
-    }
-
-    public async Task<StatisticalReportTotal> GetsYesterdayTotal()
-    {
-        try
-        {
-            var newObject = await this.Gets();
-            var yesterday = DateTime.Now.AddDays(-1).ToString("dd/MM/yyyy");
-            var result = newObject.Where(a => a.thoi_gian_tao == yesterday).ToList();
-
-            if (result == null || result.Count <= 0)
-            {
-                throw new Exception($"Không tồn tại!");
-            }
-
-            var total = new StatisticalReportTotal
+            var total = new StatisticalReport
             {
                 id = Guid.NewGuid().ToString(),
-                cashbasis = SumString.SumListString<StatisticalReport>(result, "tien_phai_thu"),
-                revenue = SumString.SumListString<StatisticalReport>(result, "doanh_thu"),
+                cashbasis = SumString.SumListString<StatisticalReportDetail>(result, "tien_phai_thu"),
+                revenue = SumString.SumListString<StatisticalReportDetail>(result, "doanh_thu"),
                 records = result.Count,
-                createdAt = yesterday,
-                statisticalReports = result
+                createdAt = month.Replace("%2F", "/"),
+                statisticalReportDetails = result
             };
 
             return total;
         }
         catch (Exception ex)
         {
-            throw new Exception($"Lỗi dữ liệu. {ex.Message}");
+            throw new Exception($"Lỗi dữ liệu.", ex);
         }
     }
 
-    // Lấy danh sách các ngày của 1 tài xế thông qua userId 
-    public async Task<List<StatisticalReport>> GetsByDay(string byDate)
-    {
-        try
-        {
-            var newObject = await this.Gets();
-            var formatbyDate = byDate.Replace("%2F", "/");
-
-            var result = newObject.Where(a => a.thoi_gian_tao == formatbyDate).ToList();
-
-            if (result == null || result.Count <= 0)
-            {
-                throw new Exception($"Không tồn tại!");
-            }
-
-            return result;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Lỗi dữ liệu. {ex.Message}");
-        }
-    }
 }

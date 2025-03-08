@@ -1,48 +1,14 @@
 <AuthorizeView>
     <Authorized>
-        <MudMenu>
+        <MudMenu Dense="true">
             <ActivatorContent>
                 <MudAvatar>
                     <MudImage Style="height:50px; width:50px; font-size:2rem;" Src="imgs/photos/avartar.jpg" />
                 </MudAvatar>
             </ActivatorContent>
             <ChildContent>
-                <MudMenuItem Href="/me">
-                    <MudItem Class="d-flex">
-                        <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.AccountCircle"/>
-                        <MudText>Thông tin</MudText>
-                    </MudItem>
-                </MudMenuItem>
-                <MudMenuItem Href="/check-detail/{numberCar}">
-                    <MudItem Class="d-flex">
-                        <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.AppRegistration"/>
-                        <MudText>Phiếu Check</MudText>
-                    </MudItem>
-                </MudMenuItem>
-                <MudMenuItem Href="orders">
-                    <MudItem Class="d-flex">
-                        <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.ShoppingBag"/>
-                        <MudText>Đơn đặt hàng</MudText>
-                    </MudItem>
-                </MudMenuItem>
-                <MudMenuItem Href="/">
-                    <MudItem Class="d-flex">
-                        <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.ManageAccounts"/>
-                        <MudText>Cài đặt</MudText>
-                    </MudItem>
-                </MudMenuItem>
-                <MudMenuItem Href="/faq">
-                    <MudItem Class="d-flex">
-                        <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.Help"/>
-                        <MudText>Trợ giúp</MudText>
-                    </MudItem>
-                </MudMenuItem>
-                <MudMenuItem @onclick="@(()=> Logout_Click())">
-                    <MudItem Class="d-flex">
-                        <MudIcon Class="mr-2" Icon="@Icons.Material.Filled.Logout"/>
-                        <MudText Color="Color.Error">Đăng xuất</MudText>
-                    </MudItem>
-                </MudMenuItem>
+                <MudMenuItem Href="/faq" Icon="@Icons.Material.Filled.Help" IconColor="Color.Secondary" Label="Trợ giúp" />
+                <MudMenuItem @onclick="@(()=> Logout_Click())" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error" Label="Đăng xuất" />
             </ChildContent>
         </MudMenu>
     </Authorized>

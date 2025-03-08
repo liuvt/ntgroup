@@ -1,0 +1,58 @@
+@page "/revenues"
+@inherits RevenueByMonthBase
+@attribute [Authorize (Roles = "Owner,Manager,Accountant,Checker")]
+
+<PageTitle>Doanh thu lái xe</PageTitle>
+
+<MudMainContent Class="pa-5 augReFont">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+        <MudText Class="d-flex justify-center" Color="Color.Primary" Typo="Typo.h4">DOANH THU LÁI XE</MudText>
+
+        <MudPaper Class="pa-3" Elevation="1">
+            <MudGrid Class="d-flex justify-center gap-4">
+                <MudItem xs="12" md="3">
+                    <MudDatePicker Label="Chọn doanh thu theo tháng" Culture="@culture" PickerVariant="PickerVariant.Dialog"
+                        HelperText="@_yearMonth?.ToString("MM/yyyy")" OpenTo="OpenTo.Year"
+                        FixDay="1" DateFormat="MM/yyyy" Color="Color.Success" DateChanged="OnDateChanged" Text="@_yearMonth?.ToString("MM/yyyy")"/>
+                </MudItem>
+                <MudItem xs="12" md="5" Class="">
+                    <MudItem Class="d-flex" xs="12" md="12" lg="12">
+                        <MudText Color="Color.Success">DOANH THU: @statisticalReport.revenue</MudText>
+                    </MudItem>
+                    <MudItem Class="d-flex" xs="12" md="12" lg="12">
+                        <MudText Color="Color.Success">TIỀN PHẢI THU: @statisticalReport.cashbasis</MudText>
+                    </MudItem>
+                    <MudItem Class="d-flex" xs="12" md="12" lg="12">
+                        <MudText Color="Color.Success">Tổng số bản ghi: @statisticalReport.records</MudText>
+                    </MudItem>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+
+        <MudDataGrid Class="mt-3" T="StatisticalReportDetailDTO" MultiSelection="true" Items="@statisticalReportDetailDTO"
+            SortMode="SortMode.Multiple" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterRow">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">CHI TIẾT DOANH THU THÁNG</MudText>
+                <MudSpacer />
+            </ToolBarContent>
+            <Columns>
+                <!--<SelectColumn T="StatisticalReport" />-->
+                <PropertyColumn Property="x => x.msnv" Title="Mã NV" />
+                <TemplateColumn T="StatisticalReportDetailDTO" Title="Lái xe">
+                    <CellTemplate>
+                        <MudButton @onclick="(() => OpenDialogAsync(context.Item.thang_nam, context.Item.msnv))" Color="Color.Primary">
+                            @context.Item.hoten_laixe
+                        </MudButton>
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property="x => x.tien_phai_thu" Format="N0" Title="Tiền phải thu" />
+                <PropertyColumn Property="x => x.doanh_thu" Format="N0" Title="Doanh thu" />
+                <PropertyColumn Property="x => x.loaihinh_hoptac" Title="Loại" />
+                <PropertyColumn Property="x => x.thang_nam" Title="Ngày" Sortable="false" Filterable="false" />
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="StatisticalReportDetailDTO" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudContainer>
+</MudMainContent>

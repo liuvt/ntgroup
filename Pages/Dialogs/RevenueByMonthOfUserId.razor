@@ -1,0 +1,55 @@
+@inherits RevenueByMonthOfUserIdBase
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Color="Color.Primary">DOANH THU CHI TIẾT LÁI XE</MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (_loading)
+        {
+            <MudProgressCircular Indeterminate="true"></MudProgressCircular>
+        }
+        else
+        {
+            <MudPaper Class="pa-3" Elevation="1">
+                <MudItem Class="d-flex">
+                    <MudText Typo="Typo.h6" Color="Color.Success">Lái xe: @statisticalReportDetail.Select(e => e.hoten_laixe).FirstOrDefault()
+                    </MudText>
+                </MudItem>
+                <MudItem Class="d-flex">
+                    <MudText Typo="Typo.h6" Color="Color.Success">Doanh thu: @statisticalReport.revenue</MudText>
+                </MudItem>
+                <MudItem Class="d-flex">
+                    <MudText Typo="Typo.h6" Color="Color.Success">Số ca: @statisticalReport.records</MudText>
+                </MudItem>
+            </MudPaper>
+            <MudDivider />
+            <MudDataGrid Class="mt-5" T="StatisticalReportDetail" MultiSelection="true" Items="@statisticalReportDetail"
+                SortMode="SortMode.Multiple" FilterMode="DataGridFilterMode.ColumnFilterRow">
+                <ToolBarContent>
+                    <MudGrid Class="d-flex justify-between pa-3">
+                        <MudItem>
+                            <MudText Typo="Typo.h6">CHI TIẾT @statisticalReport.createdAt</MudText>
+                        </MudItem>
+                    </MudGrid>
+                </ToolBarContent>
+                <Columns>
+                    <!--<SelectColumn T="StatisticalReport" />-->
+                    <PropertyColumn Property="x => x.thoi_gian_tao" Title="Ngày lên ca" Sortable="false" Filterable="false" />
+                    <PropertyColumn Property="x => x.bks_sotai" Title="Biễn số - số hiệu" />
+                    <PropertyColumn Property="x => x.hoten_msnv" Title="Lái xe - mã nhân viên" />
+                    <PropertyColumn Property="x => x.doanh_thu" Title="Doanh thu" />
+                    <PropertyColumn Property="x => x.km_taplo" Title="KM Rỗng" />
+                    <PropertyColumn Property="x => x.sokm_vandoanh" Title="KM Tổng" />
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="StatisticalReportDetail" />
+                </PagerContent>
+            </MudDataGrid>
+        }
+    </DialogContent>
+    <DialogActions>
+        <!--<MudButton OnClick="Cancel">Thoát</MudButton>-->
+        <MudButton Color="Color.Primary" OnClick="Ok">Thoát</MudButton>
+    </DialogActions>
+</MudDialog>

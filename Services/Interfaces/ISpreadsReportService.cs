@@ -5,5 +5,7 @@ namespace ntgroup.Services.Interfaces;
 
 public interface ISpreadsReportService
 {
-    Task<StatisticalReportTotal> GetsTotal();
+    // Chi tiết doanh thu của lái xe
+    Task<StatisticalReport> GetsStatisticalReportByMonth(string month);
+    Task<StatisticalReport> GetsStatisticalReportByUserID(string month, string userId);
 } 

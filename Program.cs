@@ -20,8 +20,25 @@ using ntgroup.APIs;
 using ntgroup.Services.Interfaces;
 using ntgroup.Services;
 using ntgroup;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Cấu hình mặc định cho toàn bộ ứng dụng
+var cultureInfo = new CultureInfo("vi-VN");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+// Cấu hình Middleware để áp dụng Culture cho Request
+var supportedCultures = new[] { cultureInfo };
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture(cultureInfo);
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
 
 // API: Connect to Mysql server
 builder.Services.AddDbContext<ntgroupDbContext>(
@@ -166,9 +183,18 @@ else // API: Add run Swagger UI: https://localhost:5110/swagger/index.html
         }
     );
 }
+app.UseStaticFiles();
+// QUAN TRỌNG: Áp dụng Middleware Localization chuyển số tiền không mất 0 trên hosting
+/*
+web.config
+
+<system.web>
+        <globalization culture="vi-VN" uiCulture="vi-VN"/>
+</system.web>
+*/
+app.UseRequestLocalization();
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 app.UseRouting();
 
 // API: Add Authoz and Authen
