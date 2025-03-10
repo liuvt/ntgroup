@@ -16,12 +16,23 @@ public class IndexBase : ComponentBase
 {
 
     [Inject]
-    protected ISpreadsRegisterContractService sheetRegisterContractService { get; set; }
-    protected IEnumerable<DefaultContract> defaultContracts = new List<DefaultContract>();
-    protected string _searchString {get; set;} = string.Empty; //TextFields
-    protected string stringValue { get; set; } = string.Empty; // TextSelect
-    protected string stringResult { get; set; } = string.Empty; // Kết quả trả về khi không tìm thấy đối tượng
+    protected ISpreadsRecuitmentService recuitmentService { get; set; }
+    protected List<Job> jobs = new List<Job>();
+    protected Job job = new Job();
+    protected bool isLoaded = false;
+
     protected override async Task OnInitializedAsync()
     {
+        try
+        {
+            jobs = await recuitmentService.GetsJobs();
+            isLoaded = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
+
+    
 }   

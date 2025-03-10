@@ -14,6 +14,48 @@
             <MudItem xs="12">
                 <MudText Class="d-flex justify-center">Uploading...</MudText>
             </MudItem>
+            @if(isLoaded)
+            {
+                <!-- Card Section -->
+                @foreach(var item in jobs) // Group by Date (ignoring Time)
+                {
+                    var date = DateTime.TryParse(item.createdAt, out DateTime createdAt) ? createdAt : DateTime.Now;
+                    var picture = item.img;
+
+                        <MudItem xs="12" md="6" lg="3">
+                            <MudCard>
+                                <MudCardMedia Image="@picture" Height="200" />
+                                <MudCardContent>
+                                    <MudText Typo="Typo.h6" Style="text-transform: uppercase;">@item.title</MudText>
+                                    <MudText Class="mt-3" Typo="Typo.body2">@(item.description.Length > 20 ? item.description.Substring(0, 100) + "..." : item.description)</MudText>
+                                    <MudDivider Class="mt-3"/>
+                                    <MudText Class="mt-3" Typo="Typo.body2">Nhà tuyển dụng: @item.Company.company_name</MudText>
+                                    <MudText Typo="Typo.body2">Lương: @(decimal.TryParse(item.salary_range, out decimal salary) 
+                                        ? salary.ToString("#,0", new System.Globalization.CultureInfo("vi-VN")) 
+                                        : "Thương lượng")</MudText>
+                                    <MudItem>
+                                        <MudText Class="d-flex justify-content-end" Typo="Typo.body2" Color="Color.Error">Ngày hết hạn: @(DateTime.TryParse(item.createdAt, out DateTime createdAt) 
+                                            ? createdAt.AddDays(30).ToString("dd/MM/yyyy") 
+                                            : "Ngày không hợp lệ")</MudText>
+                                    </MudItem>
+                                </MudCardContent>
+                                <MudCardActions>
+                                    <MudText Color="Color.Warning">@item.job_type</MudText>
+                                    <MudSpacer />
+                                    @if(date.AddDays(30) < DateTime.Now)
+                                    {
+                                        <MudButton Variant="Variant.Text" Disabled=true Color="Color.Secondary">Hết hạn</MudButton>
+                                    }
+                                    else
+                                    {
+                                        <MudButton Variant="Variant.Text" Color="Color.Primary">Xem chi tiết</MudButton>
+                                    }
+                                </MudCardActions>
+                            </MudCard>
+                        </MudItem>
+                }
+            }
         </MudGrid>
     </MudContainer>
 </MudMainContent>
+

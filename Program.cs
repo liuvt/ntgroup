@@ -40,28 +40,6 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedUICultures = supportedCultures;
 });
 
-// API: Connect to Mysql server
-builder.Services.AddDbContext<ntgroupDbContext>(
-    opt =>
-    {
-        opt.UseMySql(builder.Configuration.GetConnectionString("Default"),
-        Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.31-mysql"));
-        /*
-            Fix error: The instance of entity type cannot be tracked because another instance 
-                                                with the same key value for { 'ID'} is already being tracked.
-            Các truy vấn trên Repository chỉ được xem, không thể cập nhật. Để cập nhật/thêm mới/xóa: 
-            - Update: context.Entry<Entities>(_model).State = EntityState.Modified;
-            - Add: context.Entry<Entities>(_model).State = EntityState.Added;
-            - Delete: context.Entry<Entities>(_model).State = EntityState.Deleted;
-        */
-        opt.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
-    }, ServiceLifetime.Transient
-);
-
-// API: Add Identity
-builder.Services.AddIdentity<AppUser, IdentityRole>()
-        .AddEntityFrameworkStores<ntgroupDbContext>()
-        .AddDefaultTokenProviders();
 // UI: Tăng kích thước bộ nhớ đệm
 builder.Services.AddSignalR(e =>
 {
@@ -149,11 +127,13 @@ builder.Services.AddScoped<ISpreadsShiftworkServer, SpreadsShiftworkServer>();
 builder.Services.AddScoped<ISpreadsConfigServer, SpreadsConfigServer>();
 builder.Services.AddScoped<ISpreadsAuthenServer, SpreadsAuthenServer>();
 builder.Services.AddScoped<ISpreadsReportServer, SpreadsReportServer>();
+builder.Services.AddScoped<ISpreadsRecruitmentServer, SpreadsRecruitmentServer>();
 
 // UI: Register Services
 builder.Services.AddScoped<ISpreadsRegisterContractService, SpreadsRegisterContractService>();
 builder.Services.AddScoped<ISpreadsCheckerService, SpreadsCheckerService>();
 builder.Services.AddScoped<ISpreadsReportService, SpreadsReportService>();
+builder.Services.AddScoped<ISpreadsRecuitmentService, SpreadsRecuitmentService>();
 
 // UI: Register Services Config to APIs
 builder.Services.AddScoped<ISpreadsConfigService, SpreadsConfigService>();
