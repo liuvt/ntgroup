@@ -49,4 +49,18 @@ public static class SumString
         }
 
     }
+
+    // Helper method to safely convert and sum string values
+    public static string SumFields(List<string> fields)
+    {
+        decimal sum = 0;
+        foreach (var field in fields)
+        {
+            if (decimal.TryParse(field, out decimal value))
+            {
+                sum += value;
+            }
+        }
+        return FormatCurrency.formatCurrency(sum.ToString());
+    }
 }

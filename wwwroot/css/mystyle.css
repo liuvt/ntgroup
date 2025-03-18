@@ -18,6 +18,7 @@ p, div {
     line-height: 1.334;
     text-transform: none;
 }
+
 /* =========================================================================================== */
 /* Format font style */
 .augReFont {
@@ -70,7 +71,6 @@ button {
 .moving-top:hover {
     transform: translateY(0px) !important;
 }
-
 
 /* =========================================================================================== */
 /* Format img*/

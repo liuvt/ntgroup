@@ -22,6 +22,7 @@ using ntgroup.Services;
 using ntgroup;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using ntgroup.Gateways;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,15 +55,11 @@ builder.Services.AddRazorComponents()
 // UI: Add MudBlazor
 builder.Services.AddMudServices();
 
-// UI: Register Client Factory
-builder.Services.AddHttpClient("IdentityBlazorCoreAPIServer", httpClient =>
-    {
-        httpClient.BaseAddress = new Uri(builder.Configuration["API:localhost"] ??
-                                throw new InvalidOperationException("Can't found [Secret Key] in appsettings.json !"));
-        httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-        httpClient.DefaultRequestHeaders.Add(HeaderNames.UserAgent, "HttpRequestntgroupAPI");
-    });
+// API: call HTTP client Hub để lấy dữ liệu API từ bên ngoài
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<HubClients>();
 
+// Mặt định gọi HTTP ở localhost
 // UI: Get httpClient API default
 builder.Services.AddScoped(
     defaultClient => new HttpClient
@@ -128,12 +125,15 @@ builder.Services.AddScoped<ISpreadsConfigServer, SpreadsConfigServer>();
 builder.Services.AddScoped<ISpreadsAuthenServer, SpreadsAuthenServer>();
 builder.Services.AddScoped<ISpreadsReportServer, SpreadsReportServer>();
 builder.Services.AddScoped<ISpreadsRecruitmentServer, SpreadsRecruitmentServer>();
+builder.Services.AddScoped<ISkysoftVehicleServer, SkysoftVehicleServer>();
+
 
 // UI: Register Services
 builder.Services.AddScoped<ISpreadsRegisterContractService, SpreadsRegisterContractService>();
 builder.Services.AddScoped<ISpreadsCheckerService, SpreadsCheckerService>();
 builder.Services.AddScoped<ISpreadsReportService, SpreadsReportService>();
 builder.Services.AddScoped<ISpreadsRecuitmentService, SpreadsRecuitmentService>();
+builder.Services.AddScoped<ISkysoftVehicleService, SkysoftVehicleService>();
 
 // UI: Register Services Config to APIs
 builder.Services.AddScoped<ISpreadsConfigService, SpreadsConfigService>();

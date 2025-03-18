@@ -73,4 +73,31 @@ public class SpreadsReportService : ISpreadsReportService
         }
     }
 
+    public async Task<Deduct> GetsDeductByMonth(string month)
+    {
+        try
+        {
+            var _month = month.Replace("/", "%2F");
+            var response = await httpClient.GetAsync($"api/Deduct/Reports/Month/{month}");
+            
+            if (response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                {
+                    return default(Deduct)!;
+                }
+
+                return await response.Content.ReadFromJsonAsync<Deduct>();
+            }
+            else
+            {
+                var mess = await response.Content.ReadAsStringAsync();
+                throw new Exception(mess);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
 }

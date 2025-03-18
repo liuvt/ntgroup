@@ -1,6 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ntgroup.Extensions;
 
 namespace ntgroup.Data.Models;
 public class SpreadsReport
@@ -64,17 +65,23 @@ public class StatisticalReportDetail {
     public string tratruoc_trasau {get; set;} = string.Empty;
 }
 
-public class Cashbasis
+public class Deduct
 {
     public string id {get; set;} = string.Empty;
-    public string cashbasis {get; set;} = string.Empty;
-    public string revenue {get; set;} = string.Empty;
+    public string cashbasis_total {get; set;} = string.Empty;
+    public string tru_kyquy_total {get; set;} = string.Empty;
+    public string tru_vipham_bienban_total {get; set;} = string.Empty;
+    public string tru_phidaudo_total {get; set;} = string.Empty;
+    public string tru_tienquatram_total {get; set;} = string.Empty;
+    public string tru_tamung_total {get; set;} = string.Empty;
+    public string tru_khac_total {get; set;} = string.Empty;
     public int records {get; set;}
     public string createdAt {get; set;} = string.Empty;
-    public List<CashbasisDetail>? statisticalReports {get; set;} 
+    public List<DeductDetail>? cashbasisDetail {get; set;} 
 }
+
 // Chi tiết các khoản trừ của lái xe
-public class CashbasisDetail {
+public class DeductDetail {
     public string id {get; set;} = string.Empty;
     public string id_tongdoanhthu {get; set;} = string.Empty;
     public string nhan_vien_tao {get; set;} = string.Empty;
@@ -101,5 +108,28 @@ public class CashbasisDetail {
     public string show_cackhoantru {get; set;} = string.Empty;
     public string show_trutien_trachnhiem {get; set;} = string.Empty;
     public string tru_tienquatram {get; set;} = string.Empty;
+    public string tru_phisac {get; set;} = string.Empty;
+    public string tru_tienkhoanxe {get; set;} = string.Empty;
     public string tru_tamung {get; set;} = string.Empty;
+    																		
+
+    // Tính tổng các cột
+    public string _SumAll => SumString.SumFields(new List<string> {
+                                                        tru_kyquy,
+                                                        tru_tainan,
+                                                        tru_luongung,
+                                                        tru_vipham_bienban,
+                                                        tru_bhxh,
+                                                        tru_tncn,
+                                                        tru_trachnhiem_baoquan_xe,
+                                                        tru__trachnhiem_loi_dongphuc,
+                                                        tru_trachnhiem_giaoca,
+                                                        tru_phidaudo,
+                                                        tru_khac,
+                                                        tru_tienquatram,
+                                                        tru_tamung,
+                                                        tru_phisac,
+                                                        tru_tienkhoanxe
+                                        });
+
 }

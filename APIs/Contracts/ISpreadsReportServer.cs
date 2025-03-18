@@ -9,5 +9,13 @@ public interface ISpreadsReportServer
     Task<List<StatisticalReportDetail>> GetsStatisticalReportDetail();
     // Đếm tổng số bản gi doanh thu theo tháng
     Task<StatisticalReport> GetsStatisticalReportByMonth(string month);
-    Task<StatisticalReport> GetsStatisticalReportByUserID(string month, string userId);
+    Task<StatisticalReport> GetsStatisticalReportByUserID(string month, string msnv);
+    
+    #region 2. Các khoản trừ Deduct
+    Task<List<DeductDetail>> GetsDeductDetails();
+    Task<DeductDetail> GetDeductDetail(string _manv);
+    Task<Deduct> GetsDeduct();
+    Task<Deduct> GetsDeductByMonth(string month);
+
+    #endregion
 } 

@@ -47,8 +47,8 @@ public class Job
     public string salary_range { get; set; } = string.Empty;
     public string job_type { get; set; } = string.Empty;
     public string status { get; set; } = string.Empty;
-    public string createdAt { get; set; } = string.Empty;
     public string img { get; set; } = string.Empty;
+    public string createdAt { get; set; } = string.Empty;
     public Company? Company { get; set; }
     public List<Recruitment>? Recruitments { get; set; }
     public DateTime _createdAt => DateTime.ParseExact(createdAt, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);

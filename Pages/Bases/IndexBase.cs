@@ -10,6 +10,8 @@ using DocumentFormat.OpenXml.Office2013.Excel;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using ntgroup.Extensions;
 using DocumentFormat.OpenXml.Office.CustomUI;
+using ntgroup.Services;
+using ntgroup.Data.Entities;
 
 namespace ntgroup.Pages.Bases;
 public class IndexBase : ComponentBase
@@ -19,7 +21,9 @@ public class IndexBase : ComponentBase
     protected ISpreadsRecuitmentService recuitmentService { get; set; }
     protected List<Job> jobs = new List<Job>();
     protected Job job = new Job();
+
     protected bool isLoaded = false;
+    protected string countVehicle;
 
     protected override async Task OnInitializedAsync()
     {

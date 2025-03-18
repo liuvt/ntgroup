@@ -1,0 +1,88 @@
+<MudPaper Class="d-none d-md-flex footer-nav" Elevation="0" Style="@($"color:{Colors.Shades.White}; background:{Colors.Shades.Black};")">
+    <MudContainer MaxWidth="MaxWidth.Large">
+            <MudGrid Class="d-flex justify-md-center gap-md-10">
+                <MudItem xs="12" sm="6" md="3" Class="pa-2">
+                    <MudPaper Height="100%" Style="@($"color:{Colors.Shades.White}; background:{Colors.Shades.Black};")" Elevation="0">
+                        <MudText Id="augNameCompany" Style="color: #fff !important;">
+                            Nam Thắng Bạc Liêu
+                        </MudText>
+                        <MudText Class="pa-2 mt-2">
+                            ©copyright 2025
+                        </MudText>
+                         <MudText Class="ml-16">
+                           - All rights reserved by LT.Van
+                        </MudText>
+                        <MudItem Class="ml-2 mt-3 d-flex gap-5">
+                            <MudItem Class="d-inline-flex moving-top">
+                                <MudLink Href="#" Target="_blank" Underline="Underline.None">
+                                    <MudIcon Style="@($"color:{Colors.Shades.White};")" Class="fa-brands fa-facebook fix-icon" />
+                                </MudLink>
+                            </MudItem>
+                             <MudItem Class="d-inline-flex moving-top">
+                                <MudLink Href="#" Target="_blank" Underline="Underline.None">
+                                    <MudIcon Style="@($"color:{Colors.Shades.White};")" Class="fa-brands fa-youtube fix-icon"/>
+                                </MudLink>
+                            </MudItem>
+                             <MudItem Class="d-inline-flex moving-top">
+                                <MudLink Href="#" Target="_blank" Underline="Underline.None">
+                                    <MudIcon Style="@($"color:{Colors.Shades.White};")" Class="fa-brands fa-instagram fix-icon"/>
+                                </MudLink>
+                            </MudItem>
+                        </MudItem>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3" Class="pa-2">
+                    <MudPaper Height="100%" Style="@($"color:{Colors.Shades.White}; background:{Colors.Shades.Black};")">
+                        <MudText Typo="Typo.h5">
+                            Thông tin liên lạc
+                        </MudText>
+                        <MudItem Class="mt-3">
+                            <MudText>
+                                Email: tttiep.ntbl@namthanggroup.vn
+                            </MudText>
+                            <MudText>
+                                Số điện thoại: (+84) 932 777 706
+                            </MudText>
+                            <MudText>
+                                Địa chỉ: Bạc Liêu
+                            </MudText>
+                        </MudItem>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3" Class="pa-2">
+                    <MudPaper Height="100%" Style="@($"color:{Colors.Shades.White}; background:{Colors.Shades.Black};")">
+                        <MudText Typo="Typo.h5">
+                            Đọc thêm
+                        </MudText>
+                        <MudItem> 
+                            <MudItem Class="mt-3">
+                                <MudLink Href="/faq" Underline="Underline.None">Câu hỏi thường gặp</MudLink>
+                            </MudItem>
+                            <MudItem Class="mt-2">
+                                <MudLink Href="#" Underline="Underline.None">Chính sách bảo mật</MudLink>
+                            </MudItem>
+                            <MudItem Class="mt-2">
+                                <MudLink Href="#" Underline="Underline.None">Các điều khoản và điều kiện</MudLink>
+                            </MudItem>
+                        </MudItem>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+    </MudContainer>
+</MudPaper>
+<style>
+.footer-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+body {
+    padding-top: 64px; /* Để tránh nội dung bị che khuất bởi NavBar */
+    padding-bottom: 50px; /* Để tránh nội dung bị che khuất bởi Footer */
+}
+</style>

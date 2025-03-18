@@ -9,7 +9,7 @@ public static class FormatCurrency
     {
         try
         {
-            
+            var result = input.Replace(",","").Replace(".","").Trim();
             // Chuyển chuỗi thành số
             decimal amount = decimal.Parse(input);
 

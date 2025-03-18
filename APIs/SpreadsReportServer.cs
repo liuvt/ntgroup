@@ -12,6 +12,7 @@ using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
 using System.Globalization;
 using ntgroup.Extensions;
+using System.Collections.Frozen;
 
 namespace ntgroup.APIs;
 
@@ -26,7 +27,7 @@ public class SpreadsReportServer : ISpreadsReportServer
     private readonly string spreadSheetId = "1Q642xyAmlz2qoxAszCJsOJTLxrcBlefpIFLJSJvAdoI";
     private readonly string sheetDOANH_THU_LX_NGAY_DIEN = "DOANH_THU_LX_NGAY_DIEN";
     private readonly string sheetCAC_KHOAN_TRU_LUONG_LX_DIEN = "CAC_KHOAN_TRU_LUONG_LX_DIEN";
-    
+
     private SheetsService sheetsService;
 
     // Constructor
@@ -51,7 +52,7 @@ public class SpreadsReportServer : ISpreadsReportServer
 
     }
 
-    // Lấy toàn bộ thông tin doanh thu lái xe mỗi ngày trong tháng
+    // Lấy danh sách chi tiết
     public async Task<List<StatisticalReportDetail>> GetsStatisticalReportDetail()
     {
         try
@@ -124,6 +125,7 @@ public class SpreadsReportServer : ISpreadsReportServer
         }
     }
 
+    // Lấy thông tin tổng theo tháng
     public async Task<StatisticalReport> GetsStatisticalReportByMonth(string month)
     {
         try
@@ -156,13 +158,14 @@ public class SpreadsReportServer : ISpreadsReportServer
         }
     }
 
-    public async Task<StatisticalReport> GetsStatisticalReportByUserID(string month, string userId)
+    // Lấy thông tin tổng tháng của 1 driver
+    public async Task<StatisticalReport> GetsStatisticalReportByUserID(string month, string msnv)
     {
         try
         {
             var newObject = await this.GetsStatisticalReportDetail();
 
-            var result = newObject.Where(a => a.thang_nam == month.Replace("%2F", "/") && a.msnv == userId).ToList();
+            var result = newObject.Where(a => a.thang_nam == month.Replace("%2F", "/") && a.msnv == msnv).ToList();
 
             if (!result.Any())
             {
@@ -187,4 +190,151 @@ public class SpreadsReportServer : ISpreadsReportServer
         }
     }
 
+    #region 2. Các khoản trừ Deduct
+    public async Task<List<DeductDetail>> GetsDeductDetails()
+    {
+        try
+        {
+            var cashbasisDetail = new List<DeductDetail>();
+            var range = $"{sheetCAC_KHOAN_TRU_LUONG_LX_DIEN}!A2:AC";
+            var values = await GGSExtensions.APIGetValues(sheetsService, spreadSheetId, range);
+            if (values == null || values.Count == 0)
+            {
+                throw new Exception("Không có dữ liệu sheet.");
+            }
+            foreach (var item in values)
+            {
+                cashbasisDetail.Add(new DeductDetail
+                {
+                    id = item[0].ToString() ?? string.Empty,
+                    id_tongdoanhthu = item[1].ToString() ?? string.Empty,
+                    nhan_vien_tao = item[2].ToString() ?? string.Empty,
+                    ngay_tao = item[3].ToString() ?? string.Empty,
+                    thang_nam = item[4].ToString() ?? string.Empty,
+                    so_tai = item[5].ToString() ?? string.Empty,
+                    msnv = item[6].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    hoten_laixe = item[7].ToString() ?? string.Empty,
+                    hoten_msnv = item[8].ToString() ?? string.Empty,
+                    tru_kyquy = item[9].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru_tainan = item[10].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru_luongung = item[11].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru_vipham_bienban = item[12].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru_bhxh = item[13].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru_tncn = item[14].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru_trachnhiem_baoquan_xe = item[15].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru__trachnhiem_loi_dongphuc = item[16].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru_trachnhiem_giaoca = item[17].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru_phidaudo = item[18].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru_khac = item[19].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    ghichu_trukhac = item[20].ToString() ?? string.Empty,
+                    ghi_chu = item[21].ToString() ?? string.Empty,
+                    show_thongtinchung = item[22].ToString() ?? string.Empty,
+                    show_cackhoantru = item[23].ToString() ?? string.Empty,
+                    show_trutien_trachnhiem = item[24].ToString() ?? string.Empty,
+                    tru_tienquatram = item[25].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru_phisac = item[26].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru_tienkhoanxe = item[27].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty,
+                    tru_tamung = item[28].ToString().Replace(".", "").Replace(",", "").Trim() ?? string.Empty
+                });
+            }
+
+            return cashbasisDetail;
+        }
+        catch (Exception ex)
+        {
+
+            throw new Exception($"Lỗi dữ liệu. {ex.Message}");
+        }
+    }
+
+    // Lấy các khoản trừ theo mã nhân viên
+    public async Task<DeductDetail> GetDeductDetail(string _manv)
+    {
+        try
+        {
+            var newObject = await GetsDeductDetails();
+            var result = newObject.Where(a => a.msnv == _manv).FirstOrDefault();
+            if (result == null)
+            {
+                throw new Exception($"Không tồn tại!");
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Lỗi dữ liệu. {ex.Message}");
+        }
+    }
+
+    public async Task<Deduct> GetsDeduct()
+    {
+        try
+        {
+            var newObject = await GetsDeductDetails();
+
+            if (!newObject.Any())
+            {
+                throw new Exception($"Không tồn tại!");
+            }
+
+            var total = new Deduct
+            {
+                id = Guid.NewGuid().ToString(),
+                cashbasis_total = SumString.SumListString<DeductDetail>(newObject, "_SumAll"),
+                tru_kyquy_total = SumString.SumListString<DeductDetail>(newObject, "tru_kyquy"),
+                tru_vipham_bienban_total = SumString.SumListString<DeductDetail>(newObject, "tru_vipham_bienban"),
+                tru_phidaudo_total = SumString.SumListString<DeductDetail>(newObject, "tru_phidaudo"),
+                tru_tienquatram_total = SumString.SumListString<DeductDetail>(newObject, "tru_tienquatram"),
+                tru_tamung_total = SumString.SumListString<DeductDetail>(newObject, "tru_tamung"),
+                tru_khac_total = SumString.SumListString<DeductDetail>(newObject, "tru_khac"),
+                records = newObject.Count,
+                cashbasisDetail = newObject
+            };
+
+            return total;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Lỗi dữ liệu. {ex.Message}");
+        }
+    }
+
+    public async Task<Deduct> GetsDeductByMonth(string month)
+    {
+        try
+        {
+            var newObject = await this.GetsDeductDetails();
+            var formatbyDate = month.Replace("%2F", "/");
+
+            var result = newObject.Where(a => a.thang_nam == formatbyDate).ToList();
+
+            if (!result.Any())
+            {
+                throw new Exception($"Không tồn tại!");
+            }
+
+            var total = new Deduct
+            {
+                id = Guid.NewGuid().ToString(),
+                cashbasis_total = SumString.SumListString<DeductDetail>(result, "_SumAll"),
+                tru_kyquy_total = SumString.SumListString<DeductDetail>(result, "tru_kyquy"),
+                tru_vipham_bienban_total = SumString.SumListString<DeductDetail>(result, "tru_vipham_bienban"),
+                tru_phidaudo_total = SumString.SumListString<DeductDetail>(result, "tru_phidaudo"),
+                tru_tienquatram_total = SumString.SumListString<DeductDetail>(result, "tru_tienquatram"),
+                tru_tamung_total = SumString.SumListString<DeductDetail>(result, "tru_tamung"),
+                tru_khac_total = SumString.SumListString<DeductDetail>(result, "tru_khac"),
+                records = result.Count,
+                cashbasisDetail = result
+            };
+
+            return total;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Lỗi dữ liệu. {ex.Message}");
+        }
+    }
+
+    #endregion
 }

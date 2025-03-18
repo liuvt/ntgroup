@@ -1,6 +1,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net.NetworkInformation;
+using ntgroup.Data.Models;
 
 namespace ntgroup.Data.Entities;
 public class SpreadsReportDTO
@@ -15,7 +17,9 @@ public class StatisticalReportDTO
     public int records {get; set;}
     public string createdAt {get; set;} = string.Empty;
     public List<StatisticalReportDetailDTO>? statisticalReportDetails {get; set;} 
+    public Deduct? deduct {get; set;}
 }
+
 
 public class StatisticalReportDetailDTO {
     public string thang_nam {get; set;} = string.Empty;
