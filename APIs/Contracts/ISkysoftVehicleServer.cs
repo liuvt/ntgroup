@@ -1,4 +1,4 @@
-using ntgroup.Data.Models;
+using ntgroup.Data.Models.Skysofts;
 using ntgroup.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 

@@ -1,19 +1,6 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+
 using ntgroup.APIs.Contracts;
-using ntgroup.Data.Entities;
-using ntgroup.Data.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using Google.Apis.Sheets.v4;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Sheets.v4.Data;
-using System.Globalization;
-using ntgroup.Extensions;
-using System.Security.Cryptography;
-using Newtonsoft.Json.Linq;
+using ntgroup.Data.Models.Skysofts;
 using Newtonsoft.Json;
 using ntgroup.Gateways;
 
@@ -46,7 +33,7 @@ public class SkysoftVehicleServer : ISkysoftVehicleServer
             }
 
             string responseBody = await response.Content.ReadAsStringAsync();
-            var vehicleData = JsonConvert.DeserializeObject<SkysoftVehicle>(responseBody);
+            var vehicleData = JsonConvert.DeserializeObject<VehicleTotal>(responseBody);
             List<Vehicle> vehicles = vehicleData.vehicles;
 
             return vehicles;
@@ -76,10 +63,14 @@ public class SkysoftVehicleServer : ISkysoftVehicleServer
             }
 
             var responseBody = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<SkysoftTrip>(responseBody);
-            List<Trip> _trips = result.trips;
+            var result = JsonConvert.DeserializeObject<TripTatol>(responseBody);
+            List<Trip> data = result.trips;
 
-            return _trips;
+
+            Console.WriteLine("Tổng cuốc: "+ result.count);
+            Console.WriteLine("Tiền: "+ result.chargeTotal);
+            Console.WriteLine("Thành tiền (nhập thực thu): "+ result.realChargeTotal);
+            return data;
         }
         catch (Exception ex)
         {
