@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components;
-using ntgroup.Data.Models;
+using ntgroup.Data.Models.Skysofts;
 using ntgroup.Services.Interfaces;
 using MudBlazor;
 using ntgroup.Extensions;
@@ -10,7 +10,7 @@ namespace ntgroup.Pages.Bases;
 public class SkysoftVehicleBase : ComponentBase
 {
     [Inject]
-    protected ISkysoftVehicleService skysoftVehicle { get; set; }
+    protected ISkysoftService skysoftVehicle { get; set; }
     protected List<Vehicle> vehicle = new List<Vehicle>();
     protected override async Task OnInitializedAsync()
     {

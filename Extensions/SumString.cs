@@ -13,7 +13,7 @@ public static class SumString
         {
             // Lấy tên cột
             var fieldsNameToSum = e.GetType().GetProperty(namefields)?.GetValue(e)?.ToString() ?? "0";
-            
+
             // Sau khi định dang tiền là hàng nghìn (.), thì decimal hiểu đó là phần thập phân (,) dẫn đến mất các số 0 phía sau dấu (.)
             // Do đó cần thay đổi dâu (.) thành dấu (,) để decimal hiểu được đâu là phần thập phân, đâu là hàng nghìn 
             // Trim(): Loại bỏ khoảng trắng thừa
@@ -48,6 +48,44 @@ public static class SumString
             throw new FormatException("Chuỗi nhập vào không hợp lệ!");
         }
 
+    }
+
+    //Cộng 2 chuỗi trả về một double type
+    public static double ReturnDouble(string meters1, string meters2)
+    {
+        // Chuẩn hóa dấu phân cách thập phân về dấu chấm (.)
+        meters1 = meters1.Replace(",", ".");
+        meters2 = meters2.Replace(",", ".");
+
+        // Xử lý chuỗi và chuyển đổi thành số 
+        if (double.TryParse(meters1, NumberStyles.Any, CultureInfo.InvariantCulture, out double num1) &&
+            double.TryParse(meters2, NumberStyles.Any, CultureInfo.InvariantCulture, out double num2))
+        {
+            return Math.Round((num1 + num2) / 1000, 2);
+        }
+        else
+        {
+            return 0.00;
+        }
+
+    }
+
+    // Chuyển đổi Meters to Km
+    public static double ReturnDouble(string meters)
+    {
+        if(string.IsNullOrWhiteSpace(meters)) return 0.00;
+
+        // Chuẩn hóa dấu phân cách thập phân
+        meters = meters.Replace(",", "."); 
+
+        if (double.TryParse(meters, NumberStyles.Any, CultureInfo.InvariantCulture, out double _meters))
+        {
+            return Math.Round(_meters / 1000, 2);
+        }
+        else
+        {
+            return 0.00;
+        }
     }
 
     // Helper method to safely convert and sum string values

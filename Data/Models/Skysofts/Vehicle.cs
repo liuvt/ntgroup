@@ -5,8 +5,8 @@ namespace ntgroup.Data.Models.Skysofts;
 //Schema detail
 public class Vehicle
 {
-    public int? vehicleID { get; set; }
-    public int? customerID { get; set; }
+    public int vehicleID { get; set; }
+    public int customerID { get; set; }
     public string x { get; set; } = string.Empty;
     public string y { get; set; } = string.Empty;
     public string plateNo { get; set; } = string.Empty;

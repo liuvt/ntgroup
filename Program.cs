@@ -125,7 +125,7 @@ builder.Services.AddScoped<ISpreadsConfigServer, SpreadsConfigServer>();
 builder.Services.AddScoped<ISpreadsAuthenServer, SpreadsAuthenServer>();
 builder.Services.AddScoped<ISpreadsReportServer, SpreadsReportServer>();
 builder.Services.AddScoped<ISpreadsRecruitmentServer, SpreadsRecruitmentServer>();
-builder.Services.AddScoped<ISkysoftVehicleServer, SkysoftVehicleServer>();
+builder.Services.AddScoped<ISkysoftServer, SkysoftServer>();
 
 
 // UI: Register Services
@@ -133,7 +133,7 @@ builder.Services.AddScoped<ISpreadsRegisterContractService, SpreadsRegisterContr
 builder.Services.AddScoped<ISpreadsCheckerService, SpreadsCheckerService>();
 builder.Services.AddScoped<ISpreadsReportService, SpreadsReportService>();
 builder.Services.AddScoped<ISpreadsRecuitmentService, SpreadsRecuitmentService>();
-builder.Services.AddScoped<ISkysoftVehicleService, SkysoftVehicleService>();
+builder.Services.AddScoped<ISkysoftService, SkysoftService>();
 
 // UI: Register Services Config to APIs
 builder.Services.AddScoped<ISpreadsConfigService, SpreadsConfigService>();

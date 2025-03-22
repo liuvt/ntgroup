@@ -44,4 +44,27 @@ public static class DatetimeExtensions
         
         return dateTime;
     }
+
+    public static string DateTimeFromStringDefault(string dateString)
+    {
+        //string pickupDateStr = "2025-03-19T23:56:55+0700";
+
+        if (string.IsNullOrWhiteSpace(dateString))
+        {
+            return string.Empty;
+        }
+
+        // Chuyển đổi chuỗi ISO 8601 thành DateTime
+        if (DateTimeOffset.TryParseExact(dateString, "yyyy-MM-ddTHH:mm:sszzz", 
+            CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset pickupDate))
+        {
+            // Định dạng lại thành dd/MM/yyyy HH:mm:ss
+            string formattedDate = pickupDate.ToString("dd/MM/yyyy HH:mm:ss");
+            return formattedDate;
+        }
+        else
+        {
+            return string.Empty;
+        }
+    }
 }
