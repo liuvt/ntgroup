@@ -4,6 +4,7 @@ using ntgroup.Data.Models.Skysofts;
 using Newtonsoft.Json;
 using ntgroup.Gateways;
 using System.Globalization;
+using ntgroup.Data.Entities.Skysofts;
 
 namespace ntgroup.APIs;
 
@@ -53,14 +54,14 @@ public class SkysoftServer : ISkysoftServer
 
     #region Trips
     //Get all trip in date
-    public async Task<List<Trip>> GetsTrips(string datereport)
+    public async Task<List<Trip>> GetsTrips(TripRequestDTO datereport)
     {
         try
         {
             // Thêm tham số 'date' vào body
             object objectContent = new
             {
-                date = datereport // Định dạng ngày phù hợp với yêu cầu API
+                date = datereport.DateReport // Định dạng ngày phù hợp với yêu cầu API
             };
 
             var response = await hubClients.PostAsync("Skysoft", "api/query_taxi_trips", objectContent);
@@ -82,14 +83,13 @@ public class SkysoftServer : ISkysoftServer
     }
 
     //Get all trip in date
-    public async Task<List<Trip>> GetsTripsDate(string datereport)
+    public async Task<List<Trip>> GetsTripsDate(TripRequestDTO datereport)
     {
         try
         {
-
             //Lùi ngày xuất dữ liệu
 
-            var _datereport = DateTime.ParseExact(datereport, "yyyyMMdd", CultureInfo.InvariantCulture).AddDays(-1);
+            var _datereport = DateTime.ParseExact(datereport.DateReport, "yyyyMMdd", CultureInfo.InvariantCulture).AddDays(-1);
             // Thêm tham số 'date' vào body
             object objectContent = new
             {

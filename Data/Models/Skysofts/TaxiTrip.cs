@@ -10,11 +10,11 @@ public class TaxiTrip
     public string distance { get; set; } = string.Empty;
     public string km { get; set; } = string.Empty;
     public string emptyKm { get; set; } = string.Empty;
-    public string charge { get; set; } = string.Empty;
-    public string realCharge { get; set; } = string.Empty;
-    public string waitCharge { get; set; } = string.Empty;
+    public decimal charge { get; set; }
+    public decimal realCharge { get; set; }
+    public decimal waitCharge { get; set; }
     public string waitTime { get; set; } = string.Empty;
-    public string unitPrice { get; set; } = string.Empty;
+    public decimal unitPrice { get; set; }
     public string irState { get; set; } = string.Empty;
     public string userName { get; set; } = string.Empty;
     public string typeID { get; set; } = string.Empty;

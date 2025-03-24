@@ -21,6 +21,7 @@ public class LoginBase : ComponentBase
         {
             // Check authentication state
             if (await authenService.CheckAuthenState()) nav.NavigateTo("/", true);
+            await base.OnInitializedAsync();
         }
         catch (Exception ex)
         {

@@ -31,6 +31,7 @@ public class IndexBase : ComponentBase
         {
             jobs = await recuitmentService.GetsJobs();
             isLoaded = true;
+            await base.OnInitializedAsync();
         }
         catch (Exception ex)
         {

@@ -1,0 +1,25 @@
+@page "/vehicles"
+@layout OwnersMainLayout
+@inherits VehicleBase
+@attribute [Authorize(Roles = "Owner,Manager,Accountant,Checker")]
+
+<PageTitle>Trips --Skysoft</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-3">
+    <h3>Danh sách phương tiện</h3>
+
+    <MudTable Items="vehicles" Hover="true">
+        <HeaderContent>
+            <MudTh>vehicleID</MudTh>
+            <MudTh>vehicleNo</MudTh>
+            <MudTh>vehicleCode</MudTh>
+            <MudTh>plateNo</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="item">
+            <MudTd>@item.vehicleID</MudTd>
+            <MudTd>@item.vehicleNo</MudTd>
+            <MudTd>@item.vehicleCode</MudTd>
+            <MudTd>@item.plateNo</MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudContainer>

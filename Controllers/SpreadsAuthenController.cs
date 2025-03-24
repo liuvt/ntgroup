@@ -39,7 +39,6 @@ public class SpreadsAuthenController : ControllerBase
     {
         try
         {
-
             var result = await this.context.Login(model);
             return Ok(result);
         }

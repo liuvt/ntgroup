@@ -37,11 +37,13 @@ public class SkysoftController : ControllerBase
     }
 
     //[Authorize(Roles = "Owner,Manager,Accountant,Checker")]
-    [HttpGet("Trips/{datereport}")]
-    public async Task<ActionResult<List<TripDTO>>> GetsTrips(string datereport)
+    [HttpPost("Trips")]
+    public async Task<ActionResult<List<TripDTO>>> GetsTrips([FromBody]TripRequestDTO datereport)
     {
         try
         {
+            Console.WriteLine("datereport1: "+ datereport.DateReport.ToString());
+
             var trips = await context.GetsTrips(datereport);
             var vehicles = await context.GetsVehicles();
 
@@ -58,8 +60,8 @@ public class SkysoftController : ControllerBase
     }
 
     //[Authorize(Roles = "Owner,Manager,Accountant,Checker")]
-    [HttpGet("Trips/Date/{datereport}")]
-    public async Task<ActionResult<List<TripDTO>>> GetsTripsDate(string datereport)
+    [HttpPost("Trips/Date/")]
+    public async Task<ActionResult<List<TripDTO>>> GetsTripsDate([FromBody]TripRequestDTO datereport)
     {
         try
         {

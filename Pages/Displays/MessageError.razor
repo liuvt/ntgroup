@@ -1,10 +1,12 @@
-<!--Hiển thị nội dung trạng thái lỗi-->
-<MudContainer MaxWidth="MaxWidth.Large" Class="augMessageError mt-5">
-    <MudItem>
-        <MudText Typo="Typo.h5">@Title</MudText>
-        <MudLink Href="@Link">@TitleLink</MudLink>
-    </MudItem>
-</MudContainer>
+<MudMainContent>
+    <!--Hiển thị nội dung trạng thái lỗi-->
+    <MudContainer MaxWidth="MaxWidth.Large" Class="augMessageError mt-5">
+        <MudItem>
+            <MudText Typo="Typo.h5">@Title</MudText>
+            <MudLink Href="@Link">@TitleLink</MudLink>
+        </MudItem>
+    </MudContainer>
+</MudMainContent>
 
 @code{
     [Parameter]

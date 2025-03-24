@@ -1,0 +1,53 @@
+@page "/trips"
+@layout OwnersMainLayout
+@inherits TripBase
+@attribute [Authorize(Roles = "Owner,Manager,Accountant,Checker")]
+
+<PageTitle>Trips --Skysoft</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-3">
+    <MudDataGrid Class="mt-3" T="TripDTO" MultiSelection="true" Items="@trips" SortMode="SortMode.Multiple"
+        Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterRow">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Danh sách cuốc xe</MudText>
+            <MudSpacer />
+        </ToolBarContent>
+        <Columns>
+            <!--<SelectColumn T="StatisticalReport" />-->
+            <PropertyColumn Property="x => x.vehicleNo" Title="Số hiệu"/>
+            <PropertyColumn Property="x => x.plateNo" Title="Biễn số" />
+            <PropertyColumn Property="x => x.userName" Title="Tài khoản" />
+            <PropertyColumn Property="x => x.pickupDate" Title="Thời gian đi" />
+            <PropertyColumn Property="x => x.dropOffDate" Title="Thời gian đến" />
+            <PropertyColumn Property="x => x.km" Title="KM có khách" />
+            <PropertyColumn Property="x => x.emptyKm" Title="KM rỗng" />
+            <PropertyColumn Property="x => x.totalKm" Title="KM tổng" />
+            <PropertyColumn Property="x => x.waitTime" Title="Thời gian chờ" />
+            <PropertyColumn Property="x => x.waitCharge" Title="Tiền giờ chờ" />
+            <PropertyColumn Property="x => x.charge" Title="Tổng tiền" />
+            <PropertyColumn Property="x => x.realCharge" Title="Tiền nhập thực thu" />
+            <PropertyColumn Property="x => x.type" Title="Loại hình" />
+            <PropertyColumn Property="x => x.fromPlaceName" Title="Điểm đi" />
+            <PropertyColumn Property="x => x.toPlaceName" Title="Điểm đến" />
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="TripDTO" />
+        </PagerContent>
+    </MudDataGrid>
+
+    <h3>Danh sách cuốc xe</h3>
+    <MudTable Items="trips" Hover="true">
+        <HeaderContent>
+            <MudTh>_id</MudTh>
+            <MudTh>userName</MudTh>
+            <MudTh>charge</MudTh>
+            <MudTh>plateNo</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="item">
+            <MudTd>@item._id</MudTd>
+            <MudTd>@item.userName</MudTd>
+            <MudTd>@item.charge</MudTd>
+            <MudTd>@item.plateNo</MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudContainer>

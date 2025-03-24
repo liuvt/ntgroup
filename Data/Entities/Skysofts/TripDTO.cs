@@ -27,3 +27,8 @@ public class TripDTO
     public string fromPlaceName { get; set; } = string.Empty;
     public string toPlaceName { get; set; } = string.Empty;
 }
+
+public class TripRequestDTO
+{
+    public string DateReport { get; set; } = string.Empty;
+}

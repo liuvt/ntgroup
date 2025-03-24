@@ -1,0 +1,25 @@
+@page "/dashboard"
+@layout OwnersMainLayout
+@inherits DashboardBase
+@attribute [Authorize(Roles = "Owner,Manager,Accountant,Checker")]
+
+<PageTitle>Trips --Skysoft</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-3">
+    <h3>Danh sách cuốc xe</h3>
+    
+    <MudTable Items="trips" Hover="true">
+        <HeaderContent>
+            <MudTh>_id</MudTh>
+            <MudTh>userName</MudTh>
+            <MudTh>charge</MudTh>
+            <MudTh>plateNo</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="item">
+            <MudTd>@item._id</MudTd>
+            <MudTd>@item.userName</MudTd>
+            <MudTd>@item.charge</MudTd>
+            <MudTd>@item.plateNo</MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudContainer>
